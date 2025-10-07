@@ -44,9 +44,9 @@ function SalesChart() {
               nameKey="name"
               cx="50%"
               cy="50%"
-              innerRadius={70}
-              outerRadius={100}
-              paddingAngle={4}
+              innerRadius={40}
+              outerRadius={80}
+              paddingAngle={5}
               label={false}
             >
               {data.map((entry, index) => (
