@@ -9,9 +9,9 @@ import {
   Sun,
 } from "lucide-react";
 
-import user_default from '../../assets/images/user_default.jpg';
+import user_default from "../../assets/images/user_default.jpg";
 
-function Header() {
+function Header({ onToggleSidebar }) {
   return (
     <div
       className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b
@@ -23,6 +23,7 @@ function Header() {
           <button
             className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100
          dark:hover:bg-slate-800 transition-colors"
+            onClick={onToggleSidebar}
           >
             <Menu className="w-5 h-5" />
           </button>
@@ -98,7 +99,7 @@ function Header() {
             <img
               src={user_default}
               alt="user"
-              className="w-8 h-8 rounded-full ring-2 ring-blue-500"
+              className="w-8 h-8 rounded-full ring-2 ring-blue-500 object-cover"
             />
             <div className="hidden md:block">
               <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
