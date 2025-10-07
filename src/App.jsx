@@ -26,8 +26,8 @@ function App() {
             <div className="p-6 space-y-6">
               <Routes>
                 <Route path="/" element={<Dashboard />} />
-                <Route path="/all-categories" element={<CategoriesList />} />
-                <Route path="/create-category" element={<CategoryCreate />} />
+                <Route path="/categories" element={<CategoriesList />} />
+                <Route path="/categories/create" element={<CategoryCreate />} />
               </Routes>
             </div>
           </main>

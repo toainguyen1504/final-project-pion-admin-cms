@@ -12,17 +12,19 @@ import toaicdevImg from "../../assets/images/toaicdev.png";
 import logo_icon from "../../assets/images/logo_icon.png";
 
 const menuItems = [
-  { id: "dashboard", icon: LayoutDashboard, label: "Dashboard", badge: "New" },
+  {
+    id: "dashboard",
+    icon: LayoutDashboard,
+    label: "Dashboard",
+    badge: "New",
+    path: "/",
+  },
   {
     id: "categories",
     icon: FolderKanban,
     label: "Categories",
     submenu: [
-      {
-        id: "all-categories",
-        label: "All Categories",
-        path: "/categories",
-      },
+      { id: "all-categories", label: "All Categories", path: "/categories" },
       {
         id: "create-category",
         label: "Create Category",
@@ -35,10 +37,10 @@ const menuItems = [
     icon: FileText,
     label: "Posts",
     submenu: [
-      { id: "all-posts", label: "All Posts" },
-      { id: "seo-settings", label: "SEO Settings" },
-      { id: "drafts", label: "Drafts" },
-      { id: "tags", label: "Tags & Keywords" },
+      { id: "all-posts", label: "All Posts", path: "/posts" },
+      { id: "seo-settings", label: "SEO Settings", path: "/posts/seo" },
+      { id: "drafts", label: "Drafts", path: "/posts/drafts" },
+      { id: "tags", label: "Tags & Keywords", path: "/posts/tags" },
     ],
   },
   {
@@ -46,9 +48,21 @@ const menuItems = [
     icon: MessagesSquare,
     label: "Consultations",
     submenu: [
-      { id: "consult-requests", label: "Consult Requests" },
-      { id: "consult-topics", label: "Consult Topics" },
-      { id: "consult-history", label: "Consult History" },
+      {
+        id: "consult-requests",
+        label: "Consult Requests",
+        path: "/consultations/requests",
+      },
+      {
+        id: "consult-topics",
+        label: "Consult Topics",
+        path: "/consultations/topics",
+      },
+      {
+        id: "consult-history",
+        label: "Consult History",
+        path: "/consultations/history",
+      },
     ],
   },
   {
@@ -56,10 +70,10 @@ const menuItems = [
     icon: Users,
     label: "Users",
     submenu: [
-      { id: "all-users", label: "All Users" },
-      { id: "roles", label: "Roles & Permissions" },
-      { id: "activity", label: "User Activity" },
-      { id: "feedback", label: "User Feedback" },
+      { id: "all-users", label: "All Users", path: "/users" },
+      { id: "roles", label: "Roles & Permissions", path: "/users/roles" },
+      { id: "activity", label: "User Activity", path: "/users/activity" },
+      { id: "feedback", label: "User Feedback", path: "/users/feedback" },
     ],
   },
 ];
@@ -72,17 +86,32 @@ function Sidebar({ collapsed }) {
 
   // active menu
   useEffect(() => {
-    const current = location.pathname.split("/")[1] || "dashboard";
-    const parent = menuItems.find((item) =>
-      item.submenu?.some((sub) => sub.id === current)
-    );
+    const currentPath = location.pathname;
 
-    if (parent) {
-      setExpandedId(parent.id);
-      setActiveId(current);
-    } else {
+    let found = false;
+
+    for (const item of menuItems) {
+      if (item.path === currentPath) {
+        setActiveId(item.id);
+        setExpandedId(null);
+        found = true;
+        break;
+      }
+
+      if (item.submenu) {
+        const sub = item.submenu.find((s) => s.path === currentPath);
+        if (sub) {
+          setActiveId(sub.id);
+          setExpandedId(item.id);
+          found = true;
+          break;
+        }
+      }
+    }
+
+    if (!found) {
+      setActiveId(null);
       setExpandedId(null);
-      setActiveId(current);
     }
   }, [location.pathname]);
 
@@ -91,18 +120,14 @@ function Sidebar({ collapsed }) {
       setExpandedId(expandedId === item.id ? null : item.id);
       setActiveId(item.id);
     } else {
-      if (item.id === "dashboard") {
-        navigate("/");
-      } else {
-        navigate(`/${item.id}`);
-      }
+      navigate(item.path || `/${item.id}`);
       setActiveId(item.id);
       setExpandedId(null);
     }
   };
 
   const handleSubmenuClick = (sub, parentId) => {
-    navigate(`/${sub.id}`);
+    navigate(sub.path);
     setActiveId(sub.id);
     setExpandedId(parentId);
   };
