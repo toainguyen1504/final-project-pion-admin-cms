@@ -18,8 +18,16 @@ const menuItems = [
     icon: FolderKanban,
     label: "Categories",
     submenu: [
-      { id: "post-categories", label: "Post Categories" },
-      { id: "course-categories", label: "Course Categories" },
+      {
+        id: "all-categories",
+        label: "All Categories",
+        path: "/categories",
+      },
+      {
+        id: "create-category",
+        label: "Create Category",
+        path: "/categories/create",
+      },
     ],
   },
   {
@@ -166,18 +174,28 @@ function Sidebar({ collapsed }) {
               </button>
 
               {/* Submenu */}
-              {!collapsed && item.submenu && expandedId === item.id && (
-                <div className="ml-8 mt-2 space-y-1 transition-all duration-300">
+              {!collapsed && item.submenu && (
+                <div
+                  ref={(el) => (item.ref = el)}
+                  style={{
+                    height:
+                      expandedId === item.id
+                        ? `${item.ref?.scrollHeight}px`
+                        : "0px",
+                    opacity: expandedId === item.id ? 1 : 0,
+                  }}
+                  className="ml-8 mt-2 space-y-1 overflow-hidden transition-all duration-400 ease-in-out"
+                >
                   {item.submenu.map((sub) => (
                     <button
                       key={sub.id}
                       onClick={() => handleSubmenuClick(sub, item.id)}
                       className={`w-full text-left p-2 text-sm rounded-lg transition-all
-                        ${
-                          activeId === sub.id
-                            ? "bg-blue-100 dark:bg-slate-800 text-blue-600"
-                            : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50"
-                        }`}
+                       ${
+                         activeId === sub.id
+                           ? "bg-blue-100 dark:bg-slate-800 text-blue-600"
+                           : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50"
+                       }`}
                     >
                       {sub.label}
                     </button>

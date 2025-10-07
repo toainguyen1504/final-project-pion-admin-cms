@@ -3,8 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Sidebar from "./components/Layout/Sidebar";
 import Header from "./components/Layout/Header";
 import Dashboard from "./components/Dashboard/Dashboard";
-import CourseCategories from "./components/Categories/CourseCategories";
-import PostCategories from "./components/Categories/PostCategories";
+import CategoriesList from "./components/Categories/CategoriesList";
+import CategoryCreate from "./components/Categories/CategoryCreate";
 
 function App() {
   const [sideBarCollapsed, setSideBarCollapsed] = useState(false);
@@ -26,11 +26,8 @@ function App() {
             <div className="p-6 space-y-6">
               <Routes>
                 <Route path="/" element={<Dashboard />} />
-                <Route path="/post-categories" element={<PostCategories />} />
-                <Route
-                  path="/course-categories"
-                  element={<CourseCategories />}
-                />
+                <Route path="/all-categories" element={<CategoriesList />} />
+                <Route path="/create-category" element={<CategoryCreate />} />
               </Routes>
             </div>
           </main>
