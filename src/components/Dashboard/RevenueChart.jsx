@@ -40,7 +40,7 @@ function RevenueChart() {
           </p>
         </div>
 
-        {/* Legend custom */}
+        {/* Customize Legend */}
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to bg-purple-600 rounded-full"></div>
