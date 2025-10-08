@@ -15,6 +15,14 @@ import user_default from "../../assets/images/user_default.jpg";
 
 function Header({ onToggleSidebar }) {
   const [theme, setTheme] = useState("light");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // handle search
+  const handleSearch = () => {
+    // handle here
+    if (!searchQuery.trim()) return;
+    console.log("Searching for:", searchQuery);
+  };
 
   // read theme from localStorage
   useEffect(() => {
@@ -57,6 +65,9 @@ function Header({ onToggleSidebar }) {
             </div>
             <input
               type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               placeholder="Search Anything"
               className="w-full pl-10 pr-12 py-2.5 bg-slate-100 dark:bg-slate-800 border border-slate-200
             dark:border-slate-700 rounded-xl text-slate-800 dark:text-white placeholder-slate-500
@@ -65,6 +76,7 @@ function Header({ onToggleSidebar }) {
             <button
               className="absolute right-2 top-1/2 transform -translate-y-1/2 py-1.5 pl-2.5 pr-1.5
             text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer"
+              onClick={handleSearch}
             >
               <Search className="w-5 h-5" />
             </button>
