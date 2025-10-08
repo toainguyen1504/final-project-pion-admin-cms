@@ -1,6 +1,6 @@
 import { User, Settings, Info, LogOut } from "lucide-react";
 
-function ProfileMenu({ user = {}, onSignOut }) {
+function ProfileHeaderPopup({ user = {}, onSignOut }) {
   return (
     <div
       className=" animate-fade-in-scale absolute top-full right-0 mt-5 w-72 bg-white dark:bg-slate-800 border
@@ -52,4 +52,4 @@ function ProfileMenu({ user = {}, onSignOut }) {
   );
 }
 
-export default ProfileMenu;
+export default ProfileHeaderPopup;

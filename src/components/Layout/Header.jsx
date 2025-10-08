@@ -1,17 +1,7 @@
-import {
-  Bell,
-  ChevronDown,
-  Filter,
-  Menu,
-  Plus,
-  Search,
-  Settings,
-  Sun,
-  Moon,
-} from "lucide-react";
+import { Bell, ChevronDown, Menu, Plus, Search, Sun, Moon } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
 
-import ProfileMenu from "./ProfileMenu";
+import ProfileHeaderPopup from "./ProfileHeaderPopup";
 import NotificationHeaderPopup from "./NotificationHeaderPopup";
 import user_default from "../../assets/images/user_default.jpg";
 
@@ -46,9 +36,10 @@ const notifications = [
 function Header({ onToggleSidebar }) {
   const [theme, setTheme] = useState("light");
   const [searchQuery, setSearchQuery] = useState("");
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showProfilePopup, setShowProfilePopup] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef(null);
+  const profileRef = useRef(null);
 
   // handle close popup
   useEffect(() => {
@@ -59,7 +50,12 @@ function Header({ onToggleSidebar }) {
       ) {
         setShowNotifications(false);
       }
+
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setShowProfilePopup(false);
+      }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -177,11 +173,11 @@ function Header({ onToggleSidebar }) {
           </div>
 
           {/* User profile */}
-          <div className="relative">
+          <div className="relative" ref={profileRef}>
             <div
               className="flex items-center space-x-3 pl-3 border-l border-slate-200 dark:border-slate-700 
             cursor-pointer select-none"
-              onClick={() => setShowProfileMenu((prev) => !prev)}
+              onClick={() => setShowProfilePopup((prev) => !prev)}
             >
               <img
                 src={user_default}
@@ -198,12 +194,12 @@ function Header({ onToggleSidebar }) {
               </p>
               <ChevronDown
                 className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${
-                  showProfileMenu ? "rotate-180" : ""
+                  showProfilePopup ? "rotate-180" : ""
                 }`}
               />
             </div>
             {/* Popup menu */}
-            {showProfileMenu && <ProfileMenu />}
+            {showProfilePopup && <ProfileHeaderPopup />}
           </div>
           {/* End User profile */}
         </div>
