@@ -144,8 +144,14 @@ function Sidebar({ collapsed }) {
           collapsed ? "flex items-center justify-center px-4 py-6" : "p-6"
         } border-b border-slate-200/50 dark:border-slate-700/50`}
       >
-        <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+        <div
+          className="inline-flex items-center space-x-3 group cursor-pointer select-none"
+          onClick={() => navigate("/")}
+        >
+          <div
+            className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600
+           rounded-xl flex items-center justify-center shadow-lg"
+          >
             <img
               src={logo_icon}
               alt="Logo"
@@ -176,7 +182,7 @@ function Sidebar({ collapsed }) {
             <div key={item.id}>
               <button
                 onClick={() => handleMenuClick(item)}
-                className={`w-full flex items-center justify-between p-3 rounded-xl transition-all duration-300
+                className={`w-full flex items-center justify-between p-3 rounded-xl transition-all duration-300 cursor-pointer
                   ${
                     isActive
                       ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
@@ -215,7 +221,7 @@ function Sidebar({ collapsed }) {
                     <button
                       key={sub.id}
                       onClick={() => handleSubmenuClick(sub, item.id)}
-                      className={`w-full text-left p-2 text-sm rounded-lg transition-all
+                      className={`w-full text-left p-2 text-sm rounded-lg transition-all cursor-pointer
                        ${
                          activeId === sub.id
                            ? "bg-blue-100 dark:bg-slate-800 text-blue-600"

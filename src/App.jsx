@@ -21,6 +21,9 @@ function App() {
           <Header
             onToggleSidebar={() => setSideBarCollapsed(!sideBarCollapsed)}
           />
+          <div className="p-10 bg-white dark:bg-slate-800 text-black dark:text-white">
+            Test dark mode
+          </div>
 
           <main className="flex-1 overflow-y-auto bg-transparent">
             <div className="p-6 space-y-6">

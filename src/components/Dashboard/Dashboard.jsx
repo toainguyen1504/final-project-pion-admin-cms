@@ -1,4 +1,4 @@
-import { Helmet } from "react-helmet";
+import { Helmet } from 'react-helmet-async';
 import StatsGrid from "./StatsGrid";
 import ChartSection from "./ChartSection";
 import TableSection from "./TableSection";
