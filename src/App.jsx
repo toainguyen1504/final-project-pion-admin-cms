@@ -21,7 +21,7 @@ function App() {
           <Header
             onToggleSidebar={() => setSideBarCollapsed(!sideBarCollapsed)}
           />
-          <main className="flex-1 overflow-y-auto bg-transparent">
+          <main className="relative z-[10] flex-1 overflow-y-auto bg-transparent">
             <div className="p-6 space-y-6">
               <Routes>
                 <Route path="/" element={<Dashboard />} />

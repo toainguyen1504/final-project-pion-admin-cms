@@ -11,11 +11,13 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import ProfileMenu from "./ProfileMenu";
 import user_default from "../../assets/images/user_default.jpg";
 
 function Header({ onToggleSidebar }) {
   const [theme, setTheme] = useState("light");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   // handle search
   const handleSearch = () => {
@@ -42,7 +44,7 @@ function Header({ onToggleSidebar }) {
   return (
     <div
       className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b
-  border-slate-200/50 dark:border-slate-700/50 px-6 py-4"
+  border-slate-200/50 dark:border-slate-700/50 px-6 py-4 relative z-[100]"
     >
       <div className="flex items-center justify-between">
         {/* Left section */}
@@ -121,31 +123,36 @@ function Header({ onToggleSidebar }) {
             </span>
           </button>
 
-          {/* Setting */}
-          <button
-            className="p-2.5 rounded-xl text-slate-600 dark:text-slate-300
-          hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-          >
-            <Settings className="w-5 h-5" />
-          </button>
-
           {/* User profile */}
-          <div className="flex items-center space-x-3 pl-3 border-l border-slate-200 dark:border-slate-700 cursor-pointer">
-            <img
-              src={user_default}
-              alt="user"
-              className="w-8 h-8 rounded-full ring-2 ring-blue-500 object-cover"
-            />
-            <p className="hidden md:block">
-              <span className="block text-sm font-medium text-slate-500 dark:text-slate-400">
-                Kieu Chinh
-              </span>
-              <span className="block text-xs text-slate-500 dark:text-slate-400">
-                Staff marketing
-              </span>
-            </p>
-            <ChevronDown className="w-4 h-4 text-slate-400" />
+          <div className="relative">
+            <div
+              className="flex items-center space-x-3 pl-3 border-l border-slate-200 dark:border-slate-700 
+            cursor-pointer select-none"
+              onClick={() => setShowProfileMenu((prev) => !prev)}
+            >
+              <img
+                src={user_default}
+                alt="user"
+                className="w-8 h-8 rounded-full ring-2 ring-blue-500 object-cover"
+              />
+              <p className="hidden md:block">
+                <span className="block text-sm font-medium text-slate-500 dark:text-slate-400">
+                  Kieu Chinh
+                </span>
+                <span className="block text-xs text-slate-500 dark:text-slate-400">
+                  Staff marketing
+                </span>
+              </p>
+              <ChevronDown
+                className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${
+                  showProfileMenu ? "rotate-180" : ""
+                }`}
+              />
+            </div>
+            {/* Popup menu */}
+            {showProfileMenu && <ProfileMenu />}
           </div>
+          {/* End User profile */}
         </div>
       </div>
     </div>
