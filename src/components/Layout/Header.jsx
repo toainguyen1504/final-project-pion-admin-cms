@@ -9,15 +9,62 @@ import {
   Sun,
   Moon,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import ProfileMenu from "./ProfileMenu";
+import NotificationHeaderPopup from "./NotificationHeaderPopup";
 import user_default from "../../assets/images/user_default.jpg";
+
+// Mock data noti
+const notifications = [
+  {
+    name: "Terry Franci",
+    message: "requests permission to change Project - Nganter App",
+    time: "5 min ago",
+    avatar: "https://i.pravatar.cc/40?img=1",
+  },
+  {
+    name: "Alena Franci",
+    message: "requests permission to change Project - Nganter App",
+    time: "8 min ago",
+    avatar: "https://i.pravatar.cc/40?img=2",
+  },
+  {
+    name: "Jocelyn Kenter",
+    message: "requests permission to change Project - Nganter App",
+    time: "10 min ago",
+    avatar: "https://i.pravatar.cc/40?img=3",
+  },
+  {
+    name: "Brandon Philips",
+    message: "requests permission to change Project - Nganter App",
+    time: "1 hr ago",
+    avatar: "https://i.pravatar.cc/40?img=4",
+  },
+];
 
 function Header({ onToggleSidebar }) {
   const [theme, setTheme] = useState("light");
   const [searchQuery, setSearchQuery] = useState("");
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notificationRef = useRef(null);
+
+  // handle close popup
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(e.target)
+      ) {
+        setShowNotifications(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // handle search
   const handleSearch = () => {
@@ -110,18 +157,24 @@ function Header({ onToggleSidebar }) {
           </button>
 
           {/* Noti */}
-          <button
-            className="relative p-2.5 rounded-xl text-slate-600 dark:text-slate-300
-          hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-          >
-            <Bell className="w-5 h-5" />
-            <span
-              className="absolute -top-1 w-5 h-5 bg-red-500 text-white text-xs
-              rounded-full flex items-center justify-center"
+          <div className="relative" ref={notificationRef}>
+            <button
+              onClick={() => setShowNotifications((prev) => !prev)}
+              className="relative p-2.5 rounded-xl text-slate-600 dark:text-slate-300
+              hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
             >
-              3
-            </span>
-          </button>
+              <Bell className="w-5 h-5" />
+              <span className="absolute -top-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                3
+              </span>
+            </button>
+            {showNotifications && (
+              <NotificationHeaderPopup
+                notifications={notifications}
+                onClose={() => setShowNotifications(false)}
+              />
+            )}
+          </div>
 
           {/* User profile */}
           <div className="relative">
