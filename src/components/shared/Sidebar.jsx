@@ -8,15 +8,14 @@ import {
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import toaicdevImg from "../../assets/images/toaicdev.png";
-import logo_icon from "../../assets/images/logo_icon.png";
+import toaicdevImg from "@/assets/images/toaicdev.png";
+import logo_icon from "@/assets/images/logo_icon.png";
 
 const menuItems = [
   {
     id: "dashboard",
     icon: LayoutDashboard,
     label: "Dashboard",
-    badge: "New",
     path: "/",
   },
   {
@@ -24,57 +23,44 @@ const menuItems = [
     icon: FolderKanban,
     label: "Categories",
     submenu: [
-      { id: "all-categories", label: "All Categories", path: "/categories" },
+      { id: "categories", label: "All Categories", path: "/categories" },
       {
         id: "create-category",
         label: "Create Category",
         path: "/categories/create",
       },
     ],
+    count: "19",
   },
   {
     id: "posts",
     icon: FileText,
     label: "Posts",
     submenu: [
-      { id: "all-posts", label: "All Posts", path: "/posts" },
-      { id: "seo-settings", label: "SEO Settings", path: "/posts/seo" },
-      { id: "drafts", label: "Drafts", path: "/posts/drafts" },
-      { id: "tags", label: "Tags & Keywords", path: "/posts/tags" },
+      { id: "posts", label: "All Posts", path: "/posts" },
+      { id: "create-post", label: "Create Post", path: "/posts/create" },
+      // { id: "drafts", label: "Drafts", path: "/posts/drafts" },
     ],
-  },
-  {
-    id: "consultations",
-    icon: MessagesSquare,
-    label: "Consultations",
-    submenu: [
-      {
-        id: "consult-requests",
-        label: "Consult Requests",
-        path: "/consultations/requests",
-      },
-      {
-        id: "consult-topics",
-        label: "Consult Topics",
-        path: "/consultations/topics",
-      },
-      {
-        id: "consult-history",
-        label: "Consult History",
-        path: "/consultations/history",
-      },
-    ],
+    count: "99",
   },
   {
     id: "users",
     icon: Users,
     label: "Users",
     submenu: [
-      { id: "all-users", label: "All Users", path: "/users" },
-      { id: "roles", label: "Roles & Permissions", path: "/users/roles" },
-      { id: "activity", label: "User Activity", path: "/users/activity" },
-      { id: "feedback", label: "User Feedback", path: "/users/feedback" },
+      { id: "users", label: "All Users", path: "/users" },
+      { id: "create-user", label: "Create User", path: "/users/create" },
+      // { id: "roles", label: "Roles & Permissions", path: "/users/roles" },
+      // { id: "activity", label: "User Activity", path: "/users/activity" },
+      // { id: "feedback", label: "User Feedback", path: "/users/feedback" },
     ],
+  },
+  {
+    id: "consultations",
+    icon: MessagesSquare,
+    label: "All Consultation",
+    badge: "New",
+    path: "/consultations",
   },
 ];
 
@@ -192,7 +178,23 @@ function Sidebar({ collapsed }) {
                 <div className="flex items-center space-x-3">
                   <item.icon className="w-5 h-5" />
                   {!collapsed && (
-                    <span className="font-medium">{item.label}</span>
+                    <>
+                      <span className="font-medium">{item.label}</span>
+                      {item.badge && (
+                        <span className="px-2 py-1 text-xs bg-red-500 text-white rounded-full">
+                          {item.badge}
+                        </span>
+                      )}
+
+                      {item.count && (
+                        <span
+                          className="px-2 py-1 text-xs bg-slate-200 dark:bg-slate-700 text-slate-600
+                     dark:text-slate-300 rounded-full"
+                        >
+                          {item.count}
+                        </span>
+                      )}
+                    </>
                   )}
                 </div>
                 {!collapsed && item.submenu && (
