@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 
 import ProfileHeaderPopup from "./ProfileHeaderPopup";
 import NotificationHeaderPopup from "./NotificationHeaderPopup";
-import user_default from "../../assets/images/user_default.jpg";
+import user_default from "@/assets/images/user_default.jpg";
 
 // Mock data noti
 const notifications = [
