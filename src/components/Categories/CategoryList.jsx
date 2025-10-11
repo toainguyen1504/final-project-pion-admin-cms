@@ -1,97 +1,14 @@
 import { Helmet } from "react-helmet-async";
-import CategoryTable from "@/components/categories/CategoryTable";
+import { Plus, LoaderIcon } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner"
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
 
-// mock categories data
-const mockCategories = [
-  {
-    id: 1,
-    name: "Design",
-    slug: "design",
-    visible: true,
-    updatedAt: "2025-09-15",
-  },
-  {
-    id: 2,
-    name: "Marketing",
-    slug: "marketing",
-    visible: false,
-    updatedAt: "2025-08-10",
-  },
-  {
-    id: 3,
-    name: "Development",
-    slug: "development",
-    visible: true,
-    updatedAt: "2025-07-22",
-  },
-  {
-    id: 4,
-    name: "Finance",
-    slug: "finance",
-    visible: true,
-    updatedAt: "2025-06-30",
-  },
-  {
-    id: 5,
-    name: "Human Resources",
-    slug: "human-resources",
-    visible: false,
-    updatedAt: "2025-06-15",
-  },
-  {
-    id: 6,
-    name: "Sales",
-    slug: "sales",
-    visible: true,
-    updatedAt: "2025-05-28",
-  },
-  {
-    id: 7,
-    name: "Support",
-    slug: "support",
-    visible: true,
-    updatedAt: "2025-05-10",
-  },
-  {
-    id: 8,
-    name: "Legal",
-    slug: "legal",
-    visible: false,
-    updatedAt: "2025-04-20",
-  },
-  {
-    id: 9,
-    name: "Operations",
-    slug: "operations",
-    visible: true,
-    updatedAt: "2025-04-01",
-  },
-  {
-    id: 10,
-    name: "Content",
-    slug: "content",
-    visible: true,
-    updatedAt: "2025-03-15",
-  },
-  {
-    id: 11,
-    name: "Analytics",
-    slug: "analytics",
-    visible: false,
-    updatedAt: "2025-03-01",
-  },
-  {
-    id: 12,
-    name: "Strategy",
-    slug: "strategy",
-    visible: true,
-    updatedAt: "2025-02-20",
-  },
-];
+import CategoryTable from "@/components/categories/CategoryTable";
+import { useCategories } from "@/hooks";
 
 function CategoryList() {
+  const { categories, loading } = useCategories();
+
   return (
     <div className="px-4 pt-4 pb-10">
       <Helmet>
@@ -119,7 +36,14 @@ function CategoryList() {
         </Button>
       </div>
 
-      <CategoryTable data={mockCategories} />
+      {loading ? (
+        <div className="flex items-center justify-center gap-2 text-slate-500 dark:text-slate-300">
+          <Spinner className="size-8 text-indigo-600 dark:text-indigo-500" />
+          <span>Loading categories...</span>
+        </div>
+      ) : (
+        <CategoryTable data={categories} />
+      )}
     </div>
   );
 }
