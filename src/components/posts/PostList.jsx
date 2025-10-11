@@ -31,9 +31,8 @@ function PostList() {
         <Button
           onClick={() => navigate("/posts/create")}
           className="bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 
-            transition-colors duration-300 cursor-pointer rounded-xl"
+        transition-colors duration-300 min-w-36 cursor-pointer rounded-xl"
         >
-          <Plus className="w-4 h-4 mr-2" />
           Add New Post
         </Button>
       </div>

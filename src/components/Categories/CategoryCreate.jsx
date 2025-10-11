@@ -9,6 +9,13 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { slugify } from "@/lib/utils";
 
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { HelpCircle } from "lucide-react";
+
 function CategoryCreate() {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
@@ -16,7 +23,7 @@ function CategoryCreate() {
   const [isFeatured, setIsFeatured] = useState(false);
 
   useEffect(() => {
-   setSlug(slugify(name));
+    setSlug(slugify(name));
   }, [name]);
 
   const handleSubmit = (e) => {
@@ -51,8 +58,8 @@ function CategoryCreate() {
         <Button
           type="submit"
           form="category-form"
-          className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl text-white 
-            min-w-36 select-none cursor-pointer"
+          className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
+            text-white min-w-36 cursor-pointer"
         >
           Save
         </Button>
@@ -65,9 +72,10 @@ function CategoryCreate() {
           <div className="space-y-2">
             <Label
               htmlFor="name"
-              className="text-slate-700 dark:text-slate-300"
+              className="text-slate-700 dark:text-slate-300 inline-flex items-center gap-1"
             >
               Name
+              <span className="text-red-500 text-sm">*</span>
             </Label>
 
             <Input
@@ -85,15 +93,16 @@ function CategoryCreate() {
           <div className="space-y-2">
             <Label
               htmlFor="slug"
-              className="text-slate-700 dark:text-slate-300"
+              className="text-slate-700 dark:text-slate-300 inline-flex items-center gap-1"
             >
               Slug
+              <span className="text-red-500 text-sm">*</span>
             </Label>
             <Input
               id="slug"
               value={slug}
               disabled
-              placeholder="Auto generate category slug"
+              placeholder="Auto-generate category Slug"
               className="pt-2 pb-2.5 px-4 border border-slate-300 dark:border-slate-600 bg-slate-100 
                 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl cursor-not-allowed"
             />
@@ -130,18 +139,43 @@ function CategoryCreate() {
 
           {/* Featured */}
           <div className="flex items-center space-x-4 pt-6 md:pt-0">
-            <Label
-              htmlFor="featured"
-              className="text-slate-700 dark:text-slate-300"
-            >
-              Featured Mode
-            </Label>
+            <div className="flex items-center gap-1">
+              <Label
+                htmlFor="featured"
+                className="text-slate-700 dark:text-slate-300"
+              >
+                Featured Mode
+              </Label>
+
+              {/* Tooltip icon */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className="text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400"
+                  >
+                    <HelpCircle className="w-4 h-4" />
+                  </button>
+                </PopoverTrigger>
+
+                <PopoverContent
+                  side="top"
+                  align="start"
+                  sideOffset={4}
+                  className="max-w-xs p-3 text-sm text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md shadow-md z-50"
+                >
+                  When this mode is enabled, the category will be highlighted in
+                  the user interface. It may appear at the top of the list or be
+                  styled differently to stand out.
+                </PopoverContent>
+              </Popover>
+            </div>
 
             <Switch
               id="featured"
               checked={isFeatured}
               onCheckedChange={setIsFeatured}
-            ></Switch>
+            />
           </div>
         </div>
       </form>
