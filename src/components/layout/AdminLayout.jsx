@@ -15,7 +15,7 @@ function AdminLayout() {
             onToggleSidebar={() => setSideBarCollapsed(!sideBarCollapsed)}
           />
           <main className="relative z-[10] flex-1 overflow-y-auto bg-transparent">
-            <div className="p-6 space-y-6">
+            <div className="px-6 py-4 space-y-6">
               {/* Routes */}
               <Outlet />
             </div>

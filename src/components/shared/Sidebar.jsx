@@ -127,7 +127,7 @@ function Sidebar({ collapsed }) {
       {/* Logo */}
       <div
         className={`${
-          collapsed ? "flex items-center justify-center px-4 py-6" : "p-6"
+          collapsed ? "flex items-center justify-center px-4 py-4" : "p-3.5"
         } border-b border-slate-200/50 dark:border-slate-700/50`}
       >
         <div
@@ -141,11 +141,11 @@ function Sidebar({ collapsed }) {
             <img
               src={logo_icon}
               alt="Logo"
-              className="w-10 h-10 p-1.5 object-contain"
+              className="block w-10 h-10 p-1.5 object-contain"
             />
           </div>
           {!collapsed && (
-            <div>
+            <div className="h-10 flex flex-col justify-center">
               <h1 className="text-xl font-bold text-slate-800 dark:text-white">
                 Pion
               </h1>
