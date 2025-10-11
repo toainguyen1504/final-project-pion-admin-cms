@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet-async";
-import { Plus, LoaderIcon } from "lucide-react";
-import { Spinner } from "@/components/ui/spinner"
+import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 
 import CategoryTable from "@/components/categories/CategoryTable";
@@ -8,6 +9,7 @@ import { useCategories } from "@/hooks";
 
 function CategoryList() {
   const { categories, loading } = useCategories();
+  const navigate = useNavigate();
 
   return (
     <div className="px-4 pt-4 pb-10">
@@ -25,13 +27,16 @@ function CategoryList() {
           <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200">
             All Categories
           </h2>
-          <p className="text-slate-500 mt-0.5">Manage all system categories</p>
+          <p className="text-slate-500 mt-0.5">
+            View, manage, and update all categories used across the system.
+          </p>
         </div>
         <Button
+          onClick={() => navigate("/categories/create")}
           className="bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 
         transition-colors duration-300 cursor-pointer rounded-xl"
         >
-          <Plus className="w-4 h-4" />
+          {/* <Plus className="w-4 h-4" /> */}
           Add New Category
         </Button>
       </div>

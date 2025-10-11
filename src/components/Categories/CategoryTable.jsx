@@ -1,3 +1,7 @@
+import { useState } from "react";
+import { Pencil, Trash2, CheckCircle2, XCircle, Search } from "lucide-react";
+import clsx from "clsx";
+
 import {
   Table,
   TableHeader,
@@ -9,7 +13,6 @@ import {
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -18,9 +21,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Pencil, Trash2, CheckCircle2, XCircle, Search } from "lucide-react";
 
 function CategoryTable({ data }) {
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = 5;
+
   return (
     <div className="space-y-4">
       <div className="border border-slate-300 dark:border-slate-700 rounded-xl shadow-sm overflow-x-auto">
@@ -123,7 +128,7 @@ function CategoryTable({ data }) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="flex items-center gap-1 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900 
+                      className="flex items-center gap-1 text-indigo-600 dark:text-indigo-500 hover:bg-indigo-100 dark:hover:bg-indigo-100 
                       transition-colors cursor-pointer"
                     >
                       <Pencil className="w-4 h-4" />
@@ -132,7 +137,7 @@ function CategoryTable({ data }) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900 transition-colors 
+                      className="text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-100 transition-colors 
                       flex items-center gap-1 cursor-pointer"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -142,29 +147,66 @@ function CategoryTable({ data }) {
                 </TableCell>
               </TableRow>
             ))}
+
             {/* Pagination */}
             <TableRow>
               <TableCell
                 colSpan={6}
-                className="px-4 py-3 border-t border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
+                className="px-4 py-3 text-slate-700 dark:text-slate-300 select-none
+                    border-t border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
               >
                 <div className="flex justify-end">
                   <Pagination>
                     <PaginationContent>
+                      {/* Previous */}
                       <PaginationItem>
-                        <PaginationPrevious href="#" />
+                        <PaginationPrevious
+                          href="#"
+                          onClick={() =>
+                            currentPage > 1 && setCurrentPage(currentPage - 1)
+                          }
+                          className={clsx(
+                            "hover:text-indigo-600",
+                            currentPage === 1 &&
+                              "pointer-events-none opacity-50"
+                          )}
+                        />
                       </PaginationItem>
+
+                      {/* Pagination Item */}
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                        (page) => (
+                          <PaginationItem key={page}>
+                            <PaginationLink
+                              href="#"
+                              onClick={() => setCurrentPage(page)}
+                              className={clsx(
+                                "hover:text-indigo-600",
+                                currentPage === page
+                                  ? "text-indigo-600 font-semibold"
+                                  : "text-slate-500 dark:text-slate-300"
+                              )}
+                            >
+                              {page}
+                            </PaginationLink>
+                          </PaginationItem>
+                        )
+                      )}
+
+                      {/* Next */}
                       <PaginationItem>
-                        <PaginationLink href="#">1</PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink href="#">2</PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationEllipsis />
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationNext href="#" />
+                        <PaginationNext
+                          href="#"
+                          onClick={() =>
+                            currentPage < totalPages &&
+                            setCurrentPage(currentPage + 1)
+                          }
+                          className={clsx(
+                            "hover:text-indigo-600",
+                            currentPage === totalPages &&
+                              "pointer-events-none opacity-50"
+                          )}
+                        />
                       </PaginationItem>
                     </PaginationContent>
                   </Pagination>
