@@ -133,7 +133,7 @@ function Header({ onToggleSidebar }) {
           {/* Quick Action */}
           <button
             className="hidden lg:flex items-center space-x-2 py-2 px-4 cursor-pointer bg-gradient-to-r 
-          from-blue-500 to bg-purple-600 text-white rounded-xl hover:shadow-lg transition-all"
+          from-blue-500 to bg-purple-600 text-white rounded-xl hover:shadow-lg transition-all duration-300"
           >
             <Plus className="w-4 h-4" />
             <span className="text-sm font-medium">New Post</span>
