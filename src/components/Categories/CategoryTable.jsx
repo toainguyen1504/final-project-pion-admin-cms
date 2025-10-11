@@ -13,7 +13,7 @@ import { Pencil, Trash2, CheckCircle2, XCircle, Search } from "lucide-react";
 function CategoryTable({ data }) {
   return (
     <div className="space-y-4">
-      <div className="border border-slate-300 dark:border-slate-700 rounded-md shadow-sm overflow-x-auto">
+      <div className="border border-slate-300 dark:border-slate-700 rounded-xl shadow-sm overflow-x-auto">
         <Table className="w-full text-sm">
           <TableHeader className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
             {/* Search Row */}
@@ -22,7 +22,7 @@ function CategoryTable({ data }) {
                 className="px-4 py-3 border-b border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
                 colSpan={6}
               >
-                <div className="flex justify-end mr-2">
+                <div className="flex justify-end mr-2 rounded-xl">
                   <div className="relative w-full max-w-sm">
                     <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
                       <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-1 top-2.5 pointer-events-none" />
@@ -30,7 +30,7 @@ function CategoryTable({ data }) {
                     <Input
                       placeholder="Search categories..."
                       className="pl-10 pr-4 pt-2 pb-2.5 border border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
-                      focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600"
+                      focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-xl"
                     />
                   </div>
                 </div>

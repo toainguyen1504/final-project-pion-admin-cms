@@ -112,7 +112,7 @@ function CategoryList() {
         </div>
         <Button
           className="bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 
-        transition-colors cursor-pointer"
+        transition-colors cursor-pointer rounded-xl"
         >
           <Plus className="w-4 h-4" />
           Add New Category
