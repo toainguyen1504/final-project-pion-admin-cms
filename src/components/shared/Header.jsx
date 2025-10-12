@@ -1,5 +1,6 @@
 import { Bell, ChevronDown, Menu, Plus, Search, Sun, Moon } from "lucide-react";
 import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 import ProfileHeaderPopup from "./ProfileHeaderPopup";
 import NotificationHeaderPopup from "./NotificationHeaderPopup";
@@ -40,6 +41,8 @@ function Header({ onToggleSidebar }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef(null);
   const profileRef = useRef(null);
+
+  const navigate = useNavigate();
 
   // handle close popup
   useEffect(() => {
@@ -132,6 +135,7 @@ function Header({ onToggleSidebar }) {
         <div className="flex items-center space-x-3">
           {/* Quick Action */}
           <button
+            onClick={() => navigate("/posts/create")}
             className="hidden lg:flex items-center space-x-2 py-2 px-4 cursor-pointer bg-gradient-to-r 
           from-blue-500 to bg-purple-600 text-white rounded-xl hover:shadow-lg transition-all duration-300"
           >
