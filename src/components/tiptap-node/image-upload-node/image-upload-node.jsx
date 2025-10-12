@@ -332,6 +332,7 @@ const DropZoneContent = ({ maxSize, limit }) => (
 export const ImageUploadNode = (props) => {
   const { accept, limit, maxSize } = props.node.attrs;
   const inputRef = React.useRef(null);
+
   const extension = props.extension;
 
   const uploadOptions = {
@@ -356,13 +357,18 @@ export const ImageUploadNode = (props) => {
         const imageNodes = urls.map((url, index) => {
           const filename =
             files[index]?.name.replace(/\.[^/.]+$/, "") || "unknown";
+
+          const alt =
+            prompt(`please express alt for image "${filename}":`, filename) ||
+            filename; // 🪄 popup nhập alt
+
           return {
             type: extension.options.type,
             attrs: {
               ...extension.options,
               src: url,
-              alt: filename,
-              title: filename,
+              alt: alt || filename,
+              // title: filename,
             },
           };
         });

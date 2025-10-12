@@ -35,6 +35,9 @@ export const ImageUploadNode = Node.create({
       src: {
         default: null,
       },
+      alt: {
+        default: "",
+      },
       accept: {
         default: this.options.accept,
       },
@@ -48,7 +51,8 @@ export const ImageUploadNode = Node.create({
   },
 
   parseHTML() {
-    return [{ tag: 'div[data-type="image-upload"]' }];
+    return [{ tag: "img[src]" }];
+    // return [{ tag: 'div[data-type="image-upload"]' }];
   },
 
   renderHTML({ HTMLAttributes }) {

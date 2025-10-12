@@ -124,7 +124,7 @@ const MainToolbarContent = ({ onHighlighterClick, onLinkClick, isMobile }) => {
       </ToolbarGroup>
       {/* <ToolbarSeparator /> */}
       <ToolbarGroup>
-        <ImageUploadButton text="Add" nodeType="imageUpload" />
+        <ImageUploadButton text="Add" />
       </ToolbarGroup>
       <Spacer />
       {/* {isMobile && <ToolbarSeparator />} */}
