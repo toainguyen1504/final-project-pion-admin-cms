@@ -22,7 +22,9 @@ export function SeoManager() {
           <p className="text-slate-500 dark:text-slate-300">
             https://pion.edu.vn/tin-tuc/duong-dan-mac-dinh
           </p>
-          <p className="font-medium text-slate-500 dark:text-slate-300">Tiêu đề bài viết sẽ hiển thị ở đây...</p>
+          <p className="font-medium text-slate-500 dark:text-slate-300">
+            Tiêu đề bài viết sẽ hiển thị ở đây...
+          </p>
           <p className="text-slate-500 dark:text-slate-300">
             Đoạn giới thiệu ngắn sẽ hiển thị ở đây...
           </p>
@@ -46,7 +48,10 @@ export function SeoManager() {
             <Label htmlFor="focus-keyword" className="text-base ml-2">
               Focus Keyword
             </Label>
-            <Badge variant="destructive" className="px-1.5 py-1 rounded-full select-none">
+            <Badge
+              variant="destructive"
+              className="px-1.5 py-1 rounded-full select-none"
+            >
               30
             </Badge>
           </div>
@@ -54,7 +59,7 @@ export function SeoManager() {
           <Input
             id="focus-keyword"
             placeholder="Nhập từ khóa và nhấn Enter..."
-            className="pl-4 pr-4 border border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
+            className="py-6 px-6 !text-base border border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
               focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-xl"
           />
         </div>

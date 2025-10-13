@@ -11,10 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 // Icon
-import {
-  Search,
-  Eye,
-} from "lucide-react";
+import { Search, Eye } from "lucide-react";
 import "@/components/tiptap-templates/simple/simple-editor.scss";
 
 import { SeoManager } from "./SeoManager";
@@ -118,21 +115,42 @@ function PostCreate() {
               <h3 className="text-lg font-semibold dark:text-slate-200">
                 Publish
               </h3>
-              <Badge variant="destructive" className="px-4 py-2 rounded-full select-none">
+              <Badge
+                variant="destructive"
+                className="px-3 py-1 rounded-full select-none"
+              >
                 SEO: 30 / 100
               </Badge>
             </div>
 
             {/* Tabs for status */}
             <Tabs value={status} onValueChange={setStatus} className="w-full">
-              <TabsList className="grid grid-cols-3 bg-muted rounded-lg">
-                <TabsTrigger value="published" className="cursor-pointer">
+              <TabsList className="bg-slate-200 dark:bg-slate-700 rounded-full p-1">
+                <TabsTrigger
+                  value="published"
+                  className="px-4 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer
+                    data-[state=active]:bg-indigo-100 data-[state=active]:text-indigo-600
+                    dark:data-[state=active]:bg-indigo-500 dark:data-[state=active]:text-indigo-100
+                    text-slate-700 dark:text-slate-300"
+                >
                   Published
                 </TabsTrigger>
-                <TabsTrigger value="scheduled" className="cursor-pointer">
+                <TabsTrigger
+                  value="scheduled"
+                  className="px-4 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer
+                    data-[state=active]:bg-indigo-100 data-[state=active]:text-indigo-600
+                    dark:data-[state=active]:bg-indigo-500 dark:data-[state=active]:text-indigo-100
+                    text-slate-700 dark:text-slate-300"
+                >
                   Scheduled
                 </TabsTrigger>
-                <TabsTrigger value="draft" className="cursor-pointer">
+                <TabsTrigger
+                  value="draft"
+                  className="px-4 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer
+                    data-[state=active]:bg-indigo-100 data-[state=active]:text-indigo-600
+                    dark:data-[state=active]:bg-indigo-500 dark:data-[state=active]:text-indigo-100
+                    text-slate-700 dark:text-slate-300"
+                >
                   Private
                 </TabsTrigger>
               </TabsList>
