@@ -120,7 +120,7 @@ function Sidebar({ collapsed }) {
 
   return (
     <div
-      className={`${collapsed ? "w-20" : "w-72"} transition-all duration-300 
+      className={`${collapsed ? "w-20" : "w-72"} !transition-all !duration-300 
       bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-slate-200/50 
       dark:border-slate-700/50 flex flex-col`}
     >
@@ -168,7 +168,7 @@ function Sidebar({ collapsed }) {
             <div key={item.id}>
               <button
                 onClick={() => handleMenuClick(item)}
-                className={`w-full flex items-center justify-between p-3 rounded-xl transition-all duration-300 cursor-pointer
+                className={`w-full flex items-center justify-between p-3 rounded-xl !transition-all !duration-300 cursor-pointer
                   ${
                     isActive
                       ? "bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg"
@@ -199,7 +199,7 @@ function Sidebar({ collapsed }) {
                 </div>
                 {!collapsed && item.submenu && (
                   <ChevronDown
-                    className={`w-4 h-4 transition-transform duration-300 ${
+                    className={`w-4 h-4 !transition-transform !duration-300 ${
                       expandedId === item.id ? "rotate-180" : ""
                     }`}
                   />
