@@ -46,8 +46,8 @@ export function SeoManager() {
             <Label htmlFor="focus-keyword" className="text-base ml-2">
               Focus Keyword
             </Label>
-            <Badge variant="destructive" className="px-1.5 py-1 rounded-full">
-              80
+            <Badge variant="destructive" className="px-1.5 py-1 rounded-full select-none">
+              30
             </Badge>
           </div>
 

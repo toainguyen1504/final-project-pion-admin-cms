@@ -1,5 +1,4 @@
 import { Helmet } from "react-helmet-async";
-import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
@@ -31,7 +30,7 @@ function PostList() {
         <Button
           onClick={() => navigate("/posts/create")}
           className="bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 
-        transition-colors duration-300 min-w-36 cursor-pointer rounded-xl"
+           min-w-36 cursor-pointer rounded-xl"
         >
           Add New Post
         </Button>

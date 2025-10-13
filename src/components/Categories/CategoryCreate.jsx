@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-// import clsx from "clsx";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -59,7 +58,7 @@ function CategoryCreate() {
           type="submit"
           form="category-form"
           className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
-            text-white min-w-36 cursor-pointer"
+            text-white min-w-40 cursor-pointer transition-all duration-300"
         >
           Save
         </Button>
