@@ -53,7 +53,7 @@ function PostTable({ data }) {
               <TableCell colSpan={11} className="px-4 py-3 border-b">
                 <div className="flex justify-end mr-2 rounded-xl">
                   <div className="relative w-full max-w-sm">
-                    <Search className="absolute left-3 top-3 w-4 h-4 text-slate-400 dark:text-slate-500" />
+                    <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400 dark:text-slate-500" />
                     <Input
                       placeholder="Search posts..."
                       className="pl-10 pr-4 pt-2 pb-2.5 border border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 

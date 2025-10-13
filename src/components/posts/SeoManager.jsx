@@ -3,20 +3,27 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
+import { SeoChecklist } from "./SeoChecklist";
 
 export function SeoManager() {
   return (
-    <div className="space-y-6 bg-card p-6 rounded-xl border border-border text-card-foreground">
+    <div className="space-y-6 bg-card p-6 pt-6 pb-10 rounded-xl border border-border text-card-foreground">
+      <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">
+        Rank Math SEO
+      </h3>
+      <Separator />
+
       {/* SEO Preview */}
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold">SEO Preview</h3>
+        <h4 className="font-semibold text-slate-700 dark:text-slate-200">
+          SEO Preview
+        </h4>
         <div className="text-sm space-y-1">
-          <p className="text-muted-foreground">
+          <p className="text-slate-500 dark:text-slate-300">
             https://pion.edu.vn/tin-tuc/duong-dan-mac-dinh
           </p>
-          <p className="font-medium">Tiêu đề bài viết sẽ hiển thị ở đây...</p>
-          <p className="text-muted-foreground">
+          <p className="font-medium text-slate-500 dark:text-slate-300">Tiêu đề bài viết sẽ hiển thị ở đây...</p>
+          <p className="text-slate-500 dark:text-slate-300">
             Đoạn giới thiệu ngắn sẽ hiển thị ở đây...
           </p>
         </div>
@@ -36,7 +43,9 @@ export function SeoManager() {
       <div className="flex items-center justify-between">
         <div className="space-y-3 flex-1">
           <div className="flex items-center space-x-2">
-            <Label htmlFor="focus-keyword">Focus Keyword</Label>
+            <Label htmlFor="focus-keyword" className="text-base ml-2">
+              Focus Keyword
+            </Label>
             <Badge variant="destructive" className="px-1.5 py-1 rounded-full">
               80
             </Badge>
@@ -51,28 +60,9 @@ export function SeoManager() {
         </div>
       </div>
 
-      <Separator />
-
       {/* Checklist */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">SEO Checklist</h3>
-
-        <div className="space-y-2 text-sm">
-          <div className="flex items-center justify-between">
-            <span className="font-medium text-red-500">Basic SEO</span>
-            <span className="text-muted-foreground">5 issues</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="font-medium text-red-500">Additional</span>
-            <span className="text-muted-foreground">5 issues</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="font-medium text-red-500">
-              Content Readability
-            </span>
-            <span className="text-muted-foreground">5 issues</span>
-          </div>
-        </div>
+      <div className="my-8 rounded-md border border-border">
+        <SeoChecklist />
       </div>
     </div>
   );

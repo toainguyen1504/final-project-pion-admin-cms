@@ -20,7 +20,6 @@ import {
   Clock,
   FileWarning,
 } from "lucide-react";
-
 import "@/components/tiptap-templates/simple/simple-editor.scss";
 
 import { SeoManager } from "./SeoManager";
@@ -65,7 +64,7 @@ function PostCreate() {
           <div className="space-y-2">
             <Label
               htmlFor="title"
-              className="text-slate-700 dark:text-slate-300 inline-flex items-center ml-2 gap-1"
+              className="text-slate-700 dark:text-slate-200 inline-flex items-center ml-2 gap-1"
             >
               Post title
               <span className="text-red-500 text-sm">*</span>
@@ -79,7 +78,7 @@ function PostCreate() {
               placeholder="Enter post title..."
               className="pt-2 pb-2.5 px-4 border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
               focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
-               text-slate-700 dark:text-slate-300 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
+               text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
             />
           </div>
 
@@ -100,30 +99,48 @@ function PostCreate() {
           {/* Section: Publish */}
           <div className="space-y-3">
             <div className="flex justify-between items-center cursor-pointer">
-              <h3 className="text-lg font-semibold">Publish</h3>
+              <h3 className="text-lg font-semibold dark:text-slate-200">
+                Publish
+              </h3>
               <Badge variant="destructive" className="px-4 py-2 rounded-full">
-                 SEO: 0 / 100
+                SEO: 0 / 100
               </Badge>
             </div>
 
             <div className="text-sm space-y-2">
               <div className="flex justify-between items-center">
-                <span>Status:</span>
-                <Button variant="ghost" size="sm">
+                <span className="text-slate-700 dark:text-slate-200">
+                  Status:
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-slate-700 dark:text-slate-200"
+                >
                   Edit
                 </Button>
               </div>
 
               <div className="flex justify-between items-center">
-                <span>Visibility:</span>
-                <Button variant="ghost" size="sm">
+                <span className="text-slate-700 dark:text-slate-200">
+                  Visibility:
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-slate-700 dark:text-slate-200"
+                >
                   Edit
                 </Button>
               </div>
 
               <div className="mt-3 flex justify-between items-center">
-                <span>Publish time:</span>
-                <p className="text-muted-foreground">Oct 12, 2025 – 10:11 PM</p>
+                <span className="text-slate-700 dark:text-slate-200">
+                  Publish time:
+                </span>
+                <p className="text-slate-500 dark:text-slate-200">
+                  Oct 12, 2025 – 10:11 PM
+                </p>
               </div>
             </div>
 
@@ -136,12 +153,12 @@ function PostCreate() {
               Save
             </Button>
           </div>
-
           <Separator />
-
           {/* Section: Categories */}
           <div className="space-y-2">
-            <h3 className="text-lg font-semibold">Categories</h3>
+            <h3 className="text-lg font-semibold text-slate-500 dark:text-slate-200">
+              Categories
+            </h3>
             <div className="relative w-full max-w-sm">
               <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400 dark:text-slate-500" />
               <Input
@@ -154,32 +171,56 @@ function PostCreate() {
             <div className="space-y-2 pt-2 text-sm">
               <div className="flex items-center gap-2">
                 <Switch id="news" />
-                <Label htmlFor="news">News</Label>
+                <Label
+                  htmlFor="news"
+                  className="text-slate-700 dark:text-slate-200"
+                >
+                  News
+                </Label>
               </div>
 
               <div className="flex items-center gap-2">
                 <Switch id="study-abroad" />
-                <Label htmlFor="study-abroad">Study Abroad</Label>
+                <Label
+                  htmlFor="study-abroad"
+                  className="text-slate-700 dark:text-slate-200"
+                >
+                  Study Abroad
+                </Label>
               </div>
 
               <div className="flex items-center gap-2">
                 <Switch id="tuition-fees" />
-                <Label htmlFor="tuition-fees">Tuition Fees</Label>
+                <Label
+                  htmlFor="tuition-fees"
+                  className="text-slate-700 dark:text-slate-200"
+                >
+                  Tuition Fees
+                </Label>
               </div>
 
               <div className="flex items-center gap-2">
                 <Switch id="recruitment" />
-                <Label htmlFor="recruitment">Recruitment</Label>
+                <Label
+                  htmlFor="recruitment"
+                  className="text-slate-700 dark:text-slate-200"
+                >
+                  Recruitment
+                </Label>
               </div>
             </div>
           </div>
-
           <Separator />
 
           {/* Section: Thumbnail */}
           <div className="space-y-2">
-            <h3 className="text-lg font-semibold">Thumbnail Image</h3>
-            <div className="w-full h-32 px-4 text-center bg-muted rounded-md flex items-center justify-center text-muted-foreground text-sm">
+            <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">
+              Thumbnail Image
+            </h3>
+            <div
+              className="w-full h-32 px-4 text-center bg-muted rounded-md flex items-center justify-center 
+            text-slate-500 dark:text-slate-200 text-sm"
+            >
               No image selected - Render auto from media library
             </div>
           </div>
