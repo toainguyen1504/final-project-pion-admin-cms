@@ -8,7 +8,18 @@ import CategoryTable from "@/components/categories/CategoryTable";
 import { useCategories } from "@/hooks";
 
 function CategoryList() {
-  const { categories, loading } = useCategories();
+  const {
+    categories,
+    meta,
+    loading,
+    page,
+    setPage,
+    sort,
+    order,
+    setSort,
+    setOrder,
+  } = useCategories();
+  
   const navigate = useNavigate();
 
   return (
@@ -47,7 +58,17 @@ function CategoryList() {
           <span>Loading categories...</span>
         </div>
       ) : (
-        <CategoryTable data={categories} />
+        <CategoryTable
+          data={categories}
+          loading={loading}
+          meta={meta}
+          page={page}
+          setPage={setPage}
+          sort={sort}
+          order={order}
+          setSort={setSort}
+          setOrder={setOrder}
+        />
       )}
     </div>
   );

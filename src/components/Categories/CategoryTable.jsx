@@ -1,6 +1,13 @@
-import { useState } from "react";
-import { Pencil, Trash2, CheckCircle2, XCircle, Search } from "lucide-react";
+import {
+  Pencil,
+  Trash2,
+  CheckCircle2,
+  XCircle,
+  Search,
+  FolderKanban,
+} from "lucide-react";
 import clsx from "clsx";
+import { format } from "date-fns";
 
 import {
   Table,
@@ -21,10 +28,28 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyMedia,
+  EmptyContent,
+} from "@/components/ui/empty";
 
-function CategoryTable({ data }) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = 5;
+import SortableHeaderCell from "@/components/shared/SortableHeaderCell";
+
+function CategoryTable({
+  data,
+  meta,
+  page,
+  setPage,
+  sort,
+  order,
+  setSort,
+  setOrder,
+}) {
+  const totalPages = meta?.last_page || 1;
 
   return (
     <div className="space-y-4">
@@ -68,20 +93,59 @@ function CategoryTable({ data }) {
                   />
                 </div>
               </TableCell>
-              <TableCell className="px-4 py-3 font-semibold">Name</TableCell>
+
+              <TableCell className="px-4 py-3 font-semibold">
+                <SortableHeaderCell
+                  label="Name"
+                  sortKey="name"
+                  currentSort={sort}
+                  order={order}
+                  setSort={setSort}
+                  setOrder={setOrder}
+                />
+              </TableCell>
+
               <TableCell className="px-4 py-3 font-semibold">Slug</TableCell>
+
               <TableCell className="px-4 py-3 font-semibold">
                 Visibility
               </TableCell>
+
               <TableCell className="px-4 py-3 font-semibold">
-                Last Modified
+                <SortableHeaderCell
+                  label="Last Modified"
+                  sortKey="updated_at"
+                  currentSort={sort}
+                  order={order}
+                  setSort={setSort}
+                  setOrder={setOrder}
+                />
               </TableCell>
+
               <TableCell className="px-4 py-3 font-semibold"></TableCell>
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            {Array.isArray(data) &&
+            {!Array.isArray(data) || data.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} className="py-10">
+                  <Empty>
+                    <EmptyHeader>
+                      <EmptyMedia variant="icon">
+                        <FolderKanban className="w-6 h-6" />
+                      </EmptyMedia>
+                      <EmptyTitle>No categories found</EmptyTitle>
+                      <EmptyDescription>
+                        You haven’t added any categories yet. Start by creating
+                        one.
+                      </EmptyDescription>
+                    </EmptyHeader>
+                    <EmptyContent>{/* Button */}</EmptyContent>
+                  </Empty>
+                </TableCell>
+              </TableRow>
+            ) : (
               data.map((category) => (
                 <TableRow
                   key={category.id}
@@ -124,7 +188,7 @@ function CategoryTable({ data }) {
                   </TableCell>
 
                   <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                    {category.updatedAt}
+                    {format(new Date(category.updated_at), "dd/MM/yyyy HH:mm")}
                   </TableCell>
 
                   {/* Action */}
@@ -151,64 +215,56 @@ function CategoryTable({ data }) {
                     </div>
                   </TableCell>
                 </TableRow>
-              ))}
+              ))
+            )}
 
             {/* Pagination */}
             <TableRow>
               <TableCell
                 colSpan={6}
                 className="px-4 py-3 text-slate-700 dark:text-slate-300 select-none
-                    border-t border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
+                border-t border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
               >
                 <div className="flex justify-end">
                   <Pagination>
                     <PaginationContent>
-                      {/* Previous */}
                       <PaginationItem>
                         <PaginationPrevious
                           href="#"
-                          onClick={() =>
-                            currentPage > 1 && setCurrentPage(currentPage - 1)
-                          }
+                          onClick={() => page > 1 && setPage(page - 1)}
                           className={clsx(
                             "hover:text-indigo-600",
-                            currentPage === 1 &&
-                              "pointer-events-none opacity-50"
+                            page === 1 && "pointer-events-none opacity-50"
                           )}
                         />
                       </PaginationItem>
 
-                      {/* Pagination Item */}
                       {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                        (page) => (
-                          <PaginationItem key={page}>
+                        (p) => (
+                          <PaginationItem key={p}>
                             <PaginationLink
                               href="#"
-                              onClick={() => setCurrentPage(page)}
+                              onClick={() => setPage(p)}
                               className={clsx(
                                 "hover:text-indigo-600",
-                                currentPage === page
+                                page === p
                                   ? "text-indigo-600 font-semibold"
                                   : "text-slate-500 dark:text-slate-300"
                               )}
                             >
-                              {page}
+                              {p}
                             </PaginationLink>
                           </PaginationItem>
                         )
                       )}
 
-                      {/* Next */}
                       <PaginationItem>
                         <PaginationNext
                           href="#"
-                          onClick={() =>
-                            currentPage < totalPages &&
-                            setCurrentPage(currentPage + 1)
-                          }
+                          onClick={() => page < totalPages && setPage(page + 1)}
                           className={clsx(
                             "hover:text-indigo-600",
-                            currentPage === totalPages &&
+                            page === totalPages &&
                               "pointer-events-none opacity-50"
                           )}
                         />

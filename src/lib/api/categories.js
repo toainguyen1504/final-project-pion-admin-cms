@@ -7,16 +7,32 @@ const BASE_URL =
 
 const TOKEN = import.meta.env.VITE_API_TOKEN;
 
-export async function fetchCategories() {
+export async function fetchCategories(
+  page = 1,
+  sort = "updated_at",
+  order = "desc"
+) {
   try {
     const response = await axios.get(`${BASE_URL}/categories`, {
+      params: {
+        page,
+        sort,
+        order,
+      },
       headers: {
         Authorization: `Bearer ${TOKEN}`,
       },
     });
-    return response.data.data;
+
+    return {
+      data: response.data.data,
+      meta: response.data.meta,
+    };
   } catch (error) {
     console.error("Error fetching categories:", error);
-    return [];
+    return {
+      data: [],
+      meta: null,
+    };
   }
 }
