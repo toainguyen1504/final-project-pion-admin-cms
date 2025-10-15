@@ -81,76 +81,77 @@ function CategoryTable({ data }) {
           </TableHeader>
 
           <TableBody>
-            {data.map((category) => (
-              <TableRow
-                key={category.id}
-                className="border-b border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700
+            {Array.isArray(data) &&
+              data.map((category) => (
+                <TableRow
+                  key={category.id}
+                  className="border-b border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700
                   transition-colors duration-300"
-              >
-                {/* checkbox */}
-                <TableCell className="px-4 py-3 w-4">
-                  <div className="flex items-center justify-center">
-                    <Checkbox
-                      id={`select-${category.id}`}
-                      aria-checked={false}
-                      className="!border-slate-400 !text-blue-700 cursor-pointer
+                >
+                  {/* checkbox */}
+                  <TableCell className="px-4 py-3 w-4">
+                    <div className="flex items-center justify-center">
+                      <Checkbox
+                        id={`select-${category.id}`}
+                        aria-checked={false}
+                        className="!border-slate-400 !text-blue-700 cursor-pointer
                       data-[state=checked]:!border-blue-600 data-[state=checked]:!bg-slate-100 
                       dark:data-[state=checked]:!border-blue-700 dark:data-[state=checked]:!bg-blue-700 dark:!text-slate-300"
-                    />
-                  </div>
-                </TableCell>
-
-                <TableCell className="min-w-3xs px-4 py-3 whitespace-nowrap font-medium text-slate-800 dark:text-slate-200">
-                  {category.name}
-                </TableCell>
-
-                <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                  {category.slug}
-                </TableCell>
-
-                <TableCell className="px-4 py-3">
-                  {category.visible ? (
-                    <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
-                      <CheckCircle2 className="w-4 h-4" />
-                      <span className="text-xs font-medium">Visible</span>
+                      />
                     </div>
-                  ) : (
-                    <div className="flex items-center gap-1 text-red-600 dark:text-red-400">
-                      <XCircle className="w-4 h-4" />
-                      <span className="text-xs font-medium">Hidden</span>
-                    </div>
-                  )}
-                </TableCell>
+                  </TableCell>
 
-                <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                  {category.updatedAt}
-                </TableCell>
+                  <TableCell className="min-w-3xs px-4 py-3 whitespace-nowrap font-medium text-slate-800 dark:text-slate-200">
+                    {category.name}
+                  </TableCell>
 
-                {/* Action */}
-                <TableCell className="w-auto px-4 py-3 whitespace-nowrap">
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="flex items-center gap-1 !text-indigo-600 dark:!text-indigo-500 hover:!bg-indigo-100 dark:!hover:bg-indigo-100 
+                  <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                    {category.slug}
+                  </TableCell>
+
+                  <TableCell className="px-4 py-3">
+                    {category.visible ? (
+                      <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
+                        <CheckCircle2 className="w-4 h-4" />
+                        <span className="text-xs font-medium">Visible</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-1 text-red-600 dark:text-red-400">
+                        <XCircle className="w-4 h-4" />
+                        <span className="text-xs font-medium">Hidden</span>
+                      </div>
+                    )}
+                  </TableCell>
+
+                  <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                    {category.updatedAt}
+                  </TableCell>
+
+                  {/* Action */}
+                  <TableCell className="w-auto px-4 py-3 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="flex items-center gap-1 !text-indigo-600 dark:!text-indigo-500 hover:!bg-indigo-100 dark:!hover:bg-indigo-100 
                       transition-colors cursor-pointer"
-                    >
-                      <Pencil className="w-4 h-4" />
-                      Edit
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="!text-red-600 dark:!text-red-500 hover:!bg-red-50 dark:hover:!bg-red-100 transition-colors duration-300
+                      >
+                        <Pencil className="w-4 h-4" />
+                        Edit
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="!text-red-600 dark:!text-red-500 hover:!bg-red-50 dark:hover:!bg-red-100 transition-colors duration-300
                       flex items-center gap-1 cursor-pointer"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Delete
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Delete
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
 
             {/* Pagination */}
             <TableRow>

@@ -359,8 +359,8 @@ export const ImageUploadNode = (props) => {
             files[index]?.name.replace(/\.[^/.]+$/, "") || "unknown";
 
           const alt =
-            prompt(`please express alt for image "${filename}":`, filename) ||
-            filename; // 🪄 popup nhập alt
+            prompt(`please express ALT for image "${filename}":`, filename) ||
+            filename; // popup alt
 
           return {
             type: extension.options.type,

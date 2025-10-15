@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
-import { mockCategories } from "@/data/mockCategories";
+import { fetchCategories } from "@/lib/api/categories";
 
 export function useCategories() {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // fetch call api
-    const fetchData = async () => {
+    const load = async () => {
       setLoading(true);
-      await new Promise((r) => setTimeout(r, 500)); // mock delay
-      setCategories(mockCategories);
+      const data = await fetchCategories();
+      setCategories(data);
       setLoading(false);
     };
 
-    fetchData();
+    load();
   }, []);
 
   return { categories, loading };
