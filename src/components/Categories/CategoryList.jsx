@@ -5,6 +5,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 
 import CategoryTable from "@/components/categories/CategoryTable";
+
 import { useCategories } from "@/hooks";
 
 function CategoryList() {
@@ -12,14 +13,17 @@ function CategoryList() {
     categories,
     meta,
     loading,
+    tableLoading,
     page,
     setPage,
     sort,
     order,
     setSort,
     setOrder,
+    search,
+    setSearch,
   } = useCategories();
-  
+
   const navigate = useNavigate();
 
   return (
@@ -60,7 +64,7 @@ function CategoryList() {
       ) : (
         <CategoryTable
           data={categories}
-          loading={loading}
+          loading={tableLoading}
           meta={meta}
           page={page}
           setPage={setPage}
@@ -68,6 +72,8 @@ function CategoryList() {
           order={order}
           setSort={setSort}
           setOrder={setOrder}
+          search={search}
+          setSearch={setSearch}
         />
       )}
     </div>

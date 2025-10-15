@@ -10,7 +10,8 @@ const TOKEN = import.meta.env.VITE_API_TOKEN;
 export async function fetchCategories(
   page = 1,
   sort = "updated_at",
-  order = "desc"
+  order = "desc",
+  search = ""
 ) {
   try {
     const response = await axios.get(`${BASE_URL}/categories`, {
@@ -18,6 +19,7 @@ export async function fetchCategories(
         page,
         sort,
         order,
+        search,
       },
       headers: {
         Authorization: `Bearer ${TOKEN}`,

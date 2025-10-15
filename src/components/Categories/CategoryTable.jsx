@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Pencil,
   Trash2,
@@ -16,6 +17,8 @@ import {
   TableCell,
   TableBody,
 } from "@/components/ui/table";
+
+import { Spinner } from "@/components/ui/spinner";
 
 import {
   Pagination,
@@ -48,8 +51,21 @@ function CategoryTable({
   order,
   setSort,
   setOrder,
+  search,
+  setSearch,
+  loading,
 }) {
   const totalPages = meta?.last_page || 1;
+
+  // search state
+  const [typingValue, setTypingValue] = useState(search);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setSearch(typingValue);
+    }, 600); // debounce 0.6s
+    return () => clearTimeout(timeout);
+  }, [typingValue]);
 
   return (
     <div className="space-y-4">
@@ -65,9 +81,15 @@ function CategoryTable({
                 <div className="flex justify-end mr-2 rounded-xl">
                   <div className="relative w-full max-w-sm">
                     <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-                      <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-1 top-2.5 pointer-events-none" />
+                      {loading ? (
+                        <Spinner className="w-4 h-4 animate-spin text-blue-500 absolute left-1 top-2.5" />
+                      ) : (
+                        <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-1 top-2.5 pointer-events-none" />
+                      )}
                     </span>
                     <Input
+                      value={typingValue}
+                      onChange={(e) => setTypingValue(e.target.value)}
                       placeholder="Search categories..."
                       className="pl-10 pr-4 pt-2 pb-2.5 border border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
                       focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-xl"
