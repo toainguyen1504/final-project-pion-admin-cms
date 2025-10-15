@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "@/components/shared/Sidebar";
 import Header from "@/components/shared/Header";
 import { useState } from "react";
+import { Toaster } from "@/components/ui/sonner";
 
 function AdminLayout() {
   const [sideBarCollapsed, setSideBarCollapsed] = useState(false);
@@ -20,6 +21,8 @@ function AdminLayout() {
               <Outlet />
             </div>
           </main>
+
+          <Toaster />
         </div>
       </div>
     </div>

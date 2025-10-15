@@ -7,6 +7,7 @@ const BASE_URL =
 
 const TOKEN = import.meta.env.VITE_API_TOKEN;
 
+// Get Categories
 export async function fetchCategories(
   page = 1,
   sort = "updated_at",
@@ -36,5 +37,21 @@ export async function fetchCategories(
       data: [],
       meta: null,
     };
+  }
+}
+
+// Create Category
+export async function createCategory(payload) {
+  try {
+    const response = await axios.post(`${BASE_URL}/categories`, payload, {
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error creating category:", error);
+    throw error;
   }
 }

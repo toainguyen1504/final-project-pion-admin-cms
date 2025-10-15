@@ -76,7 +76,7 @@ function CategoryTable({
             <TableRow>
               <TableCell
                 className="px-4 py-3 border-b border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-300"
-                colSpan={6}
+                colSpan={7}
               >
                 <div className="flex justify-end mr-2 rounded-xl">
                   <div className="relative w-full max-w-sm">
@@ -129,8 +129,10 @@ function CategoryTable({
 
               <TableCell className="px-4 py-3 font-semibold">Slug</TableCell>
 
+              <TableCell className="px-4 py-3 font-semibold">Type</TableCell>
+
               <TableCell className="px-4 py-3 font-semibold">
-                Visibility
+                Featured
               </TableCell>
 
               <TableCell className="px-4 py-3 font-semibold">
@@ -151,7 +153,7 @@ function CategoryTable({
           <TableBody>
             {!Array.isArray(data) || data.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="py-10">
+                <TableCell colSpan={7} className="py-10">
                   <Empty>
                     <EmptyHeader>
                       <EmptyMedia variant="icon">
@@ -159,8 +161,9 @@ function CategoryTable({
                       </EmptyMedia>
                       <EmptyTitle>No categories found</EmptyTitle>
                       <EmptyDescription>
-                        You haven’t added any categories yet. Start by creating
-                        one.
+                        {search && search.trim() !== ""
+                          ? "No categories match your search. Try a different keyword."
+                          : "You haven’t added any categories yet. Start by creating one."}
                       </EmptyDescription>
                     </EmptyHeader>
                     <EmptyContent>{/* Button */}</EmptyContent>
@@ -195,16 +198,20 @@ function CategoryTable({
                     {category.slug}
                   </TableCell>
 
+                  <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                    {category.type}
+                  </TableCell>
+
                   <TableCell className="px-4 py-3">
-                    {category.visible ? (
+                    {category.is_featured ? (
                       <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
                         <CheckCircle2 className="w-4 h-4" />
-                        <span className="text-xs font-medium">Visible</span>
+                        <span className="text-xs font-medium">Featured</span>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-1 text-red-600 dark:text-red-400">
+                      <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
                         <XCircle className="w-4 h-4" />
-                        <span className="text-xs font-medium">Hidden</span>
+                        <span className="text-xs font-medium">Normal</span>
                       </div>
                     )}
                   </TableCell>
@@ -243,7 +250,7 @@ function CategoryTable({
             {/* Pagination */}
             <TableRow>
               <TableCell
-                colSpan={6}
+                colSpan={7}
                 className="px-4 py-3 text-slate-700 dark:text-slate-300 select-none
                 border-t border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
               >

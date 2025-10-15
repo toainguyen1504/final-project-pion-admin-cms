@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,6 +9,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { slugify } from "@/lib/utils";
+
+import { createCategory } from "@/lib/api/categories";
 
 import {
   Popover,
@@ -20,17 +24,38 @@ function CategoryCreate() {
   const [slug, setSlug] = useState("");
   const [type, setType] = useState("post");
   const [isFeatured, setIsFeatured] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const payload = { name, slug, type, is_featured: isFeatured };
+    console.log("Submit category:", payload);
+
+    try {
+      const res = await createCategory(payload);
+      if (res.success) {
+        toast.success("Category created successfully!");
+        setTimeout(() => navigate("/categories"), 1000);
+      } else {
+        toast.error(
+          res.message || "Failed to create category! Please try again."
+        );
+      }
+    } catch (error) {
+      if (error.response?.status === 422) {
+        setErrors(error.response.data.errors || {});
+        toast.error("Validation failed!");
+      } else {
+        toast.error("An unexpected error occurred!");
+      }
+    }
+  };
 
   useEffect(() => {
     setSlug(slugify(name));
   }, [name]);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const payload = { name, slug, type, is_featured: isFeatured };
-    console.log("Submit category:", payload);
-    // TODO: call API here
-  };
 
   return (
     <div className="p-4 space-y-6">
@@ -71,7 +96,7 @@ function CategoryCreate() {
           <div className="space-y-2">
             <Label
               htmlFor="name"
-              className="text-slate-700 dark:text-slate-300 inline-flex items-center gap-1"
+              className="ml-2 text-slate-700 dark:text-slate-300 inline-flex items-center gap-1"
             >
               Name
               <span className="text-red-500 text-sm">*</span>
@@ -83,16 +108,22 @@ function CategoryCreate() {
               onChange={(e) => setName(e.target.value)}
               required
               placeholder="Enter category name"
-              className="pt-2 pb-2.5 px-4 border border-slate-400 dark:border-slate-300 rounded-xl caret-blue-600
-              focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none text-slate-700 dark:text-slate-300"
+              className="py-5 px-4 border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
+              focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
+               text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
             />
+            {errors.name && (
+              <p className="ml-2 text-sm mt-1 text-red-600 dark:text-red-400">
+                {errors.name[0]}
+              </p>
+            )}
           </div>
 
           {/* slug */}
           <div className="space-y-2">
             <Label
               htmlFor="slug"
-              className="text-slate-700 dark:text-slate-300 inline-flex items-center gap-1"
+              className="ml-2 text-slate-700 dark:text-slate-300 inline-flex items-center gap-1"
             >
               Slug
               <span className="text-red-500 text-sm">*</span>
@@ -102,13 +133,15 @@ function CategoryCreate() {
               value={slug}
               disabled
               placeholder="Auto-generate category Slug"
-              className="pt-2 pb-2.5 px-4 border border-slate-300 dark:border-slate-600 bg-slate-100 
-                dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl cursor-not-allowed"
+              className="py-5 px-4 border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
+              focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
+               text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 
+               dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)] cursor-not-allowed"
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 items-center">
+        <div className="ml-2 grid grid-cols-2 md:grid-cols-4 gap-6 items-center">
           {/* Type */}
           <div className="flex items-center space-x-4 pt-6 md:pt-0">
             <Label className="text-slate-700 dark:text-slate-300">Type</Label>
@@ -125,6 +158,7 @@ function CategoryCreate() {
                 </TabsTrigger>
 
                 <TabsTrigger
+                  value="course"
                   className="px-4 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer
                     data-[state=active]:bg-indigo-100 data-[state=active]:text-indigo-600
                     dark:data-[state=active]:bg-indigo-500 dark:data-[state=active]:text-indigo-100
