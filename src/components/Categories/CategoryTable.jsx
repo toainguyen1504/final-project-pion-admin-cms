@@ -4,8 +4,9 @@ import {
   Trash2,
   CheckCircle2,
   XCircle,
-  Search,
   FolderKanban,
+  Search,
+  Columns3Cog,
 } from "lucide-react";
 import clsx from "clsx";
 import { format } from "date-fns";
@@ -28,6 +29,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -95,6 +103,70 @@ function CategoryTable({
                       focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-xl"
                     />
                   </div>
+
+                  {/* Column Settings Icon */}
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button
+                        type="button"
+                        className="p-1 rounded text-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 
+                         dark:text-slate-300 cursor-pointer ml-3"
+                      >
+                        <Columns3Cog className="w-6 h-6" />
+                      </button>
+                    </PopoverTrigger>
+
+                    <PopoverContent
+                      side="bottom"
+                      align="end"
+                      sideOffset={8}
+                      className="absolute z-50 w-64 p-4 space-y-3 bg-white dark:bg-slate-900 border 
+                      border-slate-200 dark:border-slate-700 rounded-xl shadow-xl translate-x-[-100%]"
+                    >
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-medium text-sm text-slate-700 dark:text-slate-200">
+                          Columns
+                        </span>
+                        <button className="text-red-500 dark:text-red-400 font-medium text-xs hover:underline cursor-pointer outline-0">
+                          Reset
+                        </button>
+                      </div>
+
+                      {/* Checkbox list */}
+                      {[
+                        "Name",
+                        "Slug",
+                        "Type",
+                        "Featured",
+                        "Last Modified",
+                      ].map((label, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <Checkbox
+                            id={`col-${label}`}
+                            defaultChecked={[
+                              "Name",
+                              "Type",
+                              "Featured",
+                              "Last Modified",
+                            ].includes(label)}
+                          />
+                          <label
+                            htmlFor={`col-${label}`}
+                            className="text-sm text-slate-700 dark:text-slate-300"
+                          >
+                            {label}
+                          </label>
+                        </div>
+                      ))}
+
+                      <Button
+                        className="w-full mt-2 bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 
+                              transition-colors duration-300 min-w-36 cursor-pointer rounded-xl"
+                      >
+                        Apply columns
+                      </Button>
+                    </PopoverContent>
+                  </Popover>
                 </div>
               </TableCell>
             </TableRow>
