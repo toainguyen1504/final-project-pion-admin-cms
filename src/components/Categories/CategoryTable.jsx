@@ -51,10 +51,12 @@ import {
   EmptyContent,
 } from "@/components/ui/empty";
 
-import SortableHeaderCell from "@/components/shared/SortableHeaderCell";
+import SortableHeaderCell from "@/components/shared/table/SortableHeaderCell";
 import DeleteConfirmDialog from "@/components/shared/DeleteConfirmDialog";
 
 import { deleteCategory, bulkDeleteCategories } from "@/lib/api/categories";
+
+import TableToolbar from "@/components/shared/table/TableToolbar";
 
 function CategoryTable({
   data,
@@ -134,11 +136,6 @@ function CategoryTable({
   // control init tempColumns
   const isTempInitializedRef = useRef(false);
 
-  const hasChangeColumns =
-    JSON.stringify(tempColumns) !== JSON.stringify(visibleColumns);
-  const hasChangeFromDefaultColumns =
-    JSON.stringify(tempColumns) !== JSON.stringify(defaultColumns);
-
   // toggle select all
   const handleSelectAll = (checked) => {
     if (checked) {
@@ -157,17 +154,6 @@ function CategoryTable({
 
   // check all selected
   const allSelected = data.length > 0 && selectedIds.length === data.length;
-
-  // Handle when open Popover
-  const handlePopoverOpenChange = (open) => {
-    setPopoverOpen(open);
-
-    // sync if it's the first time opening or after Apply/Reset
-    if (open && !isTempInitializedRef.current) {
-      setTempColumns({ ...visibleColumns });
-      isTempInitializedRef.current = true;
-    }
-  };
 
   // Handle Apply
   const handleApplyColumns = () => {
@@ -212,131 +198,25 @@ function CategoryTable({
                 className="px-4 py-3 border-b border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-300"
                 colSpan={getVisibleColSpan()}
               >
-                <div className="flex justify-between items-center mr-2 rounded-xl">
-                  {/* Delete selected button */}
-                  <div
-                    className={clsx(
-                      "transition-all duration-300 ease-in-out",
-                      selectedIds.length > 0
-                        ? "opacity-100 translate-y-0 visible"
-                        : "opacity-0 -translate-y-1 invisible"
-                    )}
-                  >
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => {
-                        setDeleteMode("bulk");
-                        setDeleteDialogOpen(true);
-                      }}
-                      className="bg-red-600 hover:bg-red-500 dark:bg-red-600
-                       text-white rounded-xl px-3 py-1.5 text-xs cursor-pointer"
-                    >
-                      Delete selected
-                    </Button>
-                  </div>
-
-                  <div className="flex flex-1 justify-end mr-2 rounded-xl">
-                    <div className="relative w-full max-w-sm">
-                      <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-                        {loading ? (
-                          <Spinner className="w-4 h-4 animate-spin text-blue-500 absolute left-1 top-2.5" />
-                        ) : (
-                          <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-1 top-2.5 pointer-events-none" />
-                        )}
-                      </span>
-                      <Input
-                        value={typingValue}
-                        onChange={(e) => setTypingValue(e.target.value)}
-                        placeholder="Search categories..."
-                        className="pl-10 pr-4 pt-2 pb-2.5 border border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
-                      focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-xl"
-                      />
-                    </div>
-
-                    {/* Column Settings Icon */}
-                    <Popover
-                      open={popoverOpen}
-                      onOpenChange={handlePopoverOpenChange}
-                    >
-                      <PopoverTrigger asChild>
-                        <button
-                          type="button"
-                          className="p-1 rounded text-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 
-                         dark:text-slate-300 cursor-pointer ml-3"
-                        >
-                          <Columns3Cog className="w-6 h-6" />
-                        </button>
-                      </PopoverTrigger>
-
-                      <PopoverContent
-                        side="bottom"
-                        align="end"
-                        sideOffset={8}
-                        className="absolute z-50 w-64 p-4 space-y-3 bg-white dark:bg-slate-900 border 
-                      border-slate-200 dark:border-slate-700 rounded-xl shadow-xl translate-x-[-100%]"
-                      >
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="font-medium text-sm text-slate-700 dark:text-slate-200">
-                            Columns
-                          </span>
-                          <button
-                            disabled={!hasChangeFromDefaultColumns}
-                            onClick={handleResetColumns}
-                            className={`text-red-500 dark:text-red-400 font-medium text-xs hover:underline outline-0 
-                            duration-300 transition-opacity ${
-                              !hasChangeFromDefaultColumns
-                                ? "opacity-50 cursor-not-allowed"
-                                : "opacity-100 cursor-pointer"
-                            }`}
-                          >
-                            Reset
-                          </button>
-                        </div>
-
-                        {/* Checkbox list */}
-                        {[
-                          { key: "name", label: "Name" },
-                          { key: "slug", label: "Slug" },
-                          { key: "type", label: "Type" },
-                          { key: "featured", label: "Featured" },
-                          { key: "updated_at", label: "Last Modified" },
-                        ].map(({ key, label }) => (
-                          <div key={key} className="flex items-center gap-2">
-                            <Checkbox
-                              id={`col-${key}`}
-                              checked={tempColumns[key]}
-                              onCheckedChange={() =>
-                                handleTempColumnToggle(key)
-                              }
-                              disabled={defaultColumns[key]}
-                              className={clsx(
-                                defaultColumns[key]
-                                  ? "opacity-50 cursor-not-allowed"
-                                  : "cursor-pointer"
-                              )}
-                            />
-                            <label
-                              htmlFor={`col-${key}`}
-                              className="text-sm text-slate-700 dark:text-slate-300"
-                            >
-                              {label}
-                            </label>
-                          </div>
-                        ))}
-
-                        <Button
-                          onClick={handleApplyColumns}
-                          disabled={!hasChangeColumns}
-                          className="w-full mt-2 bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 
-                              transition-all duration-300 min-w-36 cursor-pointer rounded-xl"
-                        >
-                          Apply columns
-                        </Button>
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                </div>
+                <TableToolbar
+                  selectedCount={selectedIds.length}
+                  loading={loading}
+                  searchValue={typingValue}
+                  onSearchChange={setTypingValue}
+                  visibleColumns={visibleColumns}
+                  tempColumns={tempColumns}
+                  onTempColumnToggle={handleTempColumnToggle}
+                  defaultColumns={defaultColumns}
+                  popoverOpen={popoverOpen}
+                  setPopoverOpen={setPopoverOpen}
+                  onApplyColumns={handleApplyColumns}
+                  onResetColumns={handleResetColumns}
+                  isTempInitializedRef={isTempInitializedRef}
+                  onDeleteSelected={() => {
+                    setDeleteMode("bulk");
+                    setDeleteDialogOpen(true);
+                  }}
+                />
               </TableCell>
             </TableRow>
 
