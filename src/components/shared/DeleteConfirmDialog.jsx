@@ -10,6 +10,8 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 
+import { Spinner } from "@/components/ui/spinner";
+
 export default function DeleteConfirmDialog({
   open,
   onOpenChange,
@@ -28,15 +30,19 @@ export default function DeleteConfirmDialog({
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="flex justify-end gap-2">
-          <AlertDialogCancel onClick={() => onOpenChange(false)}>
+          <AlertDialogCancel
+            onClick={() => onOpenChange(false)}
+            className="cursor-pointer"
+          >
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
             disabled={loading}
-            className="bg-red-600 hover:bg-red-700"
+            className="bg-red-600 hover:bg-red-700 dark:text-red-100 cursor-pointer"
           >
-            {loading ? "Deleting..." : "Delete"}
+            {loading && <Spinner className="w-4 h-4 mr-2 text-white" />}
+            Delete
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

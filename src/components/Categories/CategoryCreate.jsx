@@ -18,6 +18,7 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { HelpCircle } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 function CategoryCreate() {
   const [name, setName] = useState("");
@@ -25,11 +26,13 @@ function CategoryCreate() {
   const [type, setType] = useState("post");
   const [isFeatured, setIsFeatured] = useState(false);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const payload = { name, slug, type, is_featured: isFeatured };
     console.log("Submit category:", payload);
 
@@ -50,6 +53,8 @@ function CategoryCreate() {
       } else {
         toast.error("An unexpected error occurred!");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -83,8 +88,10 @@ function CategoryCreate() {
           type="submit"
           form="category-form"
           className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
-            text-white min-w-40 cursor-pointer transition-all duration-300"
+            text-white min-w-40 cursor-pointer select-none transition-all duration-300"
+          disabled={loading}
         >
+          {loading && <Spinner className="w-4 h-4 mr-2 text-white" />}
           Save
         </Button>
       </div>

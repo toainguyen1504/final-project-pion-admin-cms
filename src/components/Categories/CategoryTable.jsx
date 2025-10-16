@@ -229,7 +229,8 @@ function CategoryTable({
                         setDeleteMode("bulk");
                         setDeleteDialogOpen(true);
                       }}
-                      className="bg-red-600 hover:bg-red-500 text-white rounded-xl px-3 py-1.5 text-xs cursor-pointer"
+                      className="bg-red-600 hover:bg-red-500 dark:bg-red-600
+                       text-white rounded-xl px-3 py-1.5 text-xs cursor-pointer"
                     >
                       Delete selected
                     </Button>
