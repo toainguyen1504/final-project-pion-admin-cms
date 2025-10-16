@@ -13,7 +13,6 @@ function CategoryList() {
     categories,
     meta,
     loading,
-    tableLoading,
     page,
     setPage,
     sort,
@@ -65,7 +64,6 @@ function CategoryList() {
       ) : (
         <CategoryTable
           data={categories}
-          tableLoading={tableLoading}
           meta={meta}
           page={page}
           setPage={setPage}

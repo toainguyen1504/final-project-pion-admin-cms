@@ -5,7 +5,6 @@ export function useCategories() {
   const [categories, setCategories] = useState([]);
   const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(true); // load page
-  const [tableLoading, setTableLoading] = useState(false); // loading when change page, sort, search
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState("updated_at");
   const [order, setOrder] = useState("desc");
@@ -18,8 +17,6 @@ export function useCategories() {
     if (isFirstLoad.current) {
       setLoading(true);
       isFirstLoad.current = false;
-    } else {
-      setTableLoading(true);
     }
 
     try {
@@ -30,7 +27,6 @@ export function useCategories() {
       console.error("Error loading categories:", error);
     } finally {
       setLoading(false);
-      setTableLoading(false);
     }
   };
 
@@ -42,7 +38,6 @@ export function useCategories() {
     categories,
     meta,
     loading,
-    tableLoading,
     page,
     setPage,
     sort,

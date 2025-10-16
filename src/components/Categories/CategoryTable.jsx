@@ -32,7 +32,6 @@ function CategoryTable({
   search,
   setSearch,
   refreshCategories,
-  tableLoading = { tableLoading },
 }) {
   const totalPages = meta?.last_page || 1;
 
@@ -261,7 +260,6 @@ function CategoryTable({
             setDeleteMode={setDeleteMode}
             setSelectedCategory={setSelectedCategory}
             setDeleteDialogOpen={setDeleteDialogOpen}
-            tableLoading
           />
         </Table>
       </div>
