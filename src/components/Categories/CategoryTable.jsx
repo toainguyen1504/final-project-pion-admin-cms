@@ -31,8 +31,8 @@ function CategoryTable({
   setOrder,
   search,
   setSearch,
-  loading,
   refreshCategories,
+  tableLoading = { tableLoading },
 }) {
   const totalPages = meta?.last_page || 1;
 
@@ -60,6 +60,7 @@ function CategoryTable({
   const [deleteMode, setDeleteMode] = useState("bulk"); // "bulk" or "single"
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [loadingDelete, setLoadingDelete] = useState(false);
+  const [searchLoading, setSearchLoading] = useState(false);
 
   // control init tempColumns
   const isTempInitializedRef = useRef(false);
@@ -101,6 +102,12 @@ function CategoryTable({
         toast.success(
           `Category "${selectedCategory.name}" deleted successfully!`
         );
+
+        // FIX: remove from selectedIds to hidden delete selected button
+        setSelectedIds((prev) =>
+          prev.filter((id) => id !== selectedCategory.id)
+        );
+
         setSelectedCategory(null);
       }
 
@@ -142,8 +149,12 @@ function CategoryTable({
     Object.values(visibleColumns).filter(Boolean).length + 2;
 
   useEffect(() => {
+    if (typingValue === search) return;
+    setSearchLoading(true);
+
     const timeout = setTimeout(() => {
       setSearch(typingValue);
+      setSearchLoading(false);
     }, 600); // debounce 0.6s
     return () => clearTimeout(timeout);
   }, [typingValue]);
@@ -161,7 +172,7 @@ function CategoryTable({
               >
                 <TableToolbar
                   selectedCount={selectedIds.length}
-                  loading={loading}
+                  searchLoading={searchLoading}
                   searchValue={typingValue}
                   onSearchChange={setTypingValue}
                   visibleColumns={visibleColumns}
@@ -250,6 +261,7 @@ function CategoryTable({
             setDeleteMode={setDeleteMode}
             setSelectedCategory={setSelectedCategory}
             setDeleteDialogOpen={setDeleteDialogOpen}
+            tableLoading
           />
         </Table>
       </div>
