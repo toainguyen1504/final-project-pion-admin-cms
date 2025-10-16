@@ -55,3 +55,33 @@ export async function createCategory(payload) {
     throw error;
   }
 }
+
+// Delete single category
+export async function deleteCategory(id) {
+  try {
+    const response = await axios.delete(`${BASE_URL}/categories/${id}`, {
+      headers: { Authorization: `Bearer ${TOKEN}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    throw error;
+  }
+}
+
+// Delete multiple categories
+export async function bulkDeleteCategories(ids) {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/categories/bulk-destroy`,
+      { ids }, // body
+      {
+        headers: { Authorization: `Bearer ${TOKEN}` }, // config
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error bulk deleting categories:", error);
+    throw error;
+  }
+}

@@ -22,7 +22,7 @@ function AdminLayout() {
             </div>
           </main>
 
-          <Toaster />
+          <Toaster position="top-right" richColors/>
         </div>
       </div>
     </div>

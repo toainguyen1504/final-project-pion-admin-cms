@@ -22,6 +22,7 @@ function CategoryList() {
     setOrder,
     search,
     setSearch,
+    reloadCategories,
   } = useCategories();
 
   const navigate = useNavigate();
@@ -74,6 +75,7 @@ function CategoryList() {
           setOrder={setOrder}
           search={search}
           setSearch={setSearch}
+          refreshCategories={reloadCategories}
         />
       )}
     </div>

@@ -13,29 +13,29 @@ export function useCategories() {
 
   const isFirstLoad = useRef(true);
 
+  const fetchData = async () => {
+    // fisrt mount -> loading page else loading table
+    if (isFirstLoad.current) {
+      setLoading(true);
+      isFirstLoad.current = false;
+    } else {
+      setTableLoading(true);
+    }
+
+    try {
+      const { data, meta } = await fetchCategories(page, sort, order, search);
+      setCategories(data);
+      setMeta(meta);
+    } catch (error) {
+      console.error("Error loading categories:", error);
+    } finally {
+      setLoading(false);
+      setTableLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const load = async () => {
-      // fisrt mount -> loading page else loading table
-      if (isFirstLoad.current) {
-        setLoading(true);
-        isFirstLoad.current = false;
-      } else {
-        setTableLoading(true);
-      }
-
-      try {
-        const { data, meta } = await fetchCategories(page, sort, order, search);
-        setCategories(data);
-        setMeta(meta);
-      } catch (error) {
-        console.error("Error loading categories:", error);
-      } finally {
-        setLoading(false);
-        setTableLoading(false);
-      }
-    };
-
-    load();
+    fetchData();
   }, [page, sort, order, search]);
 
   return {
@@ -51,5 +51,6 @@ export function useCategories() {
     setOrder,
     search,
     setSearch,
+    reloadCategories: fetchData,
   };
 }

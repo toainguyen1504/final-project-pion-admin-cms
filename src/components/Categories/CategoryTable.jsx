@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+
 import {
   Pencil,
   Trash2,
@@ -10,6 +11,8 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import { format } from "date-fns";
+
+import { toast } from "sonner";
 
 import {
   Table,
@@ -51,6 +54,8 @@ import {
 import SortableHeaderCell from "@/components/shared/SortableHeaderCell";
 import DeleteConfirmDialog from "@/components/shared/DeleteConfirmDialog";
 
+import { deleteCategory, bulkDeleteCategories } from "@/lib/api/categories";
+
 function CategoryTable({
   data,
   meta,
@@ -63,6 +68,7 @@ function CategoryTable({
   search,
   setSearch,
   loading,
+  refreshCategories,
 }) {
   const totalPages = meta?.last_page || 1;
 
@@ -89,6 +95,41 @@ function CategoryTable({
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteMode, setDeleteMode] = useState("bulk"); // "bulk" or "single"
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [loadingDelete, setLoadingDelete] = useState(false);
+
+  // Handle delete categories
+  const handleConfirmDelete = async () => {
+    setLoadingDelete(true);
+
+    try {
+      if (deleteMode === "bulk") {
+        if (selectedIds.length === 0) return;
+
+        await bulkDeleteCategories(selectedIds);
+        toast.success(`${selectedIds.length} categories deleted successfully!`);
+        setSelectedIds([]);
+      } else if (deleteMode === "single") {
+        if (!selectedCategory) return;
+
+        await deleteCategory(selectedCategory.id);
+        toast.success(
+          `Category "${selectedCategory.name}" deleted successfully!`
+        );
+        setSelectedCategory(null);
+      }
+
+      // --- REFRESH TABLE ---
+      if (typeof refreshCategories === "function") {
+        await refreshCategories();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message || "Delete failed!");
+    } finally {
+      setLoadingDelete(false);
+      setDeleteDialogOpen(false);
+    }
+  };
 
   // control init tempColumns
   const isTempInitializedRef = useRef(false);
@@ -114,7 +155,7 @@ function CategoryTable({
     );
   };
 
-  // Kiểm tra tất cả đã được chọn chưa
+  // check all selected
   const allSelected = data.length > 0 && selectedIds.length === data.length;
 
   // Handle when open Popover
@@ -538,18 +579,8 @@ function CategoryTable({
             ? `Are you sure you want to delete ${selectedIds.length} selected categories?`
             : `Are you sure you want to delete "${selectedCategory?.name}"?`
         }
-        onConfirm={() => {
-          if (deleteMode === "bulk") {
-            console.log("Deleting:", selectedIds);
-            // Call API to delete multiple items here
-            setSelectedIds([]);
-          } else if (deleteMode === "single") {
-            console.log("Deleting:", selectedCategory);
-            // Call API to delete single item here
-            setSelectedCategory(null);
-          }
-          setDeleteDialogOpen(false);
-        }}
+        onConfirm={handleConfirmDelete}
+        loading={loadingDelete}
       />
     </div>
   );
