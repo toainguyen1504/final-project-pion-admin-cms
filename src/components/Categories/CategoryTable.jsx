@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Pencil,
   Trash2,
@@ -68,6 +68,64 @@ function CategoryTable({
   // search state
   const [typingValue, setTypingValue] = useState(search);
 
+  // default setting columns
+  const defaultColumns = {
+    name: true,
+    slug: false,
+    type: true,
+    featured: true,
+    updated_at: true,
+  };
+
+  // Columns state
+  const [visibleColumns, setVisibleColumns] = useState(defaultColumns);
+  const [tempColumns, setTempColumns] = useState(defaultColumns);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+
+  // control init tempColumns
+  const isTempInitializedRef = useRef(false);
+
+  const hasChangeColumns =
+    JSON.stringify(tempColumns) !== JSON.stringify(visibleColumns);
+  const hasChangeFromDefaultColumns =
+    JSON.stringify(tempColumns) !== JSON.stringify(defaultColumns);
+
+  // Handle when open Popover
+  const handlePopoverOpenChange = (open) => {
+    setPopoverOpen(open);
+
+    // sync if it's the first time opening or after Apply/Reset
+    if (open && !isTempInitializedRef.current) {
+      setTempColumns({ ...visibleColumns });
+      isTempInitializedRef.current = true;
+    }
+  };
+
+  // Handle Apply
+  const handleApplyColumns = () => {
+    setVisibleColumns({ ...tempColumns });
+    setPopoverOpen(false);
+    isTempInitializedRef.current = false;
+  };
+
+  // Handle Reset
+  const handleResetColumns = () => {
+    setTempColumns({ ...defaultColumns });
+  };
+
+  // handle tick checkbox in columns setting
+  const handleTempColumnToggle = (key) => {
+    setTempColumns((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
+  const getVisibleColSpan = () => {
+    const visibleCount = Object.values(visibleColumns).filter(Boolean).length;
+    return visibleCount + 2; // +1 checkbox, +1 actions columns
+  };
+
   useEffect(() => {
     const timeout = setTimeout(() => {
       setSearch(typingValue);
@@ -84,7 +142,7 @@ function CategoryTable({
             <TableRow>
               <TableCell
                 className="px-4 py-3 border-b border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-300"
-                colSpan={7}
+                colSpan={getVisibleColSpan()}
               >
                 <div className="flex justify-end mr-2 rounded-xl">
                   <div className="relative w-full max-w-sm">
@@ -105,7 +163,10 @@ function CategoryTable({
                   </div>
 
                   {/* Column Settings Icon */}
-                  <Popover>
+                  <Popover
+                    open={popoverOpen}
+                    onOpenChange={handlePopoverOpenChange}
+                  >
                     <PopoverTrigger asChild>
                       <button
                         type="button"
@@ -127,31 +188,42 @@ function CategoryTable({
                         <span className="font-medium text-sm text-slate-700 dark:text-slate-200">
                           Columns
                         </span>
-                        <button className="text-red-500 dark:text-red-400 font-medium text-xs hover:underline cursor-pointer outline-0">
+                        <button
+                          disabled={!hasChangeFromDefaultColumns}
+                          onClick={handleResetColumns}
+                          className={`text-red-500 dark:text-red-400 font-medium text-xs hover:underline outline-0 
+                            duration-300 transition-opacity ${
+                              !hasChangeFromDefaultColumns
+                                ? "opacity-50 cursor-not-allowed"
+                                : "opacity-100 cursor-pointer"
+                            }`}
+                        >
                           Reset
                         </button>
                       </div>
 
                       {/* Checkbox list */}
                       {[
-                        "Name",
-                        "Slug",
-                        "Type",
-                        "Featured",
-                        "Last Modified",
-                      ].map((label, index) => (
-                        <div key={index} className="flex items-center gap-2">
+                        { key: "name", label: "Name" },
+                        { key: "slug", label: "Slug" },
+                        { key: "type", label: "Type" },
+                        { key: "featured", label: "Featured" },
+                        { key: "updated_at", label: "Last Modified" },
+                      ].map(({ key, label }) => (
+                        <div key={key} className="flex items-center gap-2">
                           <Checkbox
-                            id={`col-${label}`}
-                            defaultChecked={[
-                              "Name",
-                              "Type",
-                              "Featured",
-                              "Last Modified",
-                            ].includes(label)}
+                            id={`col-${key}`}
+                            checked={tempColumns[key]}
+                            onCheckedChange={() => handleTempColumnToggle(key)}
+                            disabled={defaultColumns[key]}
+                            className={clsx(
+                              defaultColumns[key]
+                                ? "opacity-50 cursor-not-allowed"
+                                : "cursor-pointer"
+                            )}
                           />
                           <label
-                            htmlFor={`col-${label}`}
+                            htmlFor={`col-${key}`}
                             className="text-sm text-slate-700 dark:text-slate-300"
                           >
                             {label}
@@ -160,8 +232,10 @@ function CategoryTable({
                       ))}
 
                       <Button
+                        onClick={handleApplyColumns}
+                        disabled={!hasChangeColumns}
                         className="w-full mt-2 bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 
-                              transition-colors duration-300 min-w-36 cursor-pointer rounded-xl"
+                              transition-all duration-300 min-w-36 cursor-pointer rounded-xl"
                       >
                         Apply columns
                       </Button>
@@ -188,35 +262,45 @@ function CategoryTable({
                 </div>
               </TableCell>
 
-              <TableCell className="px-4 py-3 font-semibold">
-                <SortableHeaderCell
-                  label="Name"
-                  sortKey="name"
-                  currentSort={sort}
-                  order={order}
-                  setSort={setSort}
-                  setOrder={setOrder}
-                />
-              </TableCell>
+              {visibleColumns.name && (
+                <TableCell className="px-4 py-3 font-semibold">
+                  <SortableHeaderCell
+                    label="Name"
+                    sortKey="name"
+                    currentSort={sort}
+                    order={order}
+                    setSort={setSort}
+                    setOrder={setOrder}
+                  />
+                </TableCell>
+              )}
 
-              <TableCell className="px-4 py-3 font-semibold">Slug</TableCell>
+              {visibleColumns.slug && (
+                <TableCell className="px-4 py-3 font-semibold">Slug</TableCell>
+              )}
 
-              <TableCell className="px-4 py-3 font-semibold">Type</TableCell>
+              {visibleColumns.type && (
+                <TableCell className="px-4 py-3 font-semibold">Type</TableCell>
+              )}
 
-              <TableCell className="px-4 py-3 font-semibold">
-                Featured
-              </TableCell>
+              {visibleColumns.featured && (
+                <TableCell className="px-4 py-3 font-semibold">
+                  Featured
+                </TableCell>
+              )}
 
-              <TableCell className="px-4 py-3 font-semibold">
-                <SortableHeaderCell
-                  label="Last Modified"
-                  sortKey="updated_at"
-                  currentSort={sort}
-                  order={order}
-                  setSort={setSort}
-                  setOrder={setOrder}
-                />
-              </TableCell>
+              {visibleColumns.updated_at && (
+                <TableCell className="px-4 py-3 font-semibold">
+                  <SortableHeaderCell
+                    label="Last Modified"
+                    sortKey="updated_at"
+                    currentSort={sort}
+                    order={order}
+                    setSort={setSort}
+                    setOrder={setOrder}
+                  />
+                </TableCell>
+              )}
 
               <TableCell className="px-4 py-3 font-semibold"></TableCell>
             </TableRow>
@@ -225,7 +309,7 @@ function CategoryTable({
           <TableBody>
             {!Array.isArray(data) || data.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="py-10">
+                <TableCell colSpan={getVisibleColSpan()} className="py-10">
                   <Empty>
                     <EmptyHeader>
                       <EmptyMedia variant="icon">
@@ -262,35 +346,48 @@ function CategoryTable({
                     </div>
                   </TableCell>
 
-                  <TableCell className="min-w-3xs px-4 py-3 whitespace-nowrap font-medium text-slate-800 dark:text-slate-200">
-                    {category.name}
-                  </TableCell>
+                  {visibleColumns.name && (
+                    <TableCell className="min-w-3xs px-4 py-3 whitespace-nowrap font-medium text-slate-800 dark:text-slate-200">
+                      {category.name}
+                    </TableCell>
+                  )}
 
-                  <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                    {category.slug}
-                  </TableCell>
+                  {visibleColumns.slug && (
+                    <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                      {category.slug}
+                    </TableCell>
+                  )}
 
-                  <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                    {category.type}
-                  </TableCell>
+                  {visibleColumns.type && (
+                    <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                      {category.type}
+                    </TableCell>
+                  )}
 
-                  <TableCell className="px-4 py-3">
-                    {category.is_featured ? (
-                      <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span className="text-xs font-medium">Featured</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
-                        <XCircle className="w-4 h-4" />
-                        <span className="text-xs font-medium">Normal</span>
-                      </div>
-                    )}
-                  </TableCell>
+                  {visibleColumns.featured && (
+                    <TableCell className="px-4 py-3">
+                      {category.is_featured ? (
+                        <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span className="text-xs font-medium">Featured</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+                          <XCircle className="w-4 h-4" />
+                          <span className="text-xs font-medium">Normal</span>
+                        </div>
+                      )}
+                    </TableCell>
+                  )}
 
-                  <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                    {format(new Date(category.updated_at), "dd/MM/yyyy HH:mm")}
-                  </TableCell>
+                  {visibleColumns.updated_at && (
+                    <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                      {format(
+                        new Date(category.updated_at),
+                        "dd/MM/yyyy HH:mm"
+                      )}
+                    </TableCell>
+                  )}
 
                   {/* Action */}
                   <TableCell className="w-auto px-4 py-3 whitespace-nowrap">
@@ -322,7 +419,7 @@ function CategoryTable({
             {/* Pagination */}
             <TableRow>
               <TableCell
-                colSpan={7}
+                colSpan={getVisibleColSpan()}
                 className="px-4 py-3 text-slate-700 dark:text-slate-300 select-none
                 border-t border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
               >
