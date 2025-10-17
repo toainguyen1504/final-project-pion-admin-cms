@@ -5,7 +5,7 @@ import TableSection from "./TableSection";
 
 function Dashboard() {
   return (
-    <div className="space-y-6">
+    <div className="px-4 pt-4 pb-10 space-y-6">
       <Helmet>
         <title>Dashboard | Pion CMS</title>
         <meta

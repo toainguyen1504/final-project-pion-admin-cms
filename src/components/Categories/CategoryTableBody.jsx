@@ -19,6 +19,7 @@ import {
   EmptyMedia,
   EmptyContent,
 } from "@/components/ui/empty";
+import { useNavigate } from "react-router-dom";
 
 import TablePagination from "@/components/shared/table/TablePagination";
 
@@ -39,6 +40,8 @@ export default function CategoryTableBody({
     const visibleCount = Object.values(visibleColumns).filter(Boolean).length;
     return visibleCount + 2; // +1 checkbox, +1 actions column
   };
+
+  const navigate = useNavigate();
 
   return (
     <TableBody>
@@ -122,6 +125,7 @@ export default function CategoryTableBody({
             <TableCell className="w-auto px-4 py-3 whitespace-nowrap">
               <div className="flex items-center gap-2">
                 <Button
+                  onClick={() => navigate(`/categories/${category.id}/edit`)}
                   variant="ghost"
                   size="sm"
                   className="flex items-center gap-1 !text-indigo-600 dark:!text-indigo-500 hover:!bg-indigo-100 dark:!hover:bg-indigo-100 transition-colors cursor-pointer"

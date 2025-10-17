@@ -27,7 +27,7 @@ function CategoryList() {
   const navigate = useNavigate();
 
   return (
-    <div className="px-4 pt-4 pb-10">
+    <div className="px-4 pt-4 pb-10 space-y-3">
       <Helmet>
         <title>All Category | Pion CMS</title>
         <meta
@@ -37,7 +37,7 @@ function CategoryList() {
         <link rel="icon" href="/assets/favicon/favicon-96x96.png" />
       </Helmet>
 
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-6 flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200">
             All Categories

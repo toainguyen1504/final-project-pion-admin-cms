@@ -56,6 +56,36 @@ export async function createCategory(payload) {
   }
 }
 
+// Update Category
+export async function updateCategory(id, payload) {
+  try {
+    const response = await axios.put(`${BASE_URL}/categories/${id}`, payload, {
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating category:", error);
+    throw error;
+  }
+}
+
+// Get single category
+export async function fetchCategory(id) {
+  try {
+    const response = await axios.get(`${BASE_URL}/categories/${id}`, {
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching category:", error);
+    return null;
+  }
+}
+
 // Delete single category
 export async function deleteCategory(id) {
   try {

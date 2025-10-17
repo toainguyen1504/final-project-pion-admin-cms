@@ -4,6 +4,8 @@ import AdminLayout from "@/components/layout/AdminLayout";
 import Dashboard from "@/components/dashboard/Dashboard";
 import CategoryList from "@/components/categories/CategoryList";
 import CategoryCreate from "@/components/categories/CategoryCreate";
+import CategoryEdit from "@/components/categories/CategoryEdit";
+
 import PostList from "@/components/posts/PostList";
 import PostCreate from "@/components/posts/PostCreate";
 import UserList from "@/components/users/UserList";
@@ -17,6 +19,8 @@ function AppRoutes() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/categories" element={<CategoryList />} />
         <Route path="/categories/create" element={<CategoryCreate />} />
+        <Route path="/categories/:id/edit" element={<CategoryEdit />} />
+
         <Route path="/posts" element={<PostList />} />
         <Route path="/posts/create" element={<PostCreate />} />
         <Route path="/consultations" element={<ConsultationList />} />

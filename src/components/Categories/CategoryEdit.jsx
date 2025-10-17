@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
@@ -9,43 +9,66 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { slugify } from "@/lib/utils";
-
-import { createCategory } from "@/lib/api/categories";
-import AppBreadcrumb from "@/components/shared/AppBreadcrumb";
-
+import { Spinner } from "@/components/ui/spinner";
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
 import { HelpCircle } from "lucide-react";
-import { Spinner } from "@/components/ui/spinner";
 
-function CategoryCreate() {
+import { fetchCategory, updateCategory } from "@/lib/api/categories";
+
+import AppBreadcrumb from "@/components/shared/AppBreadcrumb";
+
+function CategoryEdit() {
+  const { id } = useParams(); // get category id from route
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [type, setType] = useState("post");
   const [isFeatured, setIsFeatured] = useState(false);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
 
-  const navigate = useNavigate();
+  // get old data
+  useEffect(() => {
+    const loadCategory = async () => {
+      setLoadingData(true);
+      const data = await fetchCategory(id);
+      if (data) {
+        setName(data.name || "");
+        setSlug(data.slug || "");
+        setType(data.type || "post");
+        setIsFeatured(data.is_featured || false);
+      } else {
+        toast.error("Category not found!");
+        navigate("/categories");
+      }
+      setLoadingData(false);
+    };
+    loadCategory();
+  }, [id]);
+
+  // Auto-generate slug
+  useEffect(() => {
+    setSlug(slugify(name));
+  }, [name]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     const payload = { name, slug, type, is_featured: isFeatured };
-    console.log("Submit category:", payload);
 
     try {
-      const res = await createCategory(payload);
+      const res = await updateCategory(id, payload);
       if (res.success) {
-        toast.success("Category created successfully!");
+        toast.success("Category updated successfully!");
         setTimeout(() => navigate("/categories"), 1000);
       } else {
-        toast.error(
-          res.message || "Failed to create category! Please try again."
-        );
+        toast.error(res.message || "Failed to update category!");
       }
     } catch (error) {
       if (error.response?.status === 422) {
@@ -59,32 +82,31 @@ function CategoryCreate() {
     }
   };
 
-  useEffect(() => {
-    setSlug(slugify(name));
-  }, [name]);
+  if (loadingData) {
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <Spinner className="w-8 h-8 text-indigo-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 pt-4 pb-10 space-y-3">
       <Helmet>
-        <title>Create Category | Pion CMS</title>
-        <meta
-          name="description"
-          content="Create Categories for system management"
-        />
-        <link rel="icon" href="/assets/favicon/favicon-96x96.png" />
+        <title>Edit Category | Pion CMS</title>
       </Helmet>
 
-      <AppBreadcrumb module="Categories" current="Create" />
+      {/* Breadcrumb */}
+      <AppBreadcrumb module="Categories" current="Edit" />
 
       {/* Header + Button */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200">
-            Add Category
+            Edit Category
           </h2>
           <p className="text-slate-500 mt-1">
-            Create a new category to organize and classify your content more
-            effectively.
+            Edit the category to modify its properties.
           </p>
         </div>
         <Button
@@ -108,10 +130,8 @@ function CategoryCreate() {
               htmlFor="name"
               className="ml-2 text-slate-700 dark:text-slate-300 inline-flex items-center gap-1"
             >
-              Name
-              <span className="text-red-500 text-sm">*</span>
+              Name <span className="text-red-500 text-sm">*</span>
             </Label>
-
             <Input
               id="name"
               value={name}
@@ -129,14 +149,13 @@ function CategoryCreate() {
             )}
           </div>
 
-          {/* slug */}
+          {/* Slug */}
           <div className="space-y-2">
             <Label
               htmlFor="slug"
               className="ml-2 text-slate-700 dark:text-slate-300 inline-flex items-center gap-1"
             >
-              Slug
-              <span className="text-red-500 text-sm">*</span>
+              Slug <span className="text-red-500 text-sm">*</span>
             </Label>
             <Input
               id="slug"
@@ -151,8 +170,8 @@ function CategoryCreate() {
           </div>
         </div>
 
+        {/* Type + Featured */}
         <div className="ml-2 grid grid-cols-2 md:grid-cols-4 gap-6 items-center">
-          {/* Type */}
           <div className="flex items-center space-x-4 pt-6 md:pt-0">
             <Label className="text-slate-700 dark:text-slate-300">Type</Label>
             <Tabs value={type} onValueChange={setType}>
@@ -180,7 +199,6 @@ function CategoryCreate() {
             </Tabs>
           </div>
 
-          {/* Featured */}
           <div className="flex items-center space-x-4 pt-6 md:pt-0">
             <div className="flex items-center gap-1">
               <Label
@@ -189,8 +207,6 @@ function CategoryCreate() {
               >
                 Featured Mode
               </Label>
-
-              {/* Tooltip icon */}
               <Popover>
                 <PopoverTrigger asChild>
                   <button
@@ -200,7 +216,6 @@ function CategoryCreate() {
                     <HelpCircle className="w-4 h-4" />
                   </button>
                 </PopoverTrigger>
-
                 <PopoverContent
                   side="top"
                   align="start"
@@ -208,8 +223,7 @@ function CategoryCreate() {
                   className="max-w-xs p-3 text-sm text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md shadow-md z-50"
                 >
                   When this mode is enabled, the category will be highlighted in
-                  the user interface. It may appear at the top of the list or be
-                  styled differently to stand out.
+                  the user interface.
                 </PopoverContent>
               </Popover>
             </div>
@@ -226,4 +240,4 @@ function CategoryCreate() {
   );
 }
 
-export default CategoryCreate;
+export default CategoryEdit;
