@@ -170,14 +170,22 @@ function CategoryTable({
                 colSpan={toolbarColSpan}
               >
                 <TableToolbar
-                  selectedCount={selectedIds.length}
-                  searchLoading={searchLoading}
                   searchValue={typingValue}
                   onSearchChange={setTypingValue}
+                  searchPlaceholder="Search categories..."
+                  searchLoading={searchLoading}
+                  selectedCount={selectedIds.length}
                   visibleColumns={visibleColumns}
                   tempColumns={tempColumns}
                   onTempColumnToggle={handleTempColumnToggle}
                   defaultColumns={defaultColumns}
+                  columnsConfig={[
+                    { key: "name", label: "Name" },
+                    { key: "slug", label: "Slug" },
+                    { key: "type", label: "Type" },
+                    { key: "featured", label: "Featured" },
+                    { key: "updated_at", label: "Last Modified" },
+                  ]}
                   popoverOpen={popoverOpen}
                   setPopoverOpen={setPopoverOpen}
                   onApplyColumns={handleApplyColumns}
