@@ -6,8 +6,9 @@ import {
   Users,
   ChevronDown,
 } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, matchPath } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { flushSync } from "react-dom";
 import toaicdevImg from "@/assets/images/toaicdev.png";
 import logo_icon from "@/assets/images/logo_icon.png";
 
@@ -70,29 +71,67 @@ function Sidebar({ collapsed }) {
   const [expandedId, setExpandedId] = useState(null);
   const [activeId, setActiveId] = useState(null);
 
-  // active menu
+  // ======== Helper: create a dynamic pattern for edit/view paths ========
+  const getDynamicPatterns = (item) => {
+    // Use the base path from the first submenu (e.g., /categories)
+    if (!item.submenu || item.submenu.length === 0) return [];
+    const base = item.submenu[0].path?.split("/")[1];
+    if (!base) return [];
+    return [`/${base}/:id/edit`, `/${base}/:id`];
+  };
+
+  // Determine the active menu/submenu based on the current URL
   useEffect(() => {
     const currentPath = location.pathname;
-
     let found = false;
 
     for (const item of menuItems) {
-      if (item.path === currentPath) {
-        setActiveId(item.id);
-        setExpandedId(null);
-        found = true;
-        break;
-      }
-
+      // 1) check submenu first (exact or prefix)
       if (item.submenu) {
-        const sub = item.submenu.find((s) => s.path === currentPath);
-        if (sub) {
-          setActiveId(sub.id);
+        for (const sub of item.submenu) {
+          const matchedSub = matchPath(
+            { path: sub.path, end: true },
+            currentPath
+          );
+          if (matchedSub) {
+            setActiveId(sub.id);
+            setExpandedId(item.id);
+            found = true;
+            break;
+          }
+        }
+      }
+      if (found) break;
+
+      // 2) check direct item.path (e.g. '/consultations' or root '/')
+      if (item.path) {
+        const isRoot = item.path === "/";
+        const matched = matchPath(
+          { path: item.path, end: isRoot },
+          currentPath
+        );
+        if (matched) {
+          setActiveId(item.id);
+          setExpandedId(null);
+          found = true;
+          break;
+        }
+      }
+      if (found) break;
+
+      // 3) check dynamic patterns (like /categories/:id/edit or /categories/:id)
+      const dynamicPatterns = getDynamicPatterns(item);
+      for (const pat of dynamicPatterns) {
+        const matchedDyn = matchPath({ path: pat, end: false }, currentPath);
+        if (matchedDyn) {
+          // active parent
+          setActiveId(item.id);
           setExpandedId(item.id);
           found = true;
           break;
         }
       }
+      if (found) break;
     }
 
     if (!found) {
@@ -101,21 +140,29 @@ function Sidebar({ collapsed }) {
     }
   }, [location.pathname]);
 
+  // Handle click parent menu
   const handleMenuClick = (item) => {
     if (item.submenu) {
-      setExpandedId(expandedId === item.id ? null : item.id);
-      setActiveId(item.id);
-    } else {
-      navigate(item.path || `/${item.id}`);
-      setActiveId(item.id);
-      setExpandedId(null);
+      // only toggle expanded
+      setExpandedId((prev) => (prev === item.id ? null : item.id));
+    } else if (item.path) {
+      // force highlight when click
+      flushSync(() => {
+        setActiveId(item.id);
+        setExpandedId(null);
+      });
+      navigate(item.path);
     }
   };
 
+  // handle click submenu
   const handleSubmenuClick = (sub, parentId) => {
+    // Force update the UI right before navigating to avoid race conditions
+    flushSync(() => {
+      setActiveId(sub.id);
+      setExpandedId(parentId);
+    });
     navigate(sub.path);
-    setActiveId(sub.id);
-    setExpandedId(parentId);
   };
 
   return (
@@ -132,7 +179,10 @@ function Sidebar({ collapsed }) {
       >
         <div
           className="inline-flex items-center space-x-3 group cursor-pointer select-none"
-          onClick={() => navigate("/")}
+          onClick={() => {
+            flushSync(() => setActiveId("dashboard"));
+            navigate("/");
+          }}
         >
           <div
             className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600
@@ -179,17 +229,30 @@ function Sidebar({ collapsed }) {
                   <item.icon className="w-5 h-5" />
                   {!collapsed && (
                     <>
-                      <span className="font-medium">{item.label}</span>
+                      {/* label */}
+                      <span
+                        className={`font-medium ${
+                          isActive
+                            ? "text-white"
+                            : "text-slate-700 dark:text-slate-200"
+                        }`}
+                      >
+                        {item.label}
+                      </span>
+
+                      {/* badge / count */}
                       {item.badge && (
                         <span className="px-2 py-1 text-xs bg-red-500 text-white rounded-full">
                           {item.badge}
                         </span>
                       )}
-
                       {item.count && (
                         <span
-                          className="px-2 py-1 text-xs bg-slate-200 dark:bg-slate-700 text-slate-600
-                     dark:text-slate-300 rounded-full"
+                          className={`px-2 py-1 text-xs rounded-full ${
+                            isActive
+                              ? "bg-white/20 text-white"
+                              : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
+                          }`}
                         >
                           {item.count}
                         </span>
