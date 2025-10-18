@@ -1,41 +1,138 @@
 import { Helmet } from "react-helmet-async";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
+import { format } from "date-fns";
 
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { toast } from "sonner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // Icon
-import { Search, Eye } from "lucide-react";
+import { Eye } from "lucide-react";
 import "@/components/tiptap-templates/simple/simple-editor.scss";
 
 import { SeoManager } from "./SeoManager";
-import { ScheduledPanel } from "./ScheduledPanel";
+import { PostSidebar } from "./PostSidebar";
+import { slugify } from "@/lib/utils";
+import { createPost } from "@/lib/api/posts";
+import { fetchCategories } from "@/lib/api/categories";
 
 function PostCreate() {
   const [editor, setEditor] = useState(null);
+  const [visibility, setVisibility] = useState("private");
+  const [publishDate, setPublishDate] = useState(new Date());
+  const [title, setTitle] = useState("");
+  const [allCategories, setAllCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]); // IDs selected
+  const [isCategoryPopupOpen, setIsCategoryPopupOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+  const [loadingCategories, setLoadingCategories] = useState(false);
+  const [errors, setErrors] = useState([]); // error messages
 
-  const handleEditorReady = useCallback((editor) => {
-    setEditor(editor);
+  const handleEditorReady = useCallback((editorInstance) => {
+    setEditor(editorInstance);
   }, []);
 
-  const [status, setStatus] = useState("draft");
-  const [publishDate, setPublishDate] = useState(new Date());
+  // get all categories
+  useEffect(() => {
+    const getCategories = async () => {
+      const { data } = await fetchCategories(1, "updated_at", "desc", "");
+      setAllCategories(data);
+    };
+    getCategories();
+  }, []);
 
-  // eslint-disable-next-line no-unused-vars
-  const handleLogHTML = () => {
-    if (editor) {
-      const html = editor.getHTML();
-      console.log("HTML content:", html);
-    } else {
-      console.warn("Editor chưa sẵn sàng");
+  useEffect(() => {
+    setLoadingCategories(true);
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+      setLoadingCategories(false);
+    }, 500); // debounce 500ms
+
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
+
+  // Mapping visibility to status
+  const mapVisibilityToStatus = (visibility) => {
+    switch (visibility) {
+      case "public":
+        return "published";
+      case "scheduled_public":
+        return "pending";
+      case "private":
+      default:
+        return "draft";
     }
   };
+
+  const getPublishDate = () => {
+    const formatLocalDate = (date) => format(date, "yyyy-MM-dd HH:mm:ss");
+
+    if (visibility === "scheduled_public" && publishDate) {
+      return formatLocalDate(publishDate);
+    }
+
+    return formatLocalDate(new Date());
+  };
+
+  // Handle submit
+  const handleSubmit = async () => {
+    const newErrors = [];
+
+    if (!title.trim()) newErrors.push("Please enter a post title.");
+    if (!editor) newErrors.push("Editor is not ready.");
+    else {
+      const textContent = editor.getText().trim();
+      if (!textContent) newErrors.push("Please enter post content.");
+      if (textContent.length < 50)
+        newErrors.push(
+          `Post content must be at least 50 characters (currently ${textContent.length}).`
+        );
+    }
+    if (!selectedCategories.length)
+      newErrors.push("Please select at least one category.");
+
+    setErrors(newErrors);
+    if (newErrors.length) return; // Stop submit if errors exist
+
+    // Payload
+    const payload = {
+      title,
+      sapo_text: "Short summary for the post",
+      slug: slugify(title),
+      seo_title: title,
+      seo_description: "SEO description automatically generated",
+      seo_keywords: "post, example",
+      content: editor.getHTML(),
+      status: mapVisibilityToStatus(visibility),
+      visibility,
+      publish_at: getPublishDate(),
+      category_ids: selectedCategories,
+    };
+
+    try {
+      await createPost(payload);
+      toast.success("Post created successfully!");
+      setTitle("");
+      setSelectedCategories([]);
+      editor.commands.clearContent();
+      setErrors([]);
+    } catch (error) {
+      console.error("Error creating post:", error);
+      toast.error("Failed to create post! Please try again.");
+    }
+  };
+
+  const hasTitleError = errors.some((e) => e.toLowerCase().includes("title"));
+  const hasContentError = errors.some((e) =>
+    e.toLowerCase().includes("content")
+  );
+  const hasCategoryError = errors.some((e) =>
+    e.toLowerCase().includes("category")
+  );
+
   return (
     <div className="p-4">
       <Helmet>
@@ -68,8 +165,8 @@ function PostCreate() {
             </Button>
 
             <Button
-              type="submit"
-              form="post-form"
+              type="button"
+              onClick={handleSubmit}
               className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
             text-white min-w-40 cursor-pointer transition-all duration-300"
             >
@@ -82,24 +179,45 @@ function PostCreate() {
       <div className="flex space-x-5">
         {/* Column left */}
         <div className="flex-1 space-y-5">
-          {/* Tile - H1 */}
+          {/* Error list */}
+          {errors.length > 0 && (
+            <Alert variant="destructive" className="mb-5">
+              <AlertTitle>Submission Error</AlertTitle>
+              <AlertDescription>
+                <ul className="list-disc list-inside">
+                  {errors.map((err, i) => (
+                    <li key={i}>{err}</li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+          )}
+
           <div className="space-y-2">
+            {/* Tile - H1 */}
             <Input
               id="post-title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
               required
               placeholder="Start with a strong post title (*)"
-              className="py-6 px-6 !text-base border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
-              focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
-               text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
+              className={`py-6 px-6 !text-base border rounded-xl caret-blue-600 focus:outline-none focus-visible:ring-1 focus-visible:ring-offset-0 ${
+                hasTitleError
+                  ? "border-2 border-red-500 focus-visible:ring-red-500"
+                  : "border-slate-200 dark:border-slate-700 focus-visible:ring-blue-600"
+              } text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]`}
             />
           </div>
 
           {/* Editor */}
           <div
-            className="bg-background text-foreground shadow-lg 
-          dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)] rounded-xl"
+            className={`bg-background text-foreground shadow-lg dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)] rounded-xl ${
+              hasContentError ? "border-2 border-red-500" : ""
+            }`}
           >
-            <SimpleEditor onReady={handleEditorReady} />
+            <SimpleEditor
+              onReady={handleEditorReady}
+            />
           </div>
 
           {/* Rank math SEO */}
@@ -107,135 +225,21 @@ function PostCreate() {
         </div>
 
         {/* Column right */}
-        <div className="w-[320px] border-l border-border rounded-xl p-6 bg-card text-card-foreground space-y-6">
-          {/* Section: Publish */}
-          <div className="space-y-4">
-            {/* Header */}
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold dark:text-slate-200">
-                Publish
-              </h3>
-              <Badge
-                variant="destructive"
-                className="px-3 py-1 rounded-full select-none"
-              >
-                SEO: 30 / 100
-              </Badge>
-            </div>
-
-            {/* Tabs for status */}
-            <Tabs value={status} onValueChange={setStatus} className="w-full">
-              <TabsList className="bg-slate-200 dark:bg-slate-700 rounded-full p-1">
-                <TabsTrigger
-                  value="published"
-                  className="px-4 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer
-                    data-[state=active]:bg-indigo-100 data-[state=active]:text-indigo-600
-                    dark:data-[state=active]:bg-indigo-500 dark:data-[state=active]:text-indigo-100
-                    text-slate-700 dark:text-slate-300"
-                >
-                  Published
-                </TabsTrigger>
-                <TabsTrigger
-                  value="scheduled"
-                  className="px-4 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer
-                    data-[state=active]:bg-indigo-100 data-[state=active]:text-indigo-600
-                    dark:data-[state=active]:bg-indigo-500 dark:data-[state=active]:text-indigo-100
-                    text-slate-700 dark:text-slate-300"
-                >
-                  Scheduled
-                </TabsTrigger>
-                <TabsTrigger
-                  value="draft"
-                  className="px-4 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer
-                    data-[state=active]:bg-indigo-100 data-[state=active]:text-indigo-600
-                    dark:data-[state=active]:bg-indigo-500 dark:data-[state=active]:text-indigo-100
-                    text-slate-700 dark:text-slate-300"
-                >
-                  Private
-                </TabsTrigger>
-              </TabsList>
-
-              {/* Scheduled content */}
-              <ScheduledPanel
-                isVisible={status === "scheduled"}
-                publishDate={publishDate}
-                setPublishDate={setPublishDate}
-              />
-            </Tabs>
-
-            {/* Section: Categories */}
-            <div className="space-y-2">
-              <h3 className="text-lg font-semibold text-slate-500 dark:text-slate-200">
-                Categories
-              </h3>
-              <div className="relative w-full max-w-sm">
-                <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400 dark:text-slate-500" />
-                <Input
-                  placeholder="Search categories..."
-                  className="pl-10 pr-4 pt-2 pb-2.5 border border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
-                  focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-xl"
-                />
-              </div>
-
-              <div className="space-y-2 pt-2 text-sm">
-                <div className="flex items-center gap-2">
-                  <Switch id="news" />
-                  <Label
-                    htmlFor="news"
-                    className="text-slate-700 dark:text-slate-200"
-                  >
-                    News
-                  </Label>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Switch id="study-abroad" />
-                  <Label
-                    htmlFor="study-abroad"
-                    className="text-slate-700 dark:text-slate-200"
-                  >
-                    Study Abroad
-                  </Label>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Switch id="tuition-fees" />
-                  <Label
-                    htmlFor="tuition-fees"
-                    className="text-slate-700 dark:text-slate-200"
-                  >
-                    Tuition Fees
-                  </Label>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Switch id="recruitment" />
-                  <Label
-                    htmlFor="recruitment"
-                    className="text-slate-700 dark:text-slate-200"
-                  >
-                    Recruitment
-                  </Label>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Section: Thumbnail */}
-          <div className="space-y-2">
-            <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">
-              Thumbnail Image
-            </h3>
-            <div
-              className="w-full h-32 px-4 text-center bg-muted rounded-md flex items-center justify-center 
-            text-slate-500 dark:text-slate-200 text-sm"
-            >
-              No image selected - Render auto from media library
-            </div>
-          </div>
-        </div>
+        <PostSidebar
+          visibility={visibility}
+          setVisibility={setVisibility}
+          publishDate={publishDate}
+          setPublishDate={setPublishDate}
+          allCategories={allCategories}
+          selectedCategories={selectedCategories}
+          setSelectedCategories={setSelectedCategories}
+          searchTerm={debouncedSearch}
+          setSearchTerm={setSearchTerm}
+          isCategoryPopupOpen={isCategoryPopupOpen}
+          setIsCategoryPopupOpen={setIsCategoryPopupOpen}
+          loadingCategories={loadingCategories}
+          categoryError={hasCategoryError} // highlight category field
+        />
       </div>
     </div>
   );

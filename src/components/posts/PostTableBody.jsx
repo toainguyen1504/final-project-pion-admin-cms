@@ -81,7 +81,7 @@ export default function PostTableBody({
         data.map((post) => (
           <TableRow
             key={post.id}
-            className="border-b border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-300"
+            className="border-b border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 !transition-colors !duration-300"
           >
             {/* Checkbox */}
             <TableCell className="px-4 py-3 w-4">
@@ -89,6 +89,7 @@ export default function PostTableBody({
                 <Checkbox
                   checked={selectedIds.includes(post.id)}
                   onCheckedChange={() => handleSelectRow(post.id)}
+                  className="cursor-pointer"
                 />
               </div>
             </TableCell>
@@ -219,7 +220,7 @@ export default function PostTableBody({
                 {format(new Date(post.updated_at), "dd/MM/yyyy HH:mm") || "—"}
               </TableCell>
             )}
-            
+
             {/* Publish at */}
             {visibleColumns.publish_at && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">

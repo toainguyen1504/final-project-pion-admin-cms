@@ -7,6 +7,31 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Custom icon for time picker */
+.custom-time-input::-webkit-calendar-picker-indicator {
+  width: 18px;
+  height: 18px;
+  padding: 8px;
+  opacity: 0.9;
+  cursor: pointer;
+  filter: invert(35%) sepia(70%) saturate(1600%) hue-rotate(230deg)
+    brightness(95%);
+  transition: filter 0.25s ease, opacity 0.25s ease;
+}
+
+.custom-time-input:hover::-webkit-calendar-picker-indicator {
+  filter: invert(25%) sepia(90%) saturate(2500%) hue-rotate(230deg)
+    brightness(90%) contrast(110%);
+  opacity: 1;
+}
+
+.custom-time-input:focus::-webkit-calendar-picker-indicator {
+  filter: invert(20%) sepia(100%) saturate(3000%) hue-rotate(235deg)
+    brightness(85%) contrast(120%);
+  opacity: 1;
+}
+/* Custom icon for time picker */
+
 @theme {
   --animate-fade-in-scale: fade-in-scale 0.3s ease-out;
   @keyframes fade-in-scale {
@@ -19,6 +44,21 @@
       transform: scale(1);
     }
   }
+}
+
+@keyframes popup {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-popup {
+  animation: popup 0.2s ease-out forwards;
 }
 
 @theme inline {

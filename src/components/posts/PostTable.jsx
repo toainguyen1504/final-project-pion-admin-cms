@@ -184,6 +184,7 @@ function PostTable({
                   <Checkbox
                     checked={allSelected}
                     onCheckedChange={(checked) => handleSelectAll(checked)}
+                    className="cursor-pointer"
                   />
                 </div>
               </TableCell>
