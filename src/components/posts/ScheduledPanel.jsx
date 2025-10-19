@@ -80,6 +80,10 @@ function ScheduledPanel({ isVisible, publishDate, setPublishDate }) {
                 selected={publishDate}
                 onSelect={handleSelectDate}
                 initialFocus
+                disabled={(date) =>
+                  date < new Date() ||
+                  date > new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+                }
               />
               <div className="flex items-center group">
                 <Input
