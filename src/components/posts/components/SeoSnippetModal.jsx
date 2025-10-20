@@ -8,6 +8,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { slugify } from "@/lib/utils";
 
 export function SeoSnippetModal({ open, onOpenChange, seo }) {
@@ -23,6 +24,7 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
     MAX_SLUG,
     MAX_DESC,
     getProgressColor,
+    DEFAULT_SEO,
   } = seo;
 
   // --- Local state (draft)
@@ -30,21 +32,21 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
   const [draftSlug, setDraftSlug] = useState("");
   const [draftDesc, setDraftDesc] = useState("");
 
-  // --- Reset hoặc giữ lại dữ liệu khi mở modal
+  // --- handle data edit snippet popup
   useEffect(() => {
     if (open) {
-      // Nếu dữ liệu đã có (không phải placeholder default) → giữ lại để edit
+      // If data already exists (not a default placeholder) -> keep it for editing
       const hasRealData =
-        title !== "Post title will be displayed here..." ||
-        desc !== "Short description will appear here..." ||
-        slug !== "default-url-slug";
+        title !== DEFAULT_SEO.title ||
+        desc !== DEFAULT_SEO.desc ||
+        slug !== DEFAULT_SEO.slug;
 
       if (hasRealData) {
         setDraftTitle(title);
         setDraftSlug(slug);
         setDraftDesc(desc);
       } else {
-        // Nếu là dữ liệu default → hiển thị rỗng để dùng placeholder
+        // If it's default data -> display empty fields to use placeholders
         setDraftTitle("");
         setDraftSlug("");
         setDraftDesc("");
@@ -54,29 +56,24 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
 
   // --- Save changes
   const handleSave = () => {
-    setTitle(draftTitle || title);
-    setSlug(slugify(draftSlug || draftTitle || title));
-    setDesc(draftDesc || desc);
+    setTitle(draftTitle || DEFAULT_SEO.title);
+    setSlug(slugify(draftSlug || draftTitle || DEFAULT_SEO.slug));
+    setDesc(draftDesc || DEFAULT_SEO.desc);
     onOpenChange(false);
   };
 
-  // --- Cancel
-  const handleCancel = () => {
-    onOpenChange(false);
+  // --- Reset Snippet popup
+  const handleReset = () => {
+    setDraftTitle("");
+    setDraftSlug("");
+    setDraftDesc("");
   };
 
   // --- Progress Bar
-  const ProgressBar = ({ type, value, max }) => {
-    if (!value) {
-      return (
-        <div className="flex items-center gap-2 w-full">
-          <div className="relative w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden" />
-          <span className="text-xs text-gray-400 w-12 text-right">0/{max}</span>
-        </div>
-      );
-    }
 
-    const length = type === "slug" ? slugify(value).length : value.length;
+  const ProgressBar = ({ type, value, max }) => {
+    const length =
+      type === "slug" ? slugify(value || "").length : (value || "").length;
     const percent = Math.min((length / max) * 100, 100);
     const colorClass = getProgressColor(type, value);
 
@@ -103,15 +100,16 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
         </DialogHeader>
 
         {/* --- Preview --- */}
-        <div className="mt-3 text-sm space-y-1">
+        <div className="mt-3 text-sm space-y-1 overflow-hidden">
           <p className="text-blue-600 dark:text-blue-400 break-all">
-            {BASE_URL + slugify(draftSlug || draftTitle || slug)}
+            {BASE_URL +
+              slugify(draftSlug || draftTitle || slug || DEFAULT_SEO.slug)}
           </p>
-          <p className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-            {draftTitle || title}
+          <p className="text-lg font-semibold text-gray-800 dark:text-gray-100 break-words">
+            {draftTitle || DEFAULT_SEO.title}
           </p>
-          <p className="text-gray-600 dark:text-gray-400">
-            {draftDesc || desc}
+          <p className="text-gray-600 dark:text-gray-400 break-words">
+            {draftDesc || DEFAULT_SEO.desc}
           </p>
         </div>
 
@@ -127,10 +125,11 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
             </div>
             <Input
               value={draftTitle}
-              placeholder="Enter your post title"
+              placeholder="Enter your post title (SEO)"
               maxLength={MAX_TITLE + 20}
               onChange={(e) => setDraftTitle(e.target.value)}
-              className="focus-visible:ring-1 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-400 border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800"
+              className="focus-visible:ring-1 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-400 
+              border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 truncate break-all"
             />
           </div>
 
@@ -148,9 +147,12 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
               </span>
               <Input
                 value={draftSlug}
-                placeholder="Auto-generated from title if left blank"
-                onChange={(e) => setDraftSlug(slugify(e.target.value || ""))}
-                className="rounded-l-none flex-1 border-slate-200 dark:border-gray-700 focus-visible:ring-1 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-400 bg-white dark:bg-gray-800"
+                placeholder="Auto-generated from title (SEO) if left blank"
+                maxLength={MAX_SLUG + 20}
+                onChange={(e) => setDraftSlug(e.target.value)}
+                className="rounded-l-none flex-1 border-slate-200 dark:border-gray-700 
+                focus-visible:ring-1 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-400 
+                bg-white dark:bg-gray-800 overflow-hidden truncate break-all"
               />
             </div>
           </div>
@@ -167,12 +169,15 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
                 />
               </div>
             </div>
-            <Input
+            <Textarea
               value={draftDesc}
               placeholder="Write a short SEO-friendly description"
               maxLength={MAX_DESC + 40}
               onChange={(e) => setDraftDesc(e.target.value)}
-              className="focus-visible:ring-1 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-400 border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800"
+              rows={3}
+              className="focus-visible:ring-1 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-400
+              border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-800 resize-none overflow-y-auto
+              break-words break-all"
             />
           </div>
         </div>
@@ -181,14 +186,14 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
         <div className="flex justify-end gap-3 mt-5">
           <Button
             variant="outline"
-            onClick={handleCancel}
-            className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200"
+            onClick={handleReset}
+            className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 cursor-pointer"
           >
-            Cancel
+            Reset
           </Button>
           <Button
             onClick={handleSave}
-            className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400"
+            className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 cursor-pointer"
           >
             Save changes
           </Button>

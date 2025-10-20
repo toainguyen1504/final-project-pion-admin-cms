@@ -3,17 +3,22 @@ import { slugify } from "@/lib/utils";
 
 /**
  * SEO snippet hook
- * Logic chuẩn SEO (good / ok / bad) cho title, description, slug
+ * Logic SEO state (good / ok / bad) for title, description, slug
  */
 export function useSeoSnippet() {
   const BASE_URL = "https://pion.edu.vn/";
 
+  // --- Default constants
+  const DEFAULT_SEO = {
+    title: "Your post title will appear here...",
+    slug: "your-post-url",
+    desc: "A short SEO-friendly description of your post will appear here...",
+  };
+
   // States
-  const [title, setTitle] = useState("Post title will appear here...");
-  const [slug, setSlug] = useState("your-post-url");
-  const [desc, setDesc] = useState(
-    "A short description of your post will appear here..."
-  );
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
+  const [desc, setDesc] = useState("");
   const [isSlugEdited, setIsSlugEdited] = useState(false);
 
   // Limits
@@ -75,6 +80,7 @@ export function useSeoSnippet() {
 
   return {
     BASE_URL,
+    DEFAULT_SEO,
     title,
     slug,
     desc,

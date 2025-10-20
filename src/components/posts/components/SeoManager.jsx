@@ -23,9 +23,15 @@ export function SeoManager() {
           SEO Preview
         </h4>
         <div className="text-sm space-y-1">
-          <p className="text-slate-500">{seo.BASE_URL + seo.slug}</p>
-          <p className="font-medium text-slate-600">{seo.title}</p>
-          <p className="text-slate-500">{seo.desc}</p>
+          <p className="text-blue-600 break-all">
+            {seo.BASE_URL + (seo.slug || seo.DEFAULT_SEO.slug)}
+          </p>
+          <p className="font-medium text-slate-700 dark:text-slate-200">
+            {seo.title || seo.DEFAULT_SEO.title}
+          </p>
+          <p className="text-slate-500 dark:text-slate-400">
+            {seo.desc || seo.DEFAULT_SEO.desc}
+          </p>
         </div>
         <Button
           onClick={() => setOpen(true)}
