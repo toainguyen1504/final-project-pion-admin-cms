@@ -12,7 +12,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Eye } from "lucide-react";
 import "@/components/tiptap-templates/simple/simple-editor.scss";
 
-import { SeoManager } from "./SeoManager";
+import { SeoManager } from "./components/SeoManager";
 import { PostSidebar } from "./PostSidebar";
 import { slugify } from "@/lib/utils";
 import { createPost } from "@/lib/api/posts";

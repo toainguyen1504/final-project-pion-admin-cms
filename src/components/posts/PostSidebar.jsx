@@ -9,7 +9,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search } from "lucide-react";
 import { normalizeText } from "@/lib/utils";
-import { ScheduledPanel } from "./ScheduledPanel";
+import { ScheduledPanel } from "./components/ScheduledPanel";
 
 export function PostSidebar({
   visibility,

@@ -13,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import SortableHeaderCell from "@/components/shared/table/SortableHeaderCell";
 import DeleteConfirmDialog from "@/components/shared/DeleteConfirmDialog";
 import TableToolbar from "@/components/shared/table/TableToolbar";
-import PostTableBody from "@/components/posts/PostTableBody";
+import PostTableBody from "@/components/posts/components/PostTableBody";
 
 import { deletePost, bulkDeletePosts } from "@/lib/api/posts"; // ⚠️ bạn sẽ cần tạo file API này
 
