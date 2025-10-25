@@ -70,34 +70,41 @@ export function FocusKeywordInput({
     setKeywords(keywords.filter((k) => k !== keyword));
   };
 
+  const mainKeyword = keywords[0] || "";
+
   // Auto calculate SEO score
   useEffect(() => {
-    console.group("📊 Focus Keyword Debug Data");
-    console.log("🧩 title (H1):", title);
-    console.log("🧩 seoTitle:", seoTitle);
-    console.log("🧩 seoSlug:", seoSlug);
-    console.log("🧩 seoDescription:", seoDescription);
-    console.log("🧩 content length:", content?.length);
-    console.log("🧩 rawHtml length:", rawHtml?.length);
-    console.log("🧩 keywords:", keywords);
-    console.groupEnd();
+    if (!title || !content || !mainKeyword) return; // tránh tính khi data chưa sẵn sàng
 
     const score = calculateSeoScore({
-      title, // H1
-      seoTitle, // SEO snippet title
-      seoDescription,
+      title,
+      description: seoDescription,
       slug: seoSlug,
       content,
       rawHtml,
       keywords,
-      baseDomain: "https://example.com",
+      baseDomain: "example.com",
     });
-    setSeoScore(score);
+
+    // chỉ set state khi điểm thực sự khác với state hiện tại
+    setSeoScore((prev) => {
+      if (prev?.totalScore === score.totalScore) return prev;
+      return score;
+    });
 
     if (onKeywordChange) {
-      onKeywordChange(keywords[0] || ""); // first keyword
+      onKeywordChange(mainKeyword);
     }
-  }, [keywords, title, seoTitle, seoSlug, seoDescription, content, rawHtml]);
+  }, [
+    mainKeyword, // chỉ theo keyword chính
+    title,
+    seoTitle,
+    seoSlug,
+    seoDescription,
+    content,
+    rawHtml,
+    calculateSeoScore,
+  ]);
 
   return (
     <div className="space-y-3">
@@ -110,7 +117,7 @@ export function FocusKeywordInput({
           variant="destructive"
           className="px-1.5 py-1 rounded-full select-none"
         >
-          {seoScore}
+          {seoScore?.totalScore ?? 0}
         </Badge>
       </div>
 

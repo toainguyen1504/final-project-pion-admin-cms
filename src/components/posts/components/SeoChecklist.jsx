@@ -33,7 +33,7 @@ function SeoChecklist({ data = [] }) {
 }
 
 // get status section
-function getSectionStatus(items) {
+function getSectionStatus(items = []) {
   const errorCount = items.filter((i) => i.level === "error").length;
   const warningCount = items.filter((i) => i.level === "warning").length;
 
@@ -46,7 +46,7 @@ function ChecklistSection({ section, isOpen, onToggle }) {
   const contentRef = useRef(null);
   const [height, setHeight] = useState("0px");
 
-  const { status, count } = getSectionStatus(section.items);
+  const { status, count } = getSectionStatus(section.items || []);
 
   useEffect(() => {
     if (contentRef.current) {

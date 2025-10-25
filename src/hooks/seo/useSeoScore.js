@@ -1,97 +1,140 @@
-import { useCallback } from "react";
+import { useMemo } from "react";
 import useSeoBasicScore from "./useSeoBasicScore";
-import useSeoAdditionalScore from "./useSeoAdditionalScore";
 import useSeoReadabilityScore from "./useSeoReadabilityScore";
+import useSeoAdditionalScore from "./useSeoAdditionalScore";
 
 export default function useSeoScore() {
   const { calculateBasicScore } = useSeoBasicScore();
-  const { calculateAdditionalScore } = useSeoAdditionalScore();
   const { calculateReadabilityScore } = useSeoReadabilityScore();
+  const { calculateAdditionalScore } = useSeoAdditionalScore();
 
-  // Tính điểm cho secondary keywords
-  const calculateSecondaryKeywordScore = useCallback(
-    ({ title, seoDescription, slug, content, keywords }) => {
-      let score = 0;
-      keywords.forEach((keyword) => {
-        const lower = keyword.toLowerCase();
-        if (title.toLowerCase().includes(lower)) score += 1;
-        if (seoDescription.toLowerCase().includes(lower)) score += 1;
-        if (slug.toLowerCase().includes(lower)) score += 1;
-        if (content.toLowerCase().includes(lower)) score += 2;
-      });
-      return Math.min(score, 5);
-    },
-    []
-  );
-
-  // -->>> Hàm tính tổng điểm SEO
-  const calculateSeoScore = useCallback(
-    ({
+  const calculateSeoScore = useMemo(() => {
+    return ({
       title,
-      seoTitle,
-      seoDescription,
+      description,
       slug,
       content,
       rawHtml,
-      keywords,
+      keywords = [], // hỗ trợ nhiều keyword
       baseDomain,
     }) => {
-      if (!keywords?.length) return 0;
-
-      const focusKeyword = keywords[0];
+      // ✅ Keyword chính (focus keyword)
+      const mainKeyword = keywords[0] || "";
       const secondaryKeywords = keywords.slice(1);
 
-      // Basic (30 điểm) - dùng SEO title
-      const { totalScore: basicScore } = calculateBasicScore({
-        title: seoTitle, // SEO snippet title
-        description: seoDescription,
-        slug,
-        content,
-        keyword: focusKeyword,
-      });
+      if (!mainKeyword) {
+        return { totalScore: 0, checklist: [], details: {} };
+      }
 
-      // Additional (35 điểm) - dùng SEO title
-      const additionalScore = calculateAdditionalScore({
-        content,
-        rawHtml,
-        keyword: focusKeyword,
-        normalizedTitleInput: seoTitle, // SEO snippet title
-        baseDomain,
-      }).additionalScore;
-
-      // Readability (35 điểm) - dùng H1 title
-      const readabilityScore = calculateReadabilityScore({
-        title, // H1
-        content,
-        keyword: focusKeyword,
-      });
-
-      // Secondary keyword bonus
-      const secondaryScore = calculateSecondaryKeywordScore({
+      // --- Tính điểm cho keyword chính ---
+      const basic = calculateBasicScore({
         title,
-        seoDescription,
+        description,
         slug,
         content,
-        keywords: secondaryKeywords,
+        keyword: mainKeyword,
       });
 
-      const totalScore =
-        basicScore + additionalScore + readabilityScore + secondaryScore;
+      const readability = calculateReadabilityScore({
+        title,
+        content,
+        keyword: mainKeyword,
+      });
 
-      console.log(
-        "🧾 [useSeoBasicScore] Received description:",
-        seoDescription
+      const additional = calculateAdditionalScore
+        ? calculateAdditionalScore({
+            content,
+            rawHtml,
+            keyword: mainKeyword,
+            normalizedTitleInput: title,
+            baseDomain,
+          })
+        : { totalScore: 0, checklist: [], details: {} };
+
+      // --- Tổng điểm ban đầu ---
+      let totalScore =
+        basic.totalScore + readability.totalScore + additional.totalScore;
+
+      // --- Phần tính điểm keyword phụ ---
+      let bonusScore = 0;
+      const secondaryResults = secondaryKeywords.map((kw) => {
+        const foundInContent = content
+          ? content.toLowerCase().includes(kw.toLowerCase())
+          : false;
+        const foundInTitle = title
+          ? title.toLowerCase().includes(kw.toLowerCase())
+          : false;
+        const foundInSlug = slug
+          ? slug.toLowerCase().includes(kw.toLowerCase())
+          : false;
+
+        const foundAnywhere = foundInContent || foundInTitle || foundInSlug;
+        const bonus = foundAnywhere ? 5 : 0; // mỗi keyword phụ có thể +5 điểm
+
+        bonusScore += bonus;
+
+        return {
+          keyword: kw,
+          foundInContent,
+          foundInTitle,
+          foundInSlug,
+          bonus,
+        };
+      });
+
+      // --- Giới hạn điểm tối đa ---
+      totalScore = Math.min(totalScore + bonusScore, 100);
+
+      // --- Gộp checklist (giữ nguyên format của bạn) ---
+      const mergedChecklist = [
+        ...basic.checklist,
+        ...readability.checklist,
+        ...additional.checklist,
+        // thêm checklist cho keyword phụ
+        ...secondaryResults.map((r) => ({
+          level: r.bonus > 0 ? "success" : "error",
+          text: `Keyword "${r.keyword}" ${
+            r.bonus > 0 ? "found" : "not found"
+          } in title/content/slug.`,
+        })),
+      ];
+
+      // --- Debug ---
+      console.groupCollapsed(
+        "%c💥 SEO Overall Analysis",
+        "color:#9333ea;font-weight:bold"
       );
+      console.log("🧩 Basic Score:", basic.totalScore, basic.details);
+      console.log(
+        "📖 Readability Score:",
+        readability.totalScore,
+        readability.details
+      );
+      console.log(
+        "⚙️ Additional Score:",
+        additional.totalScore,
+        additional.details
+      );
+      console.log("💫 Secondary Keyword Bonus:", bonusScore, secondaryResults);
+      console.log("🔥 Total SEO Score:", totalScore);
+      console.groupEnd();
 
-      return Math.round(totalScore);
-    },
-    [
-      calculateBasicScore,
-      calculateAdditionalScore,
-      calculateReadabilityScore,
-      calculateSecondaryKeywordScore,
-    ]
-  );
+      return {
+        totalScore,
+        checklist: mergedChecklist, // giữ nguyên format checklist
+        details: {
+          basic: basic.details,
+          readability: readability.details,
+          additional: additional.details,
+          secondaryResults,
+        },
+      };
+    };
+  }, [
+    calculateBasicScore,
+    calculateReadabilityScore,
+    calculateAdditionalScore,
+  ]);
 
   return { calculateSeoScore };
 }

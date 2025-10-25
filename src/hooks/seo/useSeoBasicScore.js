@@ -160,14 +160,6 @@ export default function useSeoBasicScore() {
             },
           ],
         },
-        {
-          title: "Keyword Optimization",
-          items: [],
-        },
-        {
-          title: "Content Quality",
-          items: [],
-        },
       ];
 
       // 🔍 Debug log (tuỳ chọn)

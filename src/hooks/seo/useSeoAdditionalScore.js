@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 
-// ===== Helper Functions =====
-
-// 1. Keyword Density
+/* =========================================================
+ 🧩 Helper 1: Keyword Density
+========================================================= */
 function checkKeywordDensity(content, keyword, options = {}) {
   const keywordLower = keyword.toLowerCase().trim();
   const contentLower = content.toLowerCase().trim();
@@ -57,7 +57,9 @@ function checkKeywordDensity(content, keyword, options = {}) {
   return { scoreDensity, messageDensity, statusDensity };
 }
 
-// 2. Keyword in Headings (H1, H2, H3)
+/* =========================================================
+ 🧩 Helper 2: Keyword in Headings (H1, H2, H3)
+========================================================= */
 function checkKeywordInHeadings(rawHtml, keyword, normalizedTitleInput) {
   if (!keyword || !normalizedTitleInput) {
     return {
@@ -75,10 +77,9 @@ function checkKeywordInHeadings(rawHtml, keyword, normalizedTitleInput) {
     "Không tìm thấy từ khóa trong tiêu đề (hoặc H2/H3) của bài viết";
   let statusInHeadings = "fail";
 
-  // H1
+  // === H1 ===
   const h1Text = normalizedTitleInput.trim();
   const hasKeywordInH1 = h1Text.includes(keywordLower);
-
   const h1Words = h1Text.split(/\s+/).length;
   const h1KeywordCount = (h1Text.match(new RegExp(keywordLower, "g")) || [])
     .length;
@@ -87,7 +88,7 @@ function checkKeywordInHeadings(rawHtml, keyword, normalizedTitleInput) {
   const h1LengthOk = h1Words >= 3 && h1Words <= 12;
   const h1Natural = hasKeywordInH1 && h1DensityOk && !h1Stuffing && h1LengthOk;
 
-  // H2/H3
+  // === H2 / H3 ===
   let naturalCount = 0;
   let totalWithKeyword = 0;
 
@@ -96,6 +97,7 @@ function checkKeywordInHeadings(rawHtml, keyword, normalizedTitleInput) {
       .replace(/<[^>]+>/g, "")
       .toLowerCase()
       .trim();
+
     if (text.includes(keywordLower)) {
       totalWithKeyword++;
 
@@ -112,13 +114,13 @@ function checkKeywordInHeadings(rawHtml, keyword, normalizedTitleInput) {
     }
   });
 
-  // Điểm số
+  // === Tính điểm ===
   if (hasKeywordInH1 || totalWithKeyword > 0) {
     if (h1Natural) {
       if (naturalCount > 0) {
         scoreInHeadings = 5;
         messageInHeadings =
-          "Từ khóa xuất hiện tự nhiên trong tiêu đề (hoặc H2/H3) của bài viết.";
+          "Từ khóa xuất hiện tự nhiên trong tiêu đề (H1/H2/H3).";
         statusInHeadings = "good";
       } else {
         scoreInHeadings = 3;
@@ -128,8 +130,7 @@ function checkKeywordInHeadings(rawHtml, keyword, normalizedTitleInput) {
       }
     } else {
       scoreInHeadings = 0;
-      messageInHeadings =
-        "Từ khóa có trong tiêu đề (hoặc H2/H3) nhưng chưa tự nhiên!";
+      messageInHeadings = "Từ khóa có trong tiêu đề nhưng chưa tự nhiên.";
       statusInHeadings = "fail";
     }
   }
@@ -137,7 +138,9 @@ function checkKeywordInHeadings(rawHtml, keyword, normalizedTitleInput) {
   return { scoreInHeadings, messageInHeadings, statusInHeadings };
 }
 
-// 3. Keyword in Image Alt
+/* =========================================================
+ 🧩 Helper 3: Keyword in Image Alt
+========================================================= */
 function checkKeywordInImageAlt(rawHtml, keyword) {
   const keywordLower = keyword.toLowerCase();
   const imgTags = [...rawHtml.matchAll(/<img[^>]*>/gi)];
@@ -159,7 +162,7 @@ function checkKeywordInImageAlt(rawHtml, keyword) {
 
     const altText = altMatch[1].trim().toLowerCase();
 
-    if (altText === "") {
+    if (!altText) {
       missingAlt++;
     } else if (
       altText.includes(keywordLower) &&
@@ -180,7 +183,7 @@ function checkKeywordInImageAlt(rawHtml, keyword) {
 
   if (altWithKeyword > 0 && altWithKeyword >= totalImages / 2) {
     scoreInImageAlt = 5;
-    messageInImageAlt = `Có ${altWithKeyword}/${totalImages} ảnh có Alt text chứa từ khóa và mô tả tự nhiên – tối ưu.`;
+    messageInImageAlt = `Có ${altWithKeyword}/${totalImages} ảnh có Alt text chứa từ khóa – tối ưu.`;
     statusInImageAlt = "good";
   } else if (altWithoutKeyword > 0 || altWithKeyword > 0) {
     scoreInImageAlt = 3;
@@ -199,10 +202,11 @@ function checkKeywordInImageAlt(rawHtml, keyword) {
   return { scoreInImageAlt, messageInImageAlt, statusInImageAlt };
 }
 
-// 4. Internal Links
+/* =========================================================
+ 🧩 Helper 4: Internal Links
+========================================================= */
 function checkInternalLink(rawHtml, baseDomain) {
   const anchors = [...rawHtml.matchAll(/<a[^>]*href=["']([^"']+)["'][^>]*>/gi)];
-
   let internalCount = 0;
 
   for (const [_, href] of anchors) {
@@ -221,9 +225,7 @@ function checkInternalLink(rawHtml, baseDomain) {
   let statusInternalLinks = "fail";
 
   if (internalCount === 0) {
-    scoreInternalLinks = 0;
     messageInternalLinks = "Chưa có liên kết nội bộ trong nội dung.";
-    statusInternalLinks = "fail";
   } else if (internalCount === 1) {
     scoreInternalLinks = 2;
     messageInternalLinks = "Có 1 liên kết nội bộ – nên bổ sung thêm.";
@@ -241,10 +243,11 @@ function checkInternalLink(rawHtml, baseDomain) {
   return { scoreInternalLinks, messageInternalLinks, statusInternalLinks };
 }
 
-// 5. External Links
+/* =========================================================
+ 🧩 Helper 5: External Links
+========================================================= */
 function checkExternalLink(rawHtml, baseDomain) {
   const anchors = [...rawHtml.matchAll(/<a[^>]*href=["']([^"']+)["'][^>]*>/gi)];
-
   let externalCount = 0;
   let relCount = 0;
 
@@ -267,9 +270,7 @@ function checkExternalLink(rawHtml, baseDomain) {
   let statusExternalLinks = "fail";
 
   if (externalCount === 0) {
-    scoreExternalLinks = 0;
     messageExternalLinks = "Chưa có liên kết ngoài trong nội dung.";
-    statusExternalLinks = "fail";
   } else if (externalCount >= 1 && externalCount <= 3) {
     if (relCount === externalCount) {
       scoreExternalLinks = 5;
@@ -283,16 +284,16 @@ function checkExternalLink(rawHtml, baseDomain) {
       statusExternalLinks = "ok";
     }
   } else {
-    scoreExternalLinks = 0;
     messageExternalLinks =
       "Có hơn 3 liên kết ngoài – chưa tối ưu, nên giới hạn lại.";
-    statusExternalLinks = "fail";
   }
 
   return { scoreExternalLinks, messageExternalLinks, statusExternalLinks };
 }
 
-// ===== Custom Hook: useSeoAdditionalScore =====
+/* =========================================================
+ 🎯 Hook: useSeoAdditionalScore
+========================================================= */
 export default function useSeoAdditionalScore() {
   const calculateAdditionalScore = useCallback(
     ({
@@ -312,20 +313,84 @@ export default function useSeoAdditionalScore() {
       const internalLinks = checkInternalLink(rawHtml, baseDomain);
       const externalLinks = checkExternalLink(rawHtml, baseDomain);
 
-      const additionalScore =
+      const totalScore =
         density.scoreDensity +
         headings.scoreInHeadings +
         imageAlt.scoreInImageAlt +
         internalLinks.scoreInternalLinks +
         externalLinks.scoreExternalLinks;
 
-      return {
-        additionalScore, // tổng tối đa 35 điểm
+      const checklist = [
+        {
+          title: "Additional SEO",
+          items: [
+            {
+              text: "Keyword density",
+              level:
+                density.statusDensity === "good"
+                  ? "success"
+                  : density.statusDensity === "ok"
+                  ? "warning"
+                  : "error",
+            },
+            {
+              text: "Keyword in headings (H1/H2/H3)",
+              level:
+                headings.statusInHeadings === "good"
+                  ? "success"
+                  : headings.statusInHeadings === "ok"
+                  ? "warning"
+                  : "error",
+            },
+            {
+              text: "Keyword in image alt",
+              level:
+                imageAlt.statusInImageAlt === "good"
+                  ? "success"
+                  : imageAlt.statusInImageAlt === "ok"
+                  ? "warning"
+                  : "error",
+            },
+            {
+              text: "Internal links",
+              level:
+                internalLinks.statusInternalLinks === "good"
+                  ? "success"
+                  : internalLinks.statusInternalLinks === "ok"
+                  ? "warning"
+                  : "error",
+            },
+            {
+              text: "External links",
+              level:
+                externalLinks.statusExternalLinks === "good"
+                  ? "success"
+                  : externalLinks.statusExternalLinks === "ok"
+                  ? "warning"
+                  : "error",
+            },
+          ],
+        },
+      ];
+
+      console.groupCollapsed(
+        "%c⚙️ SEO Additional Analysis",
+        "color:#f97316;font-weight:bold"
+      );
+      console.log("Total Score:", totalScore);
+      console.log("Details:", {
         density,
         headings,
         imageAlt,
         internalLinks,
         externalLinks,
+      });
+      console.groupEnd();
+
+      return {
+        totalScore,
+        checklist,
+        details: { density, headings, imageAlt, internalLinks, externalLinks },
       };
     },
     []

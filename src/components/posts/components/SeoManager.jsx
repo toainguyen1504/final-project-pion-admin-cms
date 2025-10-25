@@ -4,9 +4,8 @@ import { Separator } from "@/components/ui/separator";
 import { SeoChecklist } from "./SeoChecklist";
 import { FocusKeywordInput } from "./FocusKeywordInput";
 import { SeoSnippetModal } from "./SeoSnippetModal";
-import { useSeoSnippet } from "@/hooks"; //seoDesciption: desc (default seo in hooks)
-
-import useSeoBasicScore from "@/hooks/seo/useSeoBasicScore";
+import { useSeoSnippet } from "@/hooks";
+import useSeoScore from "@/hooks/seo/useSeoScore"; // dùng hook tổng hợp
 
 export function SeoManager({
   title,
@@ -15,22 +14,22 @@ export function SeoManager({
   seoTitle,
   seoSlug,
   seoDescription,
-  onSeoChange, // callback nhận từ PostCreate
+  onSeoChange,
 }) {
   const [open, setOpen] = useState(false);
-  const { calculateBasicScore } = useSeoBasicScore();
   const seo = useSeoSnippet();
+  const { calculateSeoScore } = useSeoScore(); // hook tổng
   const [focusKeyword, setFocusKeyword] = useState("");
   const [checklist, setChecklist] = useState([]);
 
-  // Nhận props ban đầu
+  // Sync dữ liệu ban đầu
   useEffect(() => {
     seo.setTitle(seoTitle || "");
     seo.setSlug(seoSlug || "");
     seo.setDesc(seoDescription || "");
   }, [seoTitle, seoSlug, seoDescription]);
 
-  // Khi chỉnh sửa snippet -> sync ngược lại PostCreate
+  // Sync ngược lại PostCreate
   useEffect(() => {
     onSeoChange?.({
       seoTitle: seo.title,
@@ -39,18 +38,25 @@ export function SeoManager({
     });
   }, [seo.title, seo.slug, seo.desc]);
 
+  // Tính điểm SEO tổng hợp
   useEffect(() => {
     if (!title && !content && !seo.title && !seo.desc) return;
 
-    const { totalScore, checklist } = calculateBasicScore({
-      title: seo.title,
+    const { totalScore, checklist } = calculateSeoScore({
+      title: seo.title, // Dùng snippet title
       description: seo.desc,
       slug: seo.slug,
       content,
-      keyword: focusKeyword,
+      keywords: focusKeyword
+        ? focusKeyword
+            .split(",") // Cho phép nhập nhiều keyword cách nhau bằng dấu phẩy
+            .map((kw) => kw.trim())
+            .filter(Boolean)
+        : [],
+      rawHtml,
     });
 
-    console.log("🎯 Total Score IN CHECKLIST:", totalScore);
+    console.log("🎯 Total SEO Score:", totalScore);
     setChecklist(checklist);
   }, [seo.title, seo.desc, seo.slug, content, focusKeyword]);
 
@@ -100,7 +106,8 @@ export function SeoManager({
         seoDescription={seo.desc}
         onKeywordChange={setFocusKeyword}
       />
-      {/* Checklist */}
+
+      {/* Checklist tổng hợp */}
       <div className="my-8 rounded-md border border-border">
         <SeoChecklist data={checklist} />
       </div>

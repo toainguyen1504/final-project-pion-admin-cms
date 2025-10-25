@@ -1,5 +1,5 @@
 export default function useSeoReadabilityScore() {
-  // Keyword near the beginning of the title (position 0–4)
+  // ===== Check 1: Keyword near title H1 start =====
   function checkKeywordNearTitleStart(title, keyword) {
     const titleWords = title.toLowerCase().trim().split(/\s+/);
     const keywordWords = keyword.toLowerCase().trim().split(/\s+/);
@@ -18,10 +18,10 @@ export default function useSeoReadabilityScore() {
       ? "Từ khóa nằm gần đầu tiêu đề."
       : "Từ khóa chưa nằm gần đầu tiêu đề.";
 
-    return { scoreTitleStart, messageTitleStart };
+    return { score: scoreTitleStart, message: messageTitleStart };
   }
 
-  // Title has number (year, ranking, etc.)
+  // ===== Check 2: Title H1 has number (year/ranking) =====
   function checkTitleHasNumber(title) {
     const currentYear = new Date().getFullYear();
     const minYear = currentYear - 2;
@@ -31,7 +31,6 @@ export default function useSeoReadabilityScore() {
     const topRegex = /\btop\s*\d+\b/i;
     const numberRegex = /\b\d{1,3}\b/;
 
-    let found = false;
     const yearMatches = [...title.matchAll(yearRegex)];
     const validYear = yearMatches.some((match) => {
       const year = parseInt(match[1]);
@@ -41,17 +40,17 @@ export default function useSeoReadabilityScore() {
     const hasTop = topRegex.test(title);
     const hasGeneralNumber = numberRegex.test(title);
 
-    found = validYear || hasTop || hasGeneralNumber;
+    const found = validYear || hasTop || hasGeneralNumber;
 
-    const scoreTitleNumber = found ? 5 : 0;
-    const messageTitleNumber = found
+    const score = found ? 5 : 0;
+    const message = found
       ? "Tiêu đề có chứa số hợp lệ (năm, xếp hạng hoặc số lượng)."
       : "Tiêu đề chưa có số hợp lệ hoặc năm không phù hợp.";
 
-    return { scoreTitleNumber, messageTitleNumber };
+    return { score, message };
   }
 
-  // Title length (≤ 70 chars, ideally 40–70)
+  // ===== Check 3: Title H1 length =====
   function checkTitlePostLength(title) {
     const length = title.trim().length;
     let score = 0;
@@ -79,7 +78,7 @@ export default function useSeoReadabilityScore() {
     return { score, message, status };
   }
 
-  // Paragraph clarity
+  // ===== Check 4: Paragraph clarity =====
   function checkParagraphLength(normalizedContent) {
     const paragraphs = normalizedContent
       .split(/\n{2,}/)
@@ -139,7 +138,7 @@ export default function useSeoReadabilityScore() {
     };
   }
 
-  // Image count (max 5 pts)
+  // ===== Check 5: Images =====
   function checkImages(content) {
     const imgCount = (content.match(/<img\b[^>]*>/gi) || []).length;
     let score = 0;
@@ -163,41 +162,120 @@ export default function useSeoReadabilityScore() {
     return { score, message, status };
   }
 
-  // Media check (video/audio/iframe)
+  // ===== Check 6: Media (video/audio/iframe) =====
   function checkMedia(content) {
     const mediaCount = (content.match(/<(video|audio|iframe)\b[^>]*>/gi) || [])
       .length;
 
-    if (mediaCount >= 1) {
-      return {
-        score: 5,
-        message: `Bài viết có ${mediaCount} video/media bổ trợ -> Tốt!`,
-      };
-    } else {
-      return {
-        score: 0,
-        message: "Bài viết chưa có video/media bổ trợ.",
-      };
-    }
+    return mediaCount >= 1
+      ? {
+          score: 5,
+          message: `Bài viết có ${mediaCount} video/media bổ trợ -> Tốt!`,
+        }
+      : {
+          score: 0,
+          message: "Bài viết chưa có video/media bổ trợ.",
+        };
   }
 
-  // Tạo hàm tổng hợp để tính điểm readability
+  // ===== Tổng hợp điểm & checklist =====
   function calculateReadabilityScore({
     title = "",
     content = "",
     keyword = "",
   }) {
-    let score = 0;
+    const titleStart = checkKeywordNearTitleStart(title, keyword);
+    const titleNumber = checkTitleHasNumber(title);
+    const titleLength = checkTitlePostLength(title);
+    const paragraph = checkParagraphLength(content);
+    const images = checkImages(content);
+    const media = checkMedia(content);
 
-    // Cộng điểm từng phần
-    score += checkKeywordNearTitleStart(title, keyword).scoreTitleStart;
-    score += checkTitleHasNumber(title).scoreTitleNumber;
-    score += checkTitlePostLength(title).score;
-    score += checkParagraphLength(content).score;
-    score += checkImages(content).score;
-    score += checkMedia(content).score;
+    const totalScore =
+      titleStart.score +
+      titleNumber.score +
+      titleLength.score +
+      paragraph.score +
+      images.score +
+      media.score;
 
-    return score; // Tổng tối đa 35 điểm
+    // 🧾 Checklist
+    const checklist = [
+      {
+        title: "Readability",
+        items: [
+          {
+            text: titleStart.message,
+            level: titleStart.score > 0 ? "success" : "warning",
+          },
+          {
+            text: titleNumber.message,
+            level: titleNumber.score > 0 ? "success" : "error",
+          },
+          {
+            text: titleLength.message,
+            level:
+              titleLength.status === "good"
+                ? "success"
+                : titleLength.status === "ok"
+                ? "warning"
+                : "error",
+          },
+          {
+            text: paragraph.message,
+            level:
+              paragraph.status === "good"
+                ? "success"
+                : paragraph.status === "ok"
+                ? "warning"
+                : "error",
+          },
+          {
+            text: images.message,
+            level:
+              images.status === "good"
+                ? "success"
+                : images.status === "ok"
+                ? "warning"
+                : "error",
+          },
+          {
+            text: media.message,
+            level: media.score > 0 ? "success" : "warning",
+          },
+        ],
+      },
+    ];
+
+    // 🧩 Debug log
+    console.groupCollapsed(
+      "%c📖 SEO Readability Analysis",
+      "color:#0284c7;font-weight:bold"
+    );
+    console.log("📊 Total Score:", totalScore);
+    console.log("📋 Details:", {
+      titleStart,
+      titleNumber,
+      titleLength,
+      paragraph,
+      images,
+      media,
+    });
+    console.groupEnd();
+
+    return {
+      totalScore,
+      checklist,
+      details: {
+        titleStart,
+        titleNumber,
+        titleLength,
+        paragraph,
+        images,
+        media,
+      },
+    };
   }
+
   return { calculateReadabilityScore };
 }
