@@ -23,6 +23,11 @@ function PostCreate() {
   const [visibility, setVisibility] = useState("private");
   const [publishDate, setPublishDate] = useState(new Date());
   const [title, setTitle] = useState("");
+  const [seoData, setSeoData] = useState({
+    seoTitle: "",
+    seoSlug: "",
+    seoDescription: "",
+  });
   const [allCategories, setAllCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]); // IDs selected
   const [isCategoryPopupOpen, setIsCategoryPopupOpen] = useState(false);
@@ -34,6 +39,33 @@ function PostCreate() {
   const handleEditorReady = useCallback((editorInstance) => {
     setEditor(editorInstance);
   }, []);
+
+  const BASE_SEO_PAYLOAD = {
+    title: title,
+    content: editor?.getText() || "",
+    rawHtml: editor?.getHTML() || "",
+    seoTitle: title,
+    seoSlug: slugify(title),
+    seoDescription: seoData.seoDescription || "",
+  };
+
+  // Kiểm tra dữ liệu seo nhận ngược về từ SeoManager
+  useEffect(() => {
+    console.log("🟢 Updated SEO data from SeoManager:", seoData);
+  }, [seoData]);
+
+  useEffect(() => {
+    const payload = {
+      title: title,
+      content: editor?.getText() || "",
+      rawHtml: editor?.getHTML() || "",
+      seoTitle: seoData.seoTitle || title,
+      seoSlug: slugify(title),
+      seoDescription: "",
+    };
+
+    console.log("BASE_SEO_PAYLOAD:", payload);
+  }, [title, editor]);
 
   // get all categories
   useEffect(() => {
@@ -101,9 +133,9 @@ function PostCreate() {
     const payload = {
       title,
       sapo_text: "Short summary for the post",
-      slug: slugify(title),
-      seo_title: title,
-      seo_description: "SEO description automatically generated",
+      slug: slugify(seoData.seoTitle || title),
+      seo_title: seoData.seoTitle,
+      seo_description: "",
       seo_keywords: "post, example",
       content: editor.getHTML(),
       status: mapVisibilityToStatus(visibility),
@@ -215,13 +247,11 @@ function PostCreate() {
               hasContentError ? "border-2 border-red-500" : ""
             }`}
           >
-            <SimpleEditor
-              onReady={handleEditorReady}
-            />
+            <SimpleEditor onReady={handleEditorReady} />
           </div>
 
-          {/* Rank math SEO */}
-          <SeoManager />
+          {/* Rank math SEO - Truyền callback để nhận seoData*/}
+          <SeoManager {...BASE_SEO_PAYLOAD} onSeoChange={setSeoData} />
         </div>
 
         {/* Column right */}

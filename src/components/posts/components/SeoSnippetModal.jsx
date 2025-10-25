@@ -56,9 +56,14 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
 
   // --- Save changes
   const handleSave = () => {
-    setTitle(draftTitle || DEFAULT_SEO.title);
-    setSlug(slugify(draftSlug || draftTitle || DEFAULT_SEO.slug));
-    setDesc(draftDesc || DEFAULT_SEO.desc);
+    // Chỉ cập nhật khi có thay đổi thực sự (không dùng placeholder)
+    const newTitle = draftTitle.trim() || "";
+    const newSlug = slugify(draftSlug.trim() || draftTitle.trim() || "");
+    const newDesc = draftDesc.trim() || "";
+
+    if (newTitle) setTitle(newTitle);
+    if (newSlug) setSlug(newSlug);
+    if (newDesc) setDesc(newDesc);
     onOpenChange(false);
   };
 
@@ -94,7 +99,11 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+      <DialogContent
+        onInteractOutside={(e) => e.preventDefault()} //chặn click outside
+        onEscapeKeyDown={(e) => e.preventDefault()} // chặn nhấn ESC
+        className="max-w-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
+      >
         <DialogHeader>
           <DialogTitle>Preview Snippet Editor</DialogTitle>
         </DialogHeader>

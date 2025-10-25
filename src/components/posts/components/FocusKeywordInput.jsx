@@ -1,13 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 
-export function FocusKeywordInput() {
+import { useSeoScore } from "@/hooks";
+
+export function FocusKeywordInput({
+  title,
+  content,
+  rawHtml,
+  seoTitle,
+  seoSlug,
+  seoDescription,
+  onKeywordChange, // send to seoManager
+}) {
   const [keywords, setKeywords] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState("");
+  const [seoScore, setSeoScore] = useState(0);
+
+  const { calculateSeoScore } = useSeoScore();
 
   const MAX_KEYWORDS = 10;
   const MAX_LENGTH = 60;
@@ -21,17 +34,12 @@ export function FocusKeywordInput() {
 
     setError(""); // reset error
 
-    // Length validation
-    if (value.length > MAX_LENGTH) {
+    // Validation
+    if (value.length > MAX_LENGTH)
       return setError(`Keyword cannot exceed ${MAX_LENGTH} characters.`);
-    }
-
-    // Keyword limit validation
-    if (keywords.length >= MAX_KEYWORDS) {
+    if (keywords.length >= MAX_KEYWORDS)
       return setError(`Maximum ${MAX_KEYWORDS} keywords allowed.`);
-    }
 
-    // Validation rules
     // eslint-disable-next-line no-useless-escape
     const isValid = /^[a-zA-Z0-9À-ỹ\s\-]+$/.test(value);
     const notTooShort = value.length >= 6;
@@ -51,17 +59,45 @@ export function FocusKeywordInput() {
       );
     }
 
-    // Prevent duplicate
-    if (!keywords.includes(value)) {
-      setKeywords([...keywords, value]);
-      setInputValue("");
-    }
+    if (keywords.some((k) => k === value))
+      return setError("Keyword already exists.");
+
+    setKeywords([...keywords, value]);
+    setInputValue("");
   };
 
-  // Remove a keyword when clicking X
   const handleRemove = (keyword) => {
     setKeywords(keywords.filter((k) => k !== keyword));
   };
+
+  // Auto calculate SEO score
+  useEffect(() => {
+    console.group("📊 Focus Keyword Debug Data");
+    console.log("🧩 title (H1):", title);
+    console.log("🧩 seoTitle:", seoTitle);
+    console.log("🧩 seoSlug:", seoSlug);
+    console.log("🧩 seoDescription:", seoDescription);
+    console.log("🧩 content length:", content?.length);
+    console.log("🧩 rawHtml length:", rawHtml?.length);
+    console.log("🧩 keywords:", keywords);
+    console.groupEnd();
+
+    const score = calculateSeoScore({
+      title, // H1
+      seoTitle, // SEO snippet title
+      seoDescription,
+      slug: seoSlug,
+      content,
+      rawHtml,
+      keywords,
+      baseDomain: "https://example.com",
+    });
+    setSeoScore(score);
+
+    if (onKeywordChange) {
+      onKeywordChange(keywords[0] || ""); // first keyword
+    }
+  }, [keywords, title, seoTitle, seoSlug, seoDescription, content, rawHtml]);
 
   return (
     <div className="space-y-3">
@@ -74,7 +110,7 @@ export function FocusKeywordInput() {
           variant="destructive"
           className="px-1.5 py-1 rounded-full select-none"
         >
-          30
+          {seoScore}
         </Badge>
       </div>
 
@@ -96,19 +132,18 @@ export function FocusKeywordInput() {
           {keywords.map((kw, i) => (
             <div
               key={kw}
-              className={`px-3 pt-1 pb-1.5 rounded-full text-sm flex items-center gap-1 cursor-default pointer-events-none
-              ${
-                i === 0
-                  ? "bg-yellow-400 text-white font-semibold"
-                  : "bg-yellow-100 text-gray-700 dark:bg-yellow-200"
-              }`}
+              className={`px-3 pt-1 pb-1.5 rounded-full text-sm flex items-center gap-1 cursor-default
+                ${
+                  i === 0
+                    ? "bg-yellow-400 text-white font-semibold"
+                    : "bg-yellow-100 text-gray-700 dark:bg-yellow-200"
+                }`}
             >
               <span className="pointer-events-none">{kw}</span>
               <button
                 type="button"
                 onClick={() => handleRemove(kw)}
-                className="ml-1 pt-0.5 pointer-events-auto text-gray-500 hover:text-red-500
-                    cursor-pointer duration-300 transition-colors"
+                className="ml-1 pt-0.5 text-gray-500 hover:text-red-500 cursor-pointer duration-300 transition-colors"
                 title="Remove keyword"
               >
                 <X size={14} />

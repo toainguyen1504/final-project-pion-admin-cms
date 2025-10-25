@@ -3,35 +3,34 @@ import { ChevronDown, ChevronUp, X, Check, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
-// Mock data
-const checklistData = [
-  {
-    title: "Basic SEO",
-    items: [
-      { text: "Content length is too short", level: "error" },
-      { text: "Missing focus keyword in title", level: "error" },
-      { text: "No meta description provided", level: "error" },
-      { text: "Keyword appears in first 10%", level: "warning" },
-      { text: "Title length is optimized", level: "success" },
-    ],
-  },
-  {
-    title: "Additional",
-    items: [
-      { text: "No internal links", level: "success" },
-      { text: "Missing image alt attributes", level: "success" },
-      { text: "Keyword density is over-optimized", level: "success" },
-    ],
-  },
-  {
-    title: "Content Readability",
-    items: [
-      { text: "Sentences are too long", level: "warning" },
-      { text: "Passive voice detected", level: "warning" },
-      { text: "Content is easy to read", level: "success" },
-    ],
-  },
-];
+function SeoChecklist({ data = [] }) {
+  const [openIndex, setOpenIndex] = useState(0);
+
+  if (!data.length) {
+    return (
+      <div className="p-4 text-sm text-muted-foreground text-center">
+        No checklist data available.
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-md border border-border bg-card text-card-foreground overflow-hidden">
+      {data.map((section, index) => (
+        <div key={index}>
+          <ChecklistSection
+            section={section}
+            isOpen={openIndex === index}
+            onToggle={() =>
+              setOpenIndex((prev) => (prev === index ? -1 : index))
+            }
+          />
+          {index < data.length - 1 && <Separator className="border-border" />}
+        </div>
+      ))}
+    </div>
+  );
+}
 
 // get status section
 function getSectionStatus(items) {
@@ -121,29 +120,6 @@ function ChecklistSection({ section, isOpen, onToggle }) {
           ))}
         </ul>
       </div>
-    </div>
-  );
-}
-
-function SeoChecklist() {
-  const [openIndex, setOpenIndex] = useState(0);
-
-  return (
-    <div className="rounded-md border border-border bg-card text-card-foreground overflow-hidden">
-      {checklistData.map((section, index) => (
-        <div key={index}>
-          <ChecklistSection
-            section={section}
-            isOpen={openIndex === index}
-            onToggle={() =>
-              setOpenIndex((prev) => (prev === index ? -1 : index))
-            }
-          />
-          {index < checklistData.length - 1 && (
-            <Separator className="border-border" />
-          )}
-        </div>
-      ))}
     </div>
   );
 }

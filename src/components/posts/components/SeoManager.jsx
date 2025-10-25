@@ -1,14 +1,58 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SeoChecklist } from "./SeoChecklist";
 import { FocusKeywordInput } from "./FocusKeywordInput";
 import { SeoSnippetModal } from "./SeoSnippetModal";
-import { useSeoSnippet } from "@/hooks";
+import { useSeoSnippet } from "@/hooks"; //seoDesciption: desc (default seo in hooks)
 
-export function SeoManager() {
+import useSeoBasicScore from "@/hooks/seo/useSeoBasicScore";
+
+export function SeoManager({
+  title,
+  content,
+  rawHtml,
+  seoTitle,
+  seoSlug,
+  seoDescription,
+  onSeoChange, // callback nhận từ PostCreate
+}) {
   const [open, setOpen] = useState(false);
+  const { calculateBasicScore } = useSeoBasicScore();
   const seo = useSeoSnippet();
+  const [focusKeyword, setFocusKeyword] = useState("");
+  const [checklist, setChecklist] = useState([]);
+
+  // Nhận props ban đầu
+  useEffect(() => {
+    seo.setTitle(seoTitle || "");
+    seo.setSlug(seoSlug || "");
+    seo.setDesc(seoDescription || "");
+  }, [seoTitle, seoSlug, seoDescription]);
+
+  // Khi chỉnh sửa snippet -> sync ngược lại PostCreate
+  useEffect(() => {
+    onSeoChange?.({
+      seoTitle: seo.title,
+      seoSlug: seo.slug,
+      seoDescription: seo.desc,
+    });
+  }, [seo.title, seo.slug, seo.desc]);
+
+  useEffect(() => {
+    if (!title && !content && !seo.title && !seo.desc) return;
+
+    const { totalScore, checklist } = calculateBasicScore({
+      title: seo.title,
+      description: seo.desc,
+      slug: seo.slug,
+      content,
+      keyword: focusKeyword,
+    });
+
+    console.log("🎯 Total Score IN CHECKLIST:", totalScore);
+    setChecklist(checklist);
+  }, [seo.title, seo.desc, seo.slug, content, focusKeyword]);
 
   return (
     <div className="space-y-6 bg-card p-6 pt-6 pb-10 rounded-xl border border-border text-card-foreground">
@@ -47,11 +91,18 @@ export function SeoManager() {
       <Separator />
 
       {/* Focus Keyword */}
-      <FocusKeywordInput />
-
+      <FocusKeywordInput
+        title={title}
+        content={content}
+        rawHtml={rawHtml}
+        seoTitle={seo.title}
+        seoSlug={seo.slug}
+        seoDescription={seo.desc}
+        onKeywordChange={setFocusKeyword}
+      />
       {/* Checklist */}
       <div className="my-8 rounded-md border border-border">
-        <SeoChecklist />
+        <SeoChecklist data={checklist} />
       </div>
 
       <SeoSnippetModal open={open} onOpenChange={setOpen} seo={seo} />
