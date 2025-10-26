@@ -9,7 +9,8 @@ function SeoChecklist({ data = [] }) {
   if (!data.length) {
     return (
       <div className="p-4 text-sm text-muted-foreground text-center">
-        No checklist data available.
+        Please enter a keyword and provide at least one field (e.g. title or
+        content) to generate SEO checklist.
       </div>
     );
   }

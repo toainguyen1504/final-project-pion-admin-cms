@@ -50,22 +50,22 @@ function PostCreate() {
   };
 
   // Kiểm tra dữ liệu seo nhận ngược về từ SeoManager
-  useEffect(() => {
-    console.log("🟢 Updated SEO data from SeoManager:", seoData);
-  }, [seoData]);
+  // useEffect(() => {
+  //   console.log("🟢 Updated SEO data from SeoManager:", seoData);
+  // }, [seoData]);
 
-  useEffect(() => {
-    const payload = {
-      title: title,
-      content: editor?.getText() || "",
-      rawHtml: editor?.getHTML() || "",
-      seoTitle: seoData.seoTitle || title,
-      seoSlug: slugify(title),
-      seoDescription: "",
-    };
+  // useEffect(() => {
+  //   const payload = {
+  //     title: title,
+  //     content: editor?.getText() || "",
+  //     rawHtml: editor?.getHTML() || "",
+  //     seoTitle: seoData.seoTitle || title,
+  //     seoSlug: slugify(title),
+  //     seoDescription: "",
+  //   };
 
-    console.log("BASE_SEO_PAYLOAD:", payload);
-  }, [title, editor]);
+  //   console.log("BASE_SEO_PAYLOAD:", payload);
+  // }, [title, editor]);
 
   // get all categories
   useEffect(() => {
@@ -230,9 +230,10 @@ function PostCreate() {
             <Input
               id="post-title"
               value={title}
+              maxLength={100}
               onChange={(e) => setTitle(e.target.value)}
               required
-              placeholder="Start with a strong post title (*)"
+              placeholder="Write a clear and catchy post title (max 100 characters)"
               className={`py-6 px-6 !text-base border rounded-xl caret-blue-600 focus:outline-none focus-visible:ring-1 focus-visible:ring-offset-0 ${
                 hasTitleError
                   ? "border-2 border-red-500 focus-visible:ring-red-500"

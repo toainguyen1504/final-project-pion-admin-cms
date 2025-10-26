@@ -325,7 +325,7 @@ export default function useSeoAdditionalScore() {
           title: "Additional SEO",
           items: [
             {
-              text: "Keyword density",
+              text: "Keyword density is optimal",
               level:
                 density.statusDensity === "good"
                   ? "success"
@@ -334,7 +334,7 @@ export default function useSeoAdditionalScore() {
                   : "error",
             },
             {
-              text: "Keyword in headings (H1/H2/H3)",
+              text: "Keyword appears in headings (H1/H2/H3), but may sound unnatural",
               level:
                 headings.statusInHeadings === "good"
                   ? "success"
@@ -343,16 +343,7 @@ export default function useSeoAdditionalScore() {
                   : "error",
             },
             {
-              text: "Keyword in image alt",
-              level:
-                imageAlt.statusInImageAlt === "good"
-                  ? "success"
-                  : imageAlt.statusInImageAlt === "ok"
-                  ? "warning"
-                  : "error",
-            },
-            {
-              text: "Internal links",
+              text: "No internal links found in the content",
               level:
                 internalLinks.statusInternalLinks === "good"
                   ? "success"
@@ -361,11 +352,20 @@ export default function useSeoAdditionalScore() {
                   : "error",
             },
             {
-              text: "External links",
+              text: "1–3 external links found, but missing rel attribute",
               level:
                 externalLinks.statusExternalLinks === "good"
                   ? "success"
                   : externalLinks.statusExternalLinks === "ok"
+                  ? "warning"
+                  : "error",
+            },
+            {
+              text: "All images (4/4) have keyword-rich and natural alt text",
+              level:
+                imageAlt.statusInImageAlt === "good"
+                  ? "success"
+                  : imageAlt.statusInImageAlt === "ok"
                   ? "warning"
                   : "error",
             },

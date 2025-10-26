@@ -2,7 +2,13 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { X } from "lucide-react";
+import { X, HelpCircle } from "lucide-react";
+
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 
 import { useSeoScore } from "@/hooks";
 
@@ -22,8 +28,14 @@ export function FocusKeywordInput({
 
   const { calculateSeoScore } = useSeoScore();
 
-  const MAX_KEYWORDS = 10;
+  const MAX_KEYWORDS = 5;
   const MAX_LENGTH = 60;
+
+  const getBadgeColor = (score) => {
+    if (score >= 80) return "bg-green-500";
+    if (score >= 50) return "bg-yellow-500";
+    return "bg-red-500";
+  };
 
   const handleAddKeyword = (e) => {
     if (e.key !== "Enter") return;
@@ -74,29 +86,38 @@ export function FocusKeywordInput({
 
   // Auto calculate SEO score
   useEffect(() => {
-    if (!title || !content || !mainKeyword) return; // tránh tính khi data chưa sẵn sàng
-
-    const score = calculateSeoScore({
-      title,
-      description: seoDescription,
-      slug: seoSlug,
-      content,
-      rawHtml,
-      keywords,
-      baseDomain: "example.com",
-    });
-
-    // chỉ set state khi điểm thực sự khác với state hiện tại
-    setSeoScore((prev) => {
-      if (prev?.totalScore === score.totalScore) return prev;
-      return score;
-    });
-
-    if (onKeywordChange) {
-      onKeywordChange(mainKeyword);
+    // If no keywords, clear score and notify parent
+    if (!keywords.length) {
+      setSeoScore(0);
+      if (onKeywordChange) onKeywordChange("");
+      return;
     }
+
+    const timer = setTimeout(() => {
+      const score = calculateSeoScore({
+        title,
+        description: seoDescription,
+        slug: seoSlug,
+        content,
+        rawHtml,
+        keywords,
+        baseDomain: "example.com",
+      });
+
+      setSeoScore((prev) => {
+        if (prev?.totalScore === score.totalScore) return prev;
+        return score;
+      });
+
+      if (onKeywordChange) {
+        onKeywordChange(mainKeyword);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
   }, [
-    mainKeyword, // chỉ theo keyword chính
+    keywords, // thêm vào đây cho chắc chắn
+    mainKeyword,
     title,
     seoTitle,
     seoSlug,
@@ -109,15 +130,45 @@ export function FocusKeywordInput({
   return (
     <div className="space-y-3">
       {/* Header */}
-      <div className="flex items-center space-x-2">
-        <Label htmlFor="focus-keyword" className="text-base ml-2">
-          Focus Keyword
-        </Label>
+      <div className="flex items-center justify-between">
+        {/* label + help */}
+        <div className="flex items-center gap-2">
+          <Label htmlFor="focus-keyword" className="text-base ml-2">
+            Focus Keyword
+          </Label>
+
+          {/* Help Icon */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                aria-label="Help about focus keyword"
+              >
+                <HelpCircle className="w-5 h-5 cursor-pointer" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 text-sm">
+              <p>
+                To calculate SEO score, please enter a{" "}
+                <strong>focus keyword</strong>. The first keyword you enter will
+                be used as the primary keyword for analysis.
+                <br />
+                <br />
+                Additional keywords (secondary) may contribute bonus points if
+                they are found in the post content, title, or slug.
+              </p>
+            </PopoverContent>
+          </Popover>
+        </div>
+
+        {/* badge seo score */}
         <Badge
-          variant="destructive"
-          className="px-1.5 py-1 rounded-full select-none"
+          className={`px-3 py-1 min-w-28   rounded-full select-none ${getBadgeColor(
+            seoScore.totalScore
+          )}`}
         >
-          {seoScore?.totalScore ?? 0}
+          SEO: {seoScore?.totalScore ?? 0}/100
         </Badge>
       </div>
 
@@ -143,7 +194,7 @@ export function FocusKeywordInput({
                 ${
                   i === 0
                     ? "bg-yellow-400 text-white font-semibold"
-                    : "bg-yellow-100 text-gray-700 dark:bg-yellow-200"
+                    : "bg-yellow-100 text-gray-700 dark:bg-yellow-100"
                 }`}
             >
               <span className="pointer-events-none">{kw}</span>

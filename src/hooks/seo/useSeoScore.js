@@ -18,7 +18,7 @@ export default function useSeoScore() {
       keywords = [], // hỗ trợ nhiều keyword
       baseDomain,
     }) => {
-      // ✅ Keyword chính (focus keyword)
+      // Keyword chính (focus keyword)
       const mainKeyword = keywords[0] || "";
       const secondaryKeywords = keywords.slice(1);
 
@@ -69,7 +69,7 @@ export default function useSeoScore() {
           : false;
 
         const foundAnywhere = foundInContent || foundInTitle || foundInSlug;
-        const bonus = foundAnywhere ? 5 : 0; // mỗi keyword phụ có thể +5 điểm
+        const bonus = foundAnywhere ? 2 : 0; // mỗi keyword phụ có thể +2 điểm
 
         bonusScore += bonus;
 
@@ -88,8 +88,8 @@ export default function useSeoScore() {
       // --- Gộp checklist (giữ nguyên format của bạn) ---
       const mergedChecklist = [
         ...basic.checklist,
-        ...readability.checklist,
         ...additional.checklist,
+        ...readability.checklist,
         // thêm checklist cho keyword phụ
         ...secondaryResults.map((r) => ({
           level: r.bonus > 0 ? "success" : "error",

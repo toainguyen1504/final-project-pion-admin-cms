@@ -7,7 +7,13 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search } from "lucide-react";
+import { Search, HelpCircle } from "lucide-react";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+
 import { normalizeText } from "@/lib/utils";
 import { ScheduledPanel } from "./components/ScheduledPanel";
 
@@ -65,14 +71,29 @@ export function PostSidebar({
     <div className="w-[320px] border-l border-border rounded-xl p-6 bg-card text-card-foreground space-y-6">
       {/* Section: Publish */}
       <div className="space-y-4">
-        <div className="flex justify-between items-center">
+        <div className="flex items-center gap-2">
           <h3 className="text-lg font-semibold dark:text-slate-200">Publish</h3>
-          <Badge
-            variant="destructive"
-            className="px-3 py-1 rounded-full select-none"
-          >
-            SEO: 30 / 100
-          </Badge>
+
+          {/* Help Icon */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                aria-label="Help about publish settings"
+              >
+                <HelpCircle className="w-5 h-5 cursor-pointer" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-64 text-sm">
+              <p>
+                Choose <strong>Public</strong> to make your post visible to
+                everyone. Use <strong>Scheduled</strong> to publish at a future
+                date, or
+                <strong>Private</strong> to keep it hidden.
+              </p>
+            </PopoverContent>
+          </Popover>
         </div>
 
         <Tabs
@@ -249,9 +270,31 @@ export function PostSidebar({
 
       {/* Thumbnail */}
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">
-          Thumbnail Image
-        </h3>
+        <div className="flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">
+            Thumbnail Image
+          </h3>
+
+          {/* Help Icon */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                aria-label="Help about thumbnail"
+              >
+                <HelpCircle className="w-5 h-5 cursor-pointer" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-72 text-sm">
+              <p>
+                This thumbnail will be used as the featured image of the post on
+                the frontend interface. It also serves as the preview image when
+                the post is shared on social media (OG image).
+              </p>
+            </PopoverContent>
+          </Popover>
+        </div>
         <div
           className="w-full h-32 px-4 text-center bg-muted rounded-md flex items-center justify-center 
           text-slate-500 dark:text-slate-200 text-sm"
