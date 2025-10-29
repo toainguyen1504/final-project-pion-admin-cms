@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 // Icon
-import { Eye } from "lucide-react";
+import { Eye, Image } from "lucide-react";
 import "@/components/tiptap-templates/simple/simple-editor.scss";
 
 import { SeoManager } from "./components/SeoManager";
@@ -17,6 +17,8 @@ import { PostSidebar } from "./PostSidebar";
 import { slugify } from "@/lib/utils";
 import { createPost } from "@/lib/api/posts";
 import { fetchCategories } from "@/lib/api/categories";
+import MediaLibrary from "./MediaLibrary";
+import { mockImages } from "@/data";
 
 function PostCreate() {
   const [editor, setEditor] = useState(null);
@@ -35,6 +37,9 @@ function PostCreate() {
   const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
   const [loadingCategories, setLoadingCategories] = useState(false);
   const [errors, setErrors] = useState([]); // error messages
+
+  // MEDIA library
+  const [showMediaLibrary, setShowMediaLibrary] = useState(false);
 
   const handleEditorReady = useCallback((editorInstance) => {
     setEditor(editorInstance);
@@ -188,6 +193,17 @@ function PostCreate() {
           {/* Button */}
           <div className="flex items-center gap-3">
             <Button
+              type="button"
+              onClick={() => setShowMediaLibrary(true)}
+              variant="outline"
+              className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2
+                cursor-pointer transition-all duration-300"
+            >
+              <Image className="w-4 h-4" />
+              Media Library
+            </Button>
+
+            <Button
               variant="outline"
               className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2
               cursor-pointer transition-all duration-300"
@@ -272,6 +288,13 @@ function PostCreate() {
           categoryError={hasCategoryError} // highlight category field
         />
       </div>
+
+      {showMediaLibrary && (
+        <MediaLibrary
+          mockImages={mockImages}
+          onClose={() => setShowMediaLibrary(false)}
+        />
+      )}
     </div>
   );
 }
