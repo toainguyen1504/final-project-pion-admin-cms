@@ -2,6 +2,9 @@ import React, { useState, useRef } from "react";
 import ReactDOM from "react-dom";
 import { Upload, Image, CloudUpload, FileUp, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 import { useMedia } from "@/hooks/useMedia";
 import { uploadMedia } from "@/lib/api/media";
@@ -15,6 +18,11 @@ export default function MediaLibrary({ onClose }) {
   const [files, setFiles] = useState([]);
   const fileInputRef = useRef(null);
   const [uploading, setUploading] = useState(false); // loading riêng cho upload
+
+  // metadata for image
+  const [imageTitle, setImageTitle] = useState("");
+  const [imageCaption, setImageCaption] = useState("");
+  const [imageDescription, setImageDescription] = useState("");
 
   // Dùng hook gọi API thật
   const { mediaList, loading, reloadMedia } = useMedia();
@@ -204,20 +212,22 @@ export default function MediaLibrary({ onClose }) {
           </div>
 
           {/* Sidebar */}
-          <div className="w-72 border-l p-4 bg-gray-50 flex flex-col">
+          <div className="w-72 overflow-y-auto border-l p-4 bg-gray-50 flex flex-col">
             <h6 className="uppercase text-xs text-gray-500 mb-3 font-semibold">
               Chi tiết đính kèm
             </h6>
 
+            {/* Preview */}
             <div className="mb-3">
               <img
                 src={selectedImage?.url || IMAGE_DEFAULT}
-                alt={selectedImage?.title || "Preview"}
+                alt={selectedImage?.caption || "Preview"}
                 className="rounded border w-full h-32 object-cover"
                 onError={(e) => (e.target.src = IMAGE_DEFAULT)}
               />
             </div>
 
+            {/* Metadata */}
             <div className="text-sm text-gray-600 space-y-1 mb-4">
               <div>
                 <strong>Tên tệp:</strong>{" "}
@@ -249,7 +259,6 @@ export default function MediaLibrary({ onClose }) {
               </div>
 
               <button
-                // onClick={handleDelete}
                 disabled={!selectedImage}
                 className={`mt-2 text-red-600 text-sm hover:underline ${
                   !selectedImage && "opacity-50 pointer-events-none"
@@ -257,6 +266,54 @@ export default function MediaLibrary({ onClose }) {
               >
                 Xóa vĩnh viễn
               </button>
+            </div>
+
+            {/* Form Inputs */}
+            <div className="space-y-4 text-sm text-gray-700">
+              {/* Tiêu đề */}
+              <div className="space-y-1">
+                <Label htmlFor="image-title">Tiêu đề ảnh *</Label>
+                <Input
+                  id="image-title"
+                  value={imageTitle}
+                  onChange={(e) => setImageTitle(e.target.value)}
+                  placeholder="Nhập tiêu đề ảnh"
+                  required
+                  className="border border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
+                  focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-lg"
+                />
+              </div>
+
+              {/* Chú thích */}
+              <div className="space-y-1">
+                <Label htmlFor="image-caption">Chú thích ảnh *</Label>
+                <Textarea
+                  id="image-caption"
+                  value={imageCaption}
+                  onChange={(e) => setImageCaption(e.target.value)}
+                  placeholder="Chú thích sẽ hiển thị dưới ảnh và dùng làm alt text"
+                  rows={3}
+                  required
+                  className="border border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
+                  focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-lg"
+                />
+              </div>
+
+              {/* Mô tả */}
+              <div className="space-y-1">
+                <Label htmlFor="image-description">
+                  Mô tả chi tiết (tuỳ chọn)
+                </Label>
+                <Textarea
+                  id="image-description"
+                  value={imageDescription}
+                  onChange={(e) => setImageDescription(e.target.value)}
+                  placeholder="Mô tả giúp người khiếm thị hiểu nội dung ảnh"
+                  rows={3}
+                  className="border border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
+                  focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-lg"
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -164,7 +164,7 @@ export function FocusKeywordInput({
 
         {/* badge seo score */}
         <Badge
-          className={`px-3 py-1 min-w-28   rounded-full select-none ${getBadgeColor(
+          className={`px-3 py-1 min-w-28 text-white dark:text-white rounded-full select-none ${getBadgeColor(
             seoScore.totalScore
           )}`}
         >
