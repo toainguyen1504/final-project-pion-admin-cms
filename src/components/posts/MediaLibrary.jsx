@@ -324,16 +324,29 @@ export default function MediaLibrary({ onClose, onSelectThumbnail }) {
         {/* Footer */}
         <div className="flex justify-end gap-3 p-4 border-t">
           <button
-            className="border border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white transition px-4 py-2 rounded flex items-center gap-2"
             onClick={() => {
               if (!selectedImage) return;
               onSelectThumbnail?.(selectedImage); // <-- gọi callback và truyền ảnh đã chọn
             }}
             disabled={!selectedImage}
+            className={`border border-indigo-600 text-indigo-600 px-4 py-2 rounded flex items-center gap-2 transition 
+            ${
+              selectedImage
+                ? "hover:bg-indigo-600 hover:text-white"
+                : "opacity-50 cursor-not-allowed"
+            }`}
           >
             <Image className="w-4 h-4" /> Chọn làm ảnh thumbnail
           </button>
-          <button className="bg-indigo-600 text-white px-6 py-2 rounded flex items-center gap-2 hover:bg-indigo-700 transition">
+          <button
+            disabled={!selectedImage}
+            className={`bg-indigo-600 text-white px-6 py-2 rounded flex items-center gap-2 transition 
+            ${
+              selectedImage
+                ? "hover:bg-indigo-700"
+                : "opacity-50 cursor-not-allowed"
+            }`}
+          >
             <FileUp className="w-4 h-4" /> Chèn vào bài viết
           </button>
         </div>
