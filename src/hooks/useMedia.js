@@ -5,6 +5,12 @@ export function useMedia() {
   const [mediaList, setMediaList] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Base URL render media (tuỳ theo môi trường)
+  const BASE_MEDIA_URL =
+    import.meta.env.MODE === "development"
+      ? import.meta.env.VITE_BASE_MEDIA_URL_LOCAL
+      : import.meta.env.VITE_BASE_MEDIA_URL_PRODUCTION;
+
   // 🧩 Lấy toàn bộ media
   const loadMedia = async () => {
     try {
@@ -41,5 +47,6 @@ export function useMedia() {
     loading,
     reloadMedia: loadMedia,
     uploadMedia: handleUpload,
+    BASE_MEDIA_URL,
   };
 }

@@ -38,6 +38,10 @@ function PostCreate() {
   const [loadingCategories, setLoadingCategories] = useState(false);
   const [errors, setErrors] = useState([]); // error messages
 
+  // media library
+  // const [isMediaOpen, setIsMediaOpen] = useState(false);
+  const [featuredMedia, setFeaturedMedia] = useState(null);
+
   // MEDIA library
   const [showMediaLibrary, setShowMediaLibrary] = useState(false);
 
@@ -273,6 +277,8 @@ function PostCreate() {
 
         {/* Column right */}
         <PostSidebar
+          featuredMedia={featuredMedia}
+          // onOpenMedia={() => setIsMediaOpen(true)}
           visibility={visibility}
           setVisibility={setVisibility}
           publishDate={publishDate}
@@ -293,6 +299,11 @@ function PostCreate() {
         <MediaLibrary
           mockImages={mockImages}
           onClose={() => setShowMediaLibrary(false)}
+          onSelectThumbnail={(media) => {
+            // <-- callback khi chọn ảnh thumbnail
+            setFeaturedMedia(media);
+            // setIsMediaOpen(false);
+          }}
         />
       )}
     </div>

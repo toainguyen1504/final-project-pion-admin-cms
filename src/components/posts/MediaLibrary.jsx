@@ -10,9 +10,7 @@ import { useMedia } from "@/hooks/useMedia";
 import { uploadMedia } from "@/lib/api/media";
 import IMAGE_DEFAULT from "@/assets/images/placeholder_img.png";
 
-const BASE_URL = "http://localhost:8000";
-
-export default function MediaLibrary({ onClose }) {
+export default function MediaLibrary({ onClose, onSelectThumbnail }) {
   const [activeTab, setActiveTab] = useState("library");
   const [selectedImage, setSelectedImage] = useState(null);
   const [files, setFiles] = useState([]);
@@ -25,7 +23,7 @@ export default function MediaLibrary({ onClose }) {
   const [imageDescription, setImageDescription] = useState("");
 
   // Dùng hook gọi API thật
-  const { mediaList, loading, reloadMedia } = useMedia();
+  const { mediaList, loading, reloadMedia, BASE_MEDIA_URL } = useMedia();
 
   // Chọn / bỏ chọn ảnh
   const handleImageClick = (img) => {
@@ -51,8 +49,10 @@ export default function MediaLibrary({ onClose }) {
   const getImageSrc = (img) => {
     if (!img) return IMAGE_DEFAULT;
     if (img.meta?.variants?.thumbnail?.path)
-      return `${BASE_URL}/storage/${img.meta.variants.thumbnail.path}`;
-    return `${BASE_URL}${img.url.startsWith("/") ? img.url : "/" + img.url}`;
+      return `${BASE_MEDIA_URL}/storage/${img.meta.variants.thumbnail.path}`;
+    return `${BASE_MEDIA_URL}${
+      img.url.startsWith("/") ? img.url : "/" + img.url
+    }`;
   };
 
   // Upload thật qua API (có debounce + disable)
@@ -323,7 +323,14 @@ export default function MediaLibrary({ onClose }) {
 
         {/* Footer */}
         <div className="flex justify-end gap-3 p-4 border-t">
-          <button className="border border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white transition px-4 py-2 rounded flex items-center gap-2">
+          <button
+            className="border border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white transition px-4 py-2 rounded flex items-center gap-2"
+            onClick={() => {
+              if (!selectedImage) return;
+              onSelectThumbnail?.(selectedImage); // <-- gọi callback và truyền ảnh đã chọn
+            }}
+            disabled={!selectedImage}
+          >
             <Image className="w-4 h-4" /> Chọn làm ảnh thumbnail
           </button>
           <button className="bg-indigo-600 text-white px-6 py-2 rounded flex items-center gap-2 hover:bg-indigo-700 transition">

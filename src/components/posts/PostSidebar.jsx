@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/popover";
 
 import { normalizeText } from "@/lib/utils";
+import { useMedia } from "@/hooks/useMedia";
 import { ScheduledPanel } from "./components/ScheduledPanel";
 
 export function PostSidebar({
@@ -31,6 +32,7 @@ export function PostSidebar({
   setIsCategoryPopupOpen,
   loadingCategories,
   categoryError,
+  featuredMedia,
 }) {
   // Temporary selection for popup
   const [tempSelected, setTempSelected] = useState([]);
@@ -66,6 +68,25 @@ export function PostSidebar({
     .filter((cat) =>
       normalizeText(cat.name).includes(normalizeText(searchTerm))
     );
+
+  // Dùng hook gọi BASE URL
+  const { BASE_MEDIA_URL } = useMedia();
+
+  // Lấy src ảnh
+  const getImageSrc = (img) => {
+    // Ảnh mới có thumbnail path
+    if (img.meta?.variants?.thumbnail?.path)
+      return `${BASE_MEDIA_URL}/storage/${img.meta.variants.thumbnail.path}`;
+
+    // Ảnh có url trực tiếp
+    if (img.url)
+      return `${BASE_MEDIA_URL}${
+        img.url.startsWith("/") ? img.url : "/" + img.url
+      }`;
+
+    // fallback cuối cùng
+    return "/placeholder_img.png";
+  };
 
   return (
     <div className="w-[320px] border-l border-border rounded-xl p-6 bg-card text-card-foreground space-y-6">
@@ -295,12 +316,22 @@ export function PostSidebar({
             </PopoverContent>
           </Popover>
         </div>
-        <div
-          className="w-full h-32 px-4 text-center bg-muted rounded-md flex items-center justify-center 
-          text-slate-500 dark:text-slate-200 text-sm"
-        >
-          No image selected - Render auto from media library
-        </div>
+        {featuredMedia ? (
+          <div className="relative w-full h-32 rounded-md overflow-hidden">
+            <img
+              src={getImageSrc(featuredMedia)}
+              alt={featuredMedia.caption || featuredMedia.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        ) : (
+          <div
+            className="w-full h-32 px-4 text-center bg-muted rounded-md flex items-center justify-center 
+            text-slate-500 dark:text-slate-200 text-sm"
+          >
+            No image selected - Render auto from media library
+          </div>
+        )}
       </div>
     </div>
   );
