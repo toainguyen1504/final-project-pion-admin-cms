@@ -47,6 +47,14 @@ export default function MediaLibrary({ onClose }) {
     fileInputRef.current.click();
   };
 
+  // Lấy src ảnh
+  const getImageSrc = (img) => {
+    if (!img) return IMAGE_DEFAULT;
+    if (img.meta?.variants?.thumbnail?.path)
+      return `${BASE_URL}/storage/${img.meta.variants.thumbnail.path}`;
+    return `${BASE_URL}${img.url.startsWith("/") ? img.url : "/" + img.url}`;
+  };
+
   // Upload thật qua API (có debounce + disable)
   let uploadTimeout;
   const handleUpload = () => {
@@ -61,6 +69,9 @@ export default function MediaLibrary({ onClose }) {
         await reloadMedia();
         setFiles([]);
         toast.success("Tải lên thành công!");
+
+        // Chuyển về tab thư viện sau khi tải xong
+        setActiveTab("library");
       } catch (err) {
         console.error(err);
         toast.error("Upload thất bại! Vui lòng thử lại sau!");
@@ -113,7 +124,7 @@ export default function MediaLibrary({ onClose }) {
         {/* Content */}
         <div className="flex flex-1 overflow-hidden">
           {/* Main */}
-          <div className="flex-1 overflow-y-auto py-5 px-20">
+          <div className="flex-1 overflow-y-auto py-5 px-16">
             {activeTab === "library" ? (
               loading ? (
                 <div className="flex flex-col items-center justify-center py-10 text-gray-500">
@@ -137,15 +148,7 @@ export default function MediaLibrary({ onClose }) {
                       }`}
                     >
                       <img
-                        src={
-                          img.meta?.variants?.thumbnail?.path
-                            ? `${BASE_URL}/storage/${img.meta.variants.thumbnail.path}`
-                            : `${BASE_URL}${
-                                img.url.startsWith("/")
-                                  ? img.url
-                                  : "/" + img.url
-                              }`
-                        }
+                        src={getImageSrc(img)}
                         alt={img.title}
                         className="object-cover w-full h-32"
                         onError={(e) => (e.target.src = IMAGE_DEFAULT)}
@@ -220,7 +223,7 @@ export default function MediaLibrary({ onClose }) {
             {/* Preview */}
             <div className="mb-3">
               <img
-                src={selectedImage?.url || IMAGE_DEFAULT}
+                src={getImageSrc(selectedImage)}
                 alt={selectedImage?.caption || "Preview"}
                 className="rounded border w-full h-32 object-cover"
                 onError={(e) => (e.target.src = IMAGE_DEFAULT)}
