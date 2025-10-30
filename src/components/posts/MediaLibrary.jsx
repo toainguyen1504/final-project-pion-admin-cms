@@ -10,7 +10,11 @@ import { useMedia } from "@/hooks/useMedia";
 import { uploadMedia } from "@/lib/api/media";
 import IMAGE_DEFAULT from "@/assets/images/placeholder_img.png";
 
-export default function MediaLibrary({ onClose, onSelectThumbnail }) {
+export default function MediaLibrary({
+  onClose,
+  onSelectThumbnail,
+  onInsertImage,
+}) {
   const [activeTab, setActiveTab] = useState("library");
   const [selectedImage, setSelectedImage] = useState(null);
   const [files, setFiles] = useState([]);
@@ -323,6 +327,7 @@ export default function MediaLibrary({ onClose, onSelectThumbnail }) {
 
         {/* Footer */}
         <div className="flex justify-end gap-3 p-4 border-t">
+          {/* button chèn ảnh vào thumbnail (OG) */}
           <button
             onClick={() => {
               if (!selectedImage) return;
@@ -338,14 +343,16 @@ export default function MediaLibrary({ onClose, onSelectThumbnail }) {
           >
             <Image className="w-4 h-4" /> Chọn làm ảnh thumbnail
           </button>
+
+          {/* button chèn ảnh vào editor */}
           <button
             disabled={!selectedImage}
+            onClick={() => {
+              if (!selectedImage) return;
+              onInsertImage?.(selectedImage); // ✅ gọi callback từ PostCreate
+            }}
             className={`bg-indigo-600 text-white px-6 py-2 rounded flex items-center gap-2 transition 
-            ${
-              selectedImage
-                ? "hover:bg-indigo-700"
-                : "opacity-50 cursor-not-allowed"
-            }`}
+  ${selectedImage ? "hover:bg-indigo-700" : "opacity-50 cursor-not-allowed"}`}
           >
             <FileUp className="w-4 h-4" /> Chèn vào bài viết
           </button>

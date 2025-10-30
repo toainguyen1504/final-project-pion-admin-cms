@@ -18,7 +18,7 @@ import { slugify } from "@/lib/utils";
 import { createPost } from "@/lib/api/posts";
 import { fetchCategories } from "@/lib/api/categories";
 import MediaLibrary from "./MediaLibrary";
-import { mockImages } from "@/data";
+// import { mockImages } from "@/data";
 
 function PostCreate() {
   const [editor, setEditor] = useState(null);
@@ -297,12 +297,34 @@ function PostCreate() {
 
       {showMediaLibrary && (
         <MediaLibrary
-          mockImages={mockImages}
           onClose={() => setShowMediaLibrary(false)}
           onSelectThumbnail={(media) => {
-            // <-- callback khi chọn ảnh thumbnail
             setFeaturedMedia(media);
-            // setIsMediaOpen(false);
+          }}
+          onInsertImage={(media) => {
+            if (!editor) return;
+            const BASE_MEDIA_URL =
+              import.meta.env.MODE === "development"
+                ? import.meta.env.VITE_BASE_MEDIA_URL_LOCAL
+                : import.meta.env.VITE_BASE_MEDIA_URL_PRODUCTION;
+
+            const imageUrl = `${BASE_MEDIA_URL}${
+              media.url.startsWith("/") ? media.url : "/" + media.url
+            }`;
+
+            // ⚡ Chèn vào tiptap
+            editor
+              .chain()
+              .focus()
+              .setImage({
+                src: imageUrl,
+                alt: media.title || "Image",
+                title: media.title || "",
+                caption: media.caption || "",
+              })
+              .run();
+
+            setShowMediaLibrary(false);
           }}
         />
       )}
