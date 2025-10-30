@@ -46,6 +46,7 @@ export async function fetchPosts(
 export async function getPostById(id) {
   try {
     const response = await axios.get(`${BASE_URL}/posts/${id}`, { headers });
+    console.log("GET SINGLE POST (for Edit Page)", response.data.data);
     return response.data.data;
   } catch (error) {
     console.error("Error fetching post by ID:", error);

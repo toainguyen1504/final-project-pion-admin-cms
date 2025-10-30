@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { useCallback, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import { format } from "date-fns";
 
@@ -21,6 +22,7 @@ import MediaLibrary from "./MediaLibrary";
 // import { mockImages } from "@/data";
 
 function PostCreate() {
+  const navigate = useNavigate();
   const [editor, setEditor] = useState(null);
   const [visibility, setVisibility] = useState("private");
   const [publishDate, setPublishDate] = useState(new Date());
@@ -30,6 +32,8 @@ function PostCreate() {
     seoSlug: "",
     seoDescription: "",
   });
+  // const [focusKeyword, setFocusKeyword] = useState("");
+  const [allKeywords, setAllKeywords] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]); // IDs selected
   const [isCategoryPopupOpen, setIsCategoryPopupOpen] = useState(false);
@@ -49,8 +53,8 @@ function PostCreate() {
     title: title,
     content: editor?.getText() || "",
     rawHtml: editor?.getHTML() || "",
-    seoTitle: title,
-    seoSlug: slugify(title),
+    seoTitle: seoData.seoTitle || title,
+    seoSlug: seoData.seoSlug || slugify(title),
     seoDescription: seoData.seoDescription || "",
   };
 
@@ -109,11 +113,11 @@ function PostCreate() {
     // Payload
     const payload = {
       title,
-      sapo_text: "Short summary for the post",
+      sapo_text: "",
       slug: slugify(seoData.seoTitle || title),
       seo_title: seoData.seoTitle,
-      seo_description: "",
-      seo_keywords: "post, example",
+      seo_description: seoData.seoDescription,
+      seo_keywords: allKeywords.length ? allKeywords.join(",") : "", // tất cả keywords
       content: editor.getHTML(),
       status: mapVisibilityToStatus(visibility),
       visibility,
@@ -128,7 +132,11 @@ function PostCreate() {
       setTitle("");
       setSelectedCategories([]);
       editor.commands.clearContent();
+      setFeaturedMedia(null);
       setErrors([]);
+
+      // Chuyển về danh sách post
+      navigate("/posts");
     } catch (error) {
       console.error("Error creating post:", error);
       toast.error("Failed to create post! Please try again.");
@@ -241,7 +249,11 @@ function PostCreate() {
           </div>
 
           {/* Rank math SEO - Truyền callback để nhận seoData*/}
-          <SeoManager {...BASE_SEO_PAYLOAD} onSeoChange={setSeoData} />
+          <SeoManager
+            {...BASE_SEO_PAYLOAD}
+            onSeoChange={setSeoData}
+            onAllKeywordsChange={setAllKeywords}
+          />
         </div>
 
         {/* Column right */}

@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { toast } from "sonner";
 
@@ -21,7 +21,9 @@ import { getPostById, updatePost } from "@/lib/api/posts";
 import "@/components/tiptap-templates/simple/simple-editor.scss";
 
 function PostEdit() {
-  const { id } = useParams(); // Lấy ID từ URL
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [editor, setEditor] = useState(null);
   const [visibility, setVisibility] = useState("private");
   const [publishDate, setPublishDate] = useState(new Date());
@@ -31,18 +33,16 @@ function PostEdit() {
     seoSlug: "",
     seoDescription: "",
   });
+  const [allKeywords, setAllKeywords] = useState([]); // all keywords
   const [allCategories, setAllCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [featuredMedia, setFeaturedMedia] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState([]);
-  const [featuredMedia, setFeaturedMedia] = useState(null);
   const [showMediaLibrary, setShowMediaLibrary] = useState(false);
-
-  // Thêm state categories popup
   const [isCategoryPopupOpen, setIsCategoryPopupOpen] = useState(false);
- 
+  const [postData, setPostData] = useState(null);
 
-  // Khởi tạo editor
   const handleEditorReady = useCallback((editorInstance) => {
     setEditor(editorInstance);
   }, []);
@@ -56,28 +56,31 @@ function PostEdit() {
     getCategories();
   }, []);
 
-  // Fetch post data by ID
-  const [postData, setPostData] = useState(null);
-
-  // Fetch post data by ID
+  // Fetch post data
   useEffect(() => {
     const loadPost = async () => {
       try {
         const data = await getPostById(id);
+        console.log("data in edit:", data);
         setPostData(data);
 
-        // --- Cập nhật các field cơ bản ---
+        // set keywords
+        const keywordsArray = data.seo_keywords
+          ? data.seo_keywords.split(",").map((k) => k.trim())
+          : [];
+        setAllKeywords(keywordsArray);
+        console.log("keywordsArray", keywordsArray);
+
         setTitle(data.title);
         setVisibility(data.visibility || "private");
         setPublishDate(new Date(data.publish_at));
         setSelectedCategories(data.categories?.map((cat) => cat.id) || []);
         setSeoData({
           seoTitle: data.seo_title || data.title,
-          seoSlug: data.slug || slugify(data.title),
+          seoSlug: data.slug || slugify(data.title), // dùng slug từ db
           seoDescription: data.seo_description || "",
         });
 
-        // --- Gọi API lấy media chi tiết nếu có ID ---
         if (data.featured_media_id) {
           const res = await fetch(
             `${
@@ -92,12 +95,10 @@ function PostEdit() {
               },
             }
           );
-
           if (res.ok) {
             const mediaData = await res.json();
             setFeaturedMedia(mediaData);
           } else {
-            console.warn("Không thể tải featured media:", res.status);
             setFeaturedMedia(null);
           }
         } else {
@@ -115,12 +116,12 @@ function PostEdit() {
     loadPost();
   }, [id]);
 
-  // Khi editor sẵn sàng -> load content vào
+  // Load content vào editor 1 lần
   useEffect(() => {
-    if (editor && postData?.content_html) {
-      editor.commands.setContent(postData.content_html);
+    if (editor && postData?.content?.content_html) {
+      editor.commands.setContent(postData.content.content_html);
     }
-  }, [editor, postData]);
+  }, [editor, postData?.content?.content_html]);
 
   const mapVisibilityToStatus = (visibility) => {
     switch (visibility) {
@@ -147,11 +148,10 @@ function PostEdit() {
     content: editor?.getText() || "",
     rawHtml: editor?.getHTML() || "",
     seoTitle: seoData.seoTitle || title,
-    seoSlug: seoData.seoSlug || slugify(title),
+    seoSlug: seoData.seoSlug,
     seoDescription: seoData.seoDescription || "",
   };
 
-  // Xử lý lưu chỉnh sửa
   const handleUpdate = async () => {
     const newErrors = [];
 
@@ -177,7 +177,7 @@ function PostEdit() {
       slug: slugify(seoData.seoTitle || title),
       seo_title: seoData.seoTitle,
       seo_description: seoData.seoDescription,
-      seo_keywords: "post, example",
+      seo_keywords: allKeywords.length ? allKeywords.join(",") : "", // tất cả keywords
       content: editor.getHTML(),
       status: mapVisibilityToStatus(visibility),
       visibility,
@@ -189,6 +189,7 @@ function PostEdit() {
     try {
       await updatePost(id, payload);
       toast.success("Cập nhật bài viết thành công!");
+      navigate("/posts");
     } catch (error) {
       console.error("Error updating post:", error);
       toast.error("Cập nhật thất bại! Vui lòng thử lại.");
@@ -207,7 +208,6 @@ function PostEdit() {
   const hasContentError = errors.some((e) =>
     e.toLowerCase().includes("content")
   );
- 
 
   return (
     <div className="p-4">
@@ -274,7 +274,6 @@ function PostEdit() {
             </Alert>
           )}
 
-          {/* Title */}
           <Input
             id="post-title"
             value={title}
@@ -289,7 +288,6 @@ function PostEdit() {
             } text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]`}
           />
 
-          {/* Editor */}
           <div
             className={`bg-background text-foreground shadow-lg rounded-xl ${
               hasContentError ? "border-2 border-red-500" : ""
@@ -298,11 +296,15 @@ function PostEdit() {
             <SimpleEditor onReady={handleEditorReady} />
           </div>
 
-          {/* SEO */}
-          <SeoManager {...BASE_SEO_PAYLOAD} onSeoChange={setSeoData} />
+          {/* SeoManager mới - dùng ref initialLoad bên trong */}
+          <SeoManager
+            {...BASE_SEO_PAYLOAD}
+            onSeoChange={setSeoData}
+            onAllKeywordsChange={setAllKeywords}
+            initialKeywords={allKeywords}
+          />
         </div>
 
-        {/* Sidebar */}
         <PostSidebar
           featuredMedia={featuredMedia}
           visibility={visibility}

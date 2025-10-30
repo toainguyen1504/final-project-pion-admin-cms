@@ -18,6 +18,11 @@ import { normalizeText, getImageOGSrc } from "@/lib/utils";
 import { useMedia } from "@/hooks/useMedia";
 import { ScheduledPanel } from "./components/ScheduledPanel";
 
+const getFeaturedMedia = (media) => {
+  if (!media) return null;
+  return media.data ? media.data : media;
+};
+
 export function PostSidebar({
   visibility,
   setVisibility,
@@ -71,6 +76,8 @@ export function PostSidebar({
 
   // Dùng hook gọi BASE URL
   const { BASE_MEDIA_URL } = useMedia();
+
+  const displayMedia = getFeaturedMedia(featuredMedia);
 
   console.log("featuredMedia:", featuredMedia);
 
@@ -156,14 +163,6 @@ export function PostSidebar({
           Categories *
         </h3>
         <div className="relative w-full max-w-sm">
-          {/* {loadingCategories ? (
-            <Spinner
-              size={16}
-              className="absolute left-3 top-2.5 text-slate-400 dark:text-slate-500"
-            />
-          ) : (
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400 dark:text-slate-500" />
-          )} */}
           <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400 dark:text-slate-500" />
 
           <Input
@@ -301,11 +300,12 @@ export function PostSidebar({
           </Popover>
         </div>
 
-        {featuredMedia?.data ? (
+        {/* Thumbnail */}
+        {displayMedia ? (
           <div className="relative w-full h-32 rounded-md overflow-hidden bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
             <img
-              src={getImageOGSrc(featuredMedia.data)}
-              alt={featuredMedia.data.title || "Thumbnail"}
+              src={getImageOGSrc(displayMedia)}
+              alt={displayMedia.title || "Thumbnail"}
               className="w-full h-full object-cover transition-opacity duration-300"
               loading="lazy"
             />

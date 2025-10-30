@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SeoChecklist } from "./SeoChecklist";
 import { FocusKeywordInput } from "./FocusKeywordInput";
 import { SeoSnippetModal } from "./SeoSnippetModal";
 import { useSeoSnippet } from "@/hooks";
-import useSeoScore from "@/hooks/seo/useSeoScore"; // dùng hook tổng hợp
+import useSeoScore from "@/hooks/seo/useSeoScore";
 
 export function SeoManager({
   title,
@@ -15,21 +15,45 @@ export function SeoManager({
   seoSlug,
   seoDescription,
   onSeoChange,
+  onAllKeywordsChange,
+  initialKeywords = [],
 }) {
   const [open, setOpen] = useState(false);
-  const seo = useSeoSnippet();
-  const { calculateSeoScore } = useSeoScore(); // hook tổng
-  const [focusKeyword, setFocusKeyword] = useState("");
+
+  // Sync giá trị ban đầu
+  const seo = useSeoSnippet({
+    title: seoTitle || "",
+    slug: seoSlug || "",
+    desc: seoDescription || "",
+  });
+
+  const { calculateSeoScore } = useSeoScore();
+  const [focusKeyword, setFocusKeyword] = useState(""); //main keyword
+  const [allKeywords, setAllKeywords] = useState([]); // tất cả keywords
+
   const [checklist, setChecklist] = useState([]);
 
-  // Sync dữ liệu ban đầu
+  // Ref để chỉ sync SEO ban đầu 1 lần (tránh loop)
+  const initialLoad = useRef(false);
+
+  // Sync initial keywords từ parent (chỉ 1 lần khi mount)
   useEffect(() => {
-    seo.setTitle(seoTitle || "");
-    seo.setSlug(seoSlug || "");
-    seo.setDesc(seoDescription || "");
+    if (initialKeywords?.length) {
+      setAllKeywords(initialKeywords);
+    }
+  }, [initialKeywords]);
+
+  // Sync dữ liệu ban đầu từ props SEO (chỉ 1 lần khi mount hoặc khi postData thay đổi)
+  useEffect(() => {
+    if (!initialLoad.current) {
+      seo.setTitle(seoTitle || "");
+      seo.setSlug(seoSlug || "");
+      seo.setDesc(seoDescription || "");
+      initialLoad.current = true;
+    }
   }, [seoTitle, seoSlug, seoDescription]);
 
-  // Sync ngược lại PostCreate
+  // Sync ngược lại parent khi user chỉnh sửa SEO snippet
   useEffect(() => {
     onSeoChange?.({
       seoTitle: seo.title,
@@ -38,18 +62,25 @@ export function SeoManager({
     });
   }, [seo.title, seo.slug, seo.desc]);
 
+  // gửi allKeywords lên parent PostCreate:
+  useEffect(() => {
+    if (onAllKeywordsChange) {
+      onAllKeywordsChange(allKeywords);
+    }
+  }, [allKeywords]);
+
   // Tính điểm SEO tổng hợp
   useEffect(() => {
     if (!title && !content && !seo.title && !seo.desc) return;
 
     const { totalScore, checklist } = calculateSeoScore({
-      title: seo.title, // Dùng snippet title
+      title: seo.title,
       description: seo.desc,
       slug: seo.slug,
       content,
       keywords: focusKeyword
         ? focusKeyword
-            .split(",") // Cho phép nhập nhiều keyword cách nhau bằng dấu phẩy
+            .split(",")
             .map((kw) => kw.trim())
             .filter(Boolean)
         : [],
@@ -57,6 +88,7 @@ export function SeoManager({
     });
 
     console.log("🎯 Total SEO Score:", totalScore);
+    console.log("🎯 slug:", seo.slug);
     setChecklist(checklist);
   }, [seo.title, seo.desc, seo.slug, content, focusKeyword]);
 
@@ -104,7 +136,9 @@ export function SeoManager({
         seoTitle={seo.title}
         seoSlug={seo.slug}
         seoDescription={seo.desc}
-        onKeywordChange={setFocusKeyword}
+        onKeywordChange={setFocusKeyword} // mainKeyword
+        onAllKeywordsChange={setAllKeywords} // array tất cả keywords
+        initialKeywords={allKeywords} // để edit hiển thị tag cũ
       />
 
       {/* Checklist tổng hợp */}
@@ -112,6 +146,7 @@ export function SeoManager({
         <SeoChecklist data={checklist} />
       </div>
 
+      {/* Modal chỉnh sửa snippet */}
       <SeoSnippetModal open={open} onOpenChange={setOpen} seo={seo} />
     </div>
   );

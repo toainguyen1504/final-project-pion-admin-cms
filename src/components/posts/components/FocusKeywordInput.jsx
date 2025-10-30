@@ -20,6 +20,8 @@ export function FocusKeywordInput({
   seoSlug,
   seoDescription,
   onKeywordChange, // send to seoManager
+  onAllKeywordsChange, // send allKeywords to seoManager
+  initialKeywords = [],
 }) {
   const [keywords, setKeywords] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -30,6 +32,13 @@ export function FocusKeywordInput({
 
   const MAX_KEYWORDS = 5;
   const MAX_LENGTH = 60;
+
+  // Sync initial keywords (chỉ 1 lần khi mount)
+  useEffect(() => {
+    if (initialKeywords?.length) {
+      setKeywords(initialKeywords);
+    }
+  }, [initialKeywords]);
 
   const getBadgeColor = (score) => {
     if (score >= 80) return "bg-green-500";
@@ -81,6 +90,13 @@ export function FocusKeywordInput({
   const handleRemove = (keyword) => {
     setKeywords(keywords.filter((k) => k !== keyword));
   };
+
+  // Sync keywords lên parent
+  useEffect(() => {
+    if (onAllKeywordsChange) {
+      onAllKeywordsChange(keywords); // gửi array keywords
+    }
+  }, [keywords]);
 
   const mainKeyword = keywords[0] || "";
 
