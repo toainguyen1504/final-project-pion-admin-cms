@@ -48,3 +48,20 @@ export async function uploadMedia(files) {
     throw error;
   }
 }
+
+// Xóa media theo ID
+export async function deleteMedia(id) {
+  try {
+    const response = await axios.delete(`${BASE_URL}/media/${id}`, {
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+
+    console.log("✅ Media deleted:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Error deleting media:", error);
+    throw error;
+  }
+}

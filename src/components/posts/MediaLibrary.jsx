@@ -11,10 +11,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
 import { Info } from "lucide-react";
 
 import { useMedia } from "@/hooks/useMedia";
-import { uploadMedia } from "@/lib/api/media";
+import { uploadMedia, deleteMedia } from "@/lib/api/media";
 import IMAGE_DEFAULT from "@/assets/images/placeholder_img.png";
 
 export default function MediaLibrary({
@@ -37,6 +38,9 @@ export default function MediaLibrary({
     title: false,
     caption: false,
   });
+
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   // Dùng hook gọi API thật
   const { mediaList, loading, reloadMedia, BASE_MEDIA_URL } = useMedia();
@@ -101,6 +105,21 @@ export default function MediaLibrary({
         setUploading(false);
       }
     }, 400);
+  };
+
+  // Hàm xử lý xóa ảnh
+  const handleDeleteImage = async () => {
+    if (!selectedImage) return;
+
+    try {
+      await deleteMedia(selectedImage.id);
+      toast.success("Đã xóa hình ảnh thành công!");
+      setSelectedImage(null);
+      await reloadMedia();
+    } catch (err) {
+      console.error(err);
+      toast.error("Không thể xóa hình ảnh. Có thể ảnh đang được sử dụng!");
+    }
   };
 
   // 🧩 Modal JSX
@@ -314,8 +333,10 @@ export default function MediaLibrary({
                 </Popover>
               </div>
 
+              {/* Button xóa vĩnh viễn */}
               <button
                 disabled={!selectedImage}
+                onClick={() => setShowDeleteConfirm(true)}
                 className={`mt-2 text-red-600 text-sm hover:underline ${
                   !selectedImage && "opacity-50 pointer-events-none"
                 }`}
@@ -399,6 +420,48 @@ export default function MediaLibrary({
             </div>
           </div>
         </div>
+
+        {/* Modal xác nhận xóa ảnh */}
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/40">
+            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm mx-4">
+              <h3 className="text-lg font-semibold mb-2">Xác nhận xóa ảnh</h3>
+              <p className="text-sm text-gray-600 mb-6">
+                Bạn có chắc muốn xóa <strong>"{selectedImage?.title}"</strong>{" "}
+                vĩnh viễn không? <br />
+                Hành động này <strong>không thể hoàn tác</strong>.
+              </p>
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="px-4 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+                  disabled={deleting}
+                >
+                  Hủy
+                </button>
+                <button
+                  onClick={async () => {
+                    setDeleting(true);
+                    await handleDeleteImage();
+                    setDeleting(false);
+                    setShowDeleteConfirm(false);
+                  }}
+                  disabled={deleting}
+                  className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition flex items-center gap-2 disabled:opacity-60"
+                >
+                  {deleting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Đang xóa...
+                    </>
+                  ) : (
+                    "Xóa"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Footer */}
         <div className="flex justify-end gap-3 p-4 border-t">
