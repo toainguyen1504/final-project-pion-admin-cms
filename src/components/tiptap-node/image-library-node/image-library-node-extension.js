@@ -1,9 +1,12 @@
-// src/components/image-library-node/image-library-node-extension.js
+// image-library-node-extension.js
 import Image from "@tiptap/extension-image";
 import { mergeAttributes } from "@tiptap/core";
+import { ReactNodeViewRenderer } from "@tiptap/react";
+import ImageLibraryNodeView from "./ImageLibraryNodeView"; // đường dẫn tương đối
 
 export const ImageLibraryNode = Image.extend({
-  name: "image", // ⚠️ Giữ nguyên tên "image"
+  // giữ name = "image" để dùng API mặc định (setImage etc.)
+  name: "image",
 
   addAttributes() {
     return {
@@ -11,6 +14,7 @@ export const ImageLibraryNode = Image.extend({
       caption: { default: null },
       alt: { default: null },
       title: { default: null },
+      // nếu muốn lưu source đã expand (full url) có thể thêm attr custom ở đây
     };
   },
 
@@ -21,5 +25,10 @@ export const ImageLibraryNode = Image.extend({
       ["img", mergeAttributes(HTMLAttributes)],
       HTMLAttributes.caption ? ["figcaption", HTMLAttributes.caption] : "",
     ];
+  },
+
+  addNodeView() {
+    // kết nối React NodeView
+    return ReactNodeViewRenderer(ImageLibraryNodeView);
   },
 });

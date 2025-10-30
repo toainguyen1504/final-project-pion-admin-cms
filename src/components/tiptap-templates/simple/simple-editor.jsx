@@ -126,9 +126,9 @@ const MainToolbarContent = ({ onHighlighterClick, onLinkClick, isMobile }) => {
         <TextAlignButton align="justify" />
       </ToolbarGroup>
       {/* <ToolbarSeparator /> */}
-      <ToolbarGroup>
-        <ImageUploadButton text="Add" />
-      </ToolbarGroup>
+      {/* <ToolbarGroup>
+        <ImageUploadButton text="Add" /> // Tạm ẩn upload image mặc định từ editor -> dùng upload image handle with thư viện media
+      </ToolbarGroup> */}
       <Spacer />
       {/* {isMobile && <ToolbarSeparator />} */}
       {/* <ToolbarGroup>
