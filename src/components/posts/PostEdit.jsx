@@ -1,26 +1,27 @@
 import { Helmet } from "react-helmet-async";
-import { useCallback, useState, useEffect } from "react";
-import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
+import { useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Eye, Image, Save } from "lucide-react";
 
-// Icon
-import { Eye, Image } from "lucide-react";
-import "@/components/tiptap-templates/simple/simple-editor.scss";
-
+import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import { SeoManager } from "./components/SeoManager";
 import { PostSidebar } from "./PostSidebar";
-import { slugify } from "@/lib/utils";
-import { createPost } from "@/lib/api/posts";
-import { fetchCategories } from "@/lib/api/categories";
 import MediaLibrary from "./MediaLibrary";
-// import { mockImages } from "@/data";
 
-function PostCreate() {
+import { slugify } from "@/lib/utils";
+import { fetchCategories } from "@/lib/api/categories";
+import { getPostById, updatePost } from "@/lib/api/posts";
+
+import "@/components/tiptap-templates/simple/simple-editor.scss";
+
+function PostEdit() {
+  const { id } = useParams(); // Lấy ID từ URL
   const [editor, setEditor] = useState(null);
   const [visibility, setVisibility] = useState("private");
   const [publishDate, setPublishDate] = useState(new Date());
@@ -31,30 +32,22 @@ function PostCreate() {
     seoDescription: "",
   });
   const [allCategories, setAllCategories] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]); // IDs selected
-  const [isCategoryPopupOpen, setIsCategoryPopupOpen] = useState(false);
-  const [errors, setErrors] = useState([]); // error messages
-
-  // media library
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [errors, setErrors] = useState([]);
   const [featuredMedia, setFeaturedMedia] = useState(null);
-
-  // MEDIA library
   const [showMediaLibrary, setShowMediaLibrary] = useState(false);
 
+  // Thêm state categories popup
+  const [isCategoryPopupOpen, setIsCategoryPopupOpen] = useState(false);
+ 
+
+  // Khởi tạo editor
   const handleEditorReady = useCallback((editorInstance) => {
     setEditor(editorInstance);
   }, []);
 
-  const BASE_SEO_PAYLOAD = {
-    title: title,
-    content: editor?.getText() || "",
-    rawHtml: editor?.getHTML() || "",
-    seoTitle: title,
-    seoSlug: slugify(title),
-    seoDescription: seoData.seoDescription || "",
-  };
-
-  // get all categories
+  // Fetch categories
   useEffect(() => {
     const getCategories = async () => {
       const { data } = await fetchCategories(1, "updated_at", "desc", "");
@@ -63,7 +56,72 @@ function PostCreate() {
     getCategories();
   }, []);
 
-  // Mapping visibility to status
+  // Fetch post data by ID
+  const [postData, setPostData] = useState(null);
+
+  // Fetch post data by ID
+  useEffect(() => {
+    const loadPost = async () => {
+      try {
+        const data = await getPostById(id);
+        setPostData(data);
+
+        // --- Cập nhật các field cơ bản ---
+        setTitle(data.title);
+        setVisibility(data.visibility || "private");
+        setPublishDate(new Date(data.publish_at));
+        setSelectedCategories(data.categories?.map((cat) => cat.id) || []);
+        setSeoData({
+          seoTitle: data.seo_title || data.title,
+          seoSlug: data.slug || slugify(data.title),
+          seoDescription: data.seo_description || "",
+        });
+
+        // --- Gọi API lấy media chi tiết nếu có ID ---
+        if (data.featured_media_id) {
+          const res = await fetch(
+            `${
+              import.meta.env.MODE === "development"
+                ? import.meta.env.VITE_API_URL_LOCAL
+                : import.meta.env.VITE_API_URL_PRODUCTION
+            }/media/${data.featured_media_id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (res.ok) {
+            const mediaData = await res.json();
+            setFeaturedMedia(mediaData);
+          } else {
+            console.warn("Không thể tải featured media:", res.status);
+            setFeaturedMedia(null);
+          }
+        } else {
+          setFeaturedMedia(null);
+        }
+
+        setLoading(false);
+      } catch (err) {
+        console.error("Error loading post:", err);
+        toast.error("Không thể tải bài viết!");
+        setLoading(false);
+      }
+    };
+
+    loadPost();
+  }, [id]);
+
+  // Khi editor sẵn sàng -> load content vào
+  useEffect(() => {
+    if (editor && postData?.content_html) {
+      editor.commands.setContent(postData.content_html);
+    }
+  }, [editor, postData]);
+
   const mapVisibilityToStatus = (visibility) => {
     switch (visibility) {
       case "public":
@@ -78,16 +136,23 @@ function PostCreate() {
 
   const getPublishDate = () => {
     const formatLocalDate = (date) => format(date, "yyyy-MM-dd HH:mm:ss");
-
     if (visibility === "scheduled_public" && publishDate) {
       return formatLocalDate(publishDate);
     }
-
     return formatLocalDate(new Date());
   };
 
-  // Handle submit
-  const handleSubmit = async () => {
+  const BASE_SEO_PAYLOAD = {
+    title: title,
+    content: editor?.getText() || "",
+    rawHtml: editor?.getHTML() || "",
+    seoTitle: seoData.seoTitle || title,
+    seoSlug: seoData.seoSlug || slugify(title),
+    seoDescription: seoData.seoDescription || "",
+  };
+
+  // Xử lý lưu chỉnh sửa
+  const handleUpdate = async () => {
     const newErrors = [];
 
     if (!title.trim()) newErrors.push("Please enter a post title.");
@@ -104,15 +169,14 @@ function PostCreate() {
       newErrors.push("Please select at least one category.");
 
     setErrors(newErrors);
-    if (newErrors.length) return; // Stop submit if errors exist
+    if (newErrors.length) return;
 
-    // Payload
     const payload = {
       title,
       sapo_text: "Short summary for the post",
       slug: slugify(seoData.seoTitle || title),
       seo_title: seoData.seoTitle,
-      seo_description: "",
+      seo_description: seoData.seoDescription,
       seo_keywords: "post, example",
       content: editor.getHTML(),
       status: mapVisibilityToStatus(visibility),
@@ -123,54 +187,53 @@ function PostCreate() {
     };
 
     try {
-      await createPost(payload);
-      toast.success("Post created successfully!");
-      setTitle("");
-      setSelectedCategories([]);
-      editor.commands.clearContent();
-      setErrors([]);
+      await updatePost(id, payload);
+      toast.success("Cập nhật bài viết thành công!");
     } catch (error) {
-      console.error("Error creating post:", error);
-      toast.error("Failed to create post! Please try again.");
+      console.error("Error updating post:", error);
+      toast.error("Cập nhật thất bại! Vui lòng thử lại.");
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen text-slate-500">
+        Đang tải bài viết...
+      </div>
+    );
+  }
 
   const hasTitleError = errors.some((e) => e.toLowerCase().includes("title"));
   const hasContentError = errors.some((e) =>
     e.toLowerCase().includes("content")
   );
-  const hasCategoryError = errors.some((e) =>
-    e.toLowerCase().includes("category")
-  );
+ 
 
   return (
     <div className="p-4">
       <Helmet>
-        <title>Create Post| Pion CMS</title>
-        <meta name="description" content="Create Post for system management" />
+        <title>Edit Post | Pion CMS</title>
+        <meta name="description" content="Edit existing post in system" />
       </Helmet>
 
       <div className="mb-6">
-        {/* Header + Button */}
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200">
-              Add Post
+              Edit Post
             </h2>
             <p className="text-slate-500 mt-2">
-              Create SEO-friendly posts with rich formatting, image support, and
-              structured publishing tools.
+              Update and optimize your post content, SEO, and publishing
+              settings.
             </p>
           </div>
 
-          {/* Button */}
           <div className="flex items-center gap-3">
             <Button
               type="button"
               onClick={() => setShowMediaLibrary(true)}
               variant="outline"
-              className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2
-                cursor-pointer transition-all duration-300"
+              className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2"
             >
               <Image className="w-4 h-4" />
               Media Library
@@ -178,8 +241,7 @@ function PostCreate() {
 
             <Button
               variant="outline"
-              className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2
-              cursor-pointer transition-all duration-300"
+              className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2"
             >
               <Eye className="w-4 h-4" />
               Review
@@ -187,20 +249,18 @@ function PostCreate() {
 
             <Button
               type="button"
-              onClick={handleSubmit}
-              className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
-            text-white min-w-40 cursor-pointer transition-all duration-300"
+              onClick={handleUpdate}
+              className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl flex items-center gap-2 min-w-40"
             >
-              Save
+              <Save className="w-4 h-4" />
+              Update
             </Button>
           </div>
         </div>
       </div>
 
       <div className="flex space-x-5">
-        {/* Column left */}
         <div className="flex-1 space-y-5">
-          {/* Error list */}
           {errors.length > 0 && (
             <Alert variant="destructive" className="mb-5">
               <AlertTitle>Submission Error</AlertTitle>
@@ -214,39 +274,37 @@ function PostCreate() {
             </Alert>
           )}
 
-          <div className="space-y-2">
-            {/* Tile - H1 */}
-            <Input
-              id="post-title"
-              value={title}
-              maxLength={100}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              placeholder="Write a clear and catchy post title (max 100 characters)"
-              className={`py-6 px-6 !text-base border rounded-xl caret-blue-600 focus:outline-none focus-visible:ring-1 focus-visible:ring-offset-0 ${
-                hasTitleError
-                  ? "border-2 border-red-500 focus-visible:ring-red-500"
-                  : "border-slate-200 dark:border-slate-700 focus-visible:ring-blue-600"
-              } text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]`}
-            />
-          </div>
+          {/* Title */}
+          <Input
+            id="post-title"
+            value={title}
+            maxLength={100}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            placeholder="Edit post title"
+            className={`py-6 px-6 !text-base border rounded-xl caret-blue-600 focus:outline-none focus-visible:ring-1 focus-visible:ring-offset-0 ${
+              hasTitleError
+                ? "border-2 border-red-500 focus-visible:ring-red-500"
+                : "border-slate-200 dark:border-slate-700 focus-visible:ring-blue-600"
+            } text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]`}
+          />
 
           {/* Editor */}
           <div
-            className={`bg-background text-foreground shadow-lg dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)] rounded-xl ${
+            className={`bg-background text-foreground shadow-lg rounded-xl ${
               hasContentError ? "border-2 border-red-500" : ""
             }`}
           >
             <SimpleEditor onReady={handleEditorReady} />
           </div>
 
-          {/* Rank math SEO - Truyền callback để nhận seoData*/}
+          {/* SEO */}
           <SeoManager {...BASE_SEO_PAYLOAD} onSeoChange={setSeoData} />
         </div>
 
-        {/* Column right */}
+        {/* Sidebar */}
         <PostSidebar
-          featuredMedia={featuredMedia} //thumbnail (OG) của media library (sidebar)
+          featuredMedia={featuredMedia}
           visibility={visibility}
           setVisibility={setVisibility}
           publishDate={publishDate}
@@ -256,19 +314,18 @@ function PostCreate() {
           setSelectedCategories={setSelectedCategories}
           isCategoryPopupOpen={isCategoryPopupOpen}
           setIsCategoryPopupOpen={setIsCategoryPopupOpen}
-          categoryError={hasCategoryError} // highlight category field
+          categoryError={errors.some((e) =>
+            e.toLowerCase().includes("category")
+          )}
         />
       </div>
 
       {showMediaLibrary && (
         <MediaLibrary
           onClose={() => setShowMediaLibrary(false)}
-          onSelectThumbnail={(media) => {
-            setFeaturedMedia(media);
-          }}
+          onSelectThumbnail={(media) => setFeaturedMedia(media)}
           onInsertImage={(media) => {
             if (!editor) return;
-
             const BASE_MEDIA_URL =
               import.meta.env.MODE === "development"
                 ? import.meta.env.VITE_BASE_MEDIA_URL_LOCAL
@@ -278,7 +335,6 @@ function PostCreate() {
               media.meta?.variants?.medium?.url || media.url
             }`;
 
-            // Chèn vào tiptap
             editor
               .chain()
               .focus()
@@ -298,4 +354,4 @@ function PostCreate() {
   );
 }
 
-export default PostCreate;
+export default PostEdit;

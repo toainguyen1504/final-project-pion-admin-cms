@@ -14,7 +14,7 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 
-import { normalizeText } from "@/lib/utils";
+import { normalizeText, getImageOGSrc } from "@/lib/utils";
 import { useMedia } from "@/hooks/useMedia";
 import { ScheduledPanel } from "./components/ScheduledPanel";
 
@@ -26,16 +26,28 @@ export function PostSidebar({
   allCategories,
   selectedCategories,
   setSelectedCategories,
-  searchTerm,
-  setSearchTerm,
+
   isCategoryPopupOpen,
   setIsCategoryPopupOpen,
-  loadingCategories,
+
   categoryError,
   featuredMedia,
 }) {
   // Temporary selection for popup
   const [tempSelected, setTempSelected] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // featured category list
+  const featuredCategories = allCategories.filter(
+    (cat) => cat.is_featured === 1
+  );
+
+  // filtered non-featured categories
+  const filteredCategories = allCategories
+    .filter((cat) => cat.is_featured !== 1)
+    .filter((cat) =>
+      normalizeText(cat.name).includes(normalizeText(searchTerm))
+    );
 
   // toggle category
   const handleToggleCategory = (id, useTemp = false) => {
@@ -57,36 +69,10 @@ export function PostSidebar({
     setIsCategoryPopupOpen(true);
   };
 
-  // featured category list
-  const featuredCategories = allCategories.filter(
-    (cat) => cat.is_featured === 1
-  );
-
-  // filtered non-featured categories
-  const filteredCategories = allCategories
-    .filter((cat) => cat.is_featured !== 1)
-    .filter((cat) =>
-      normalizeText(cat.name).includes(normalizeText(searchTerm))
-    );
-
   // Dùng hook gọi BASE URL
   const { BASE_MEDIA_URL } = useMedia();
 
-  // Lấy src ảnh
-  const getImageSrc = (img) => {
-    // Ảnh mới có thumbnail path
-    if (img.meta?.variants?.thumbnail?.path)
-      return `${BASE_MEDIA_URL}/storage/${img.meta.variants.thumbnail.path}`;
-
-    // Ảnh có url trực tiếp
-    if (img.url)
-      return `${BASE_MEDIA_URL}${
-        img.url.startsWith("/") ? img.url : "/" + img.url
-      }`;
-
-    // fallback cuối cùng
-    return "/placeholder_img.png";
-  };
+  console.log("featuredMedia:", featuredMedia);
 
   return (
     <div className="w-[320px] border-l border-border rounded-xl p-6 bg-card text-card-foreground space-y-6">
@@ -170,25 +156,23 @@ export function PostSidebar({
           Categories *
         </h3>
         <div className="relative w-full max-w-sm">
-          {loadingCategories ? (
+          {/* {loadingCategories ? (
             <Spinner
               size={16}
               className="absolute left-3 top-2.5 text-slate-400 dark:text-slate-500"
             />
           ) : (
             <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400 dark:text-slate-500" />
-          )}
+          )} */}
+          <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400 dark:text-slate-500" />
 
           <Input
             value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              handleOpenPopup();
-            }}
+            onChange={(e) => setSearchTerm(e.target.value)}
             onFocus={handleOpenPopup}
             placeholder="Search categories..."
             className="pl-10 pr-4 pt-2 pb-2.5 border border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
-            focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-xl"
+             focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-xl"
           />
 
           {/* Selected tags */}
@@ -316,18 +300,20 @@ export function PostSidebar({
             </PopoverContent>
           </Popover>
         </div>
-        {featuredMedia ? (
-          <div className="relative w-full h-32 rounded-md overflow-hidden">
+
+        {featuredMedia?.data ? (
+          <div className="relative w-full h-32 rounded-md overflow-hidden bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
             <img
-              src={getImageSrc(featuredMedia)}
-              alt={featuredMedia.caption || featuredMedia.title}
-              className="w-full h-full object-cover"
+              src={getImageOGSrc(featuredMedia.data)}
+              alt={featuredMedia.data.title || "Thumbnail"}
+              className="w-full h-full object-cover transition-opacity duration-300"
+              loading="lazy"
             />
           </div>
         ) : (
           <div
             className="w-full h-32 px-4 text-center bg-muted rounded-md flex items-center justify-center 
-            text-slate-500 dark:text-slate-200 text-sm"
+    text-slate-500 dark:text-slate-200 text-sm"
           >
             No image selected - Render auto from media library
           </div>

@@ -8,6 +8,8 @@ import CategoryEdit from "@/components/categories/CategoryEdit";
 
 import PostList from "@/components/posts/PostList";
 import PostCreate from "@/components/posts/PostCreate";
+import PostEdit from "@/components/posts/PostEdit";
+
 import UserList from "@/components/users/UserList";
 import UserCreate from "@/components/users/UserCreate";
 import ConsultationList from "@/components/consultations/ConsultationList";
@@ -17,13 +19,21 @@ function AppRoutes() {
     <Routes>
       <Route element={<AdminLayout />}>
         <Route path="/" element={<Dashboard />} />
+
+        {/* Category */}
         <Route path="/categories" element={<CategoryList />} />
         <Route path="/categories/create" element={<CategoryCreate />} />
         <Route path="/categories/:id/edit" element={<CategoryEdit />} />
 
+        {/* Post */}
         <Route path="/posts" element={<PostList />} />
         <Route path="/posts/create" element={<PostCreate />} />
+        <Route path="/posts/:id/edit" element={<PostEdit />} />
+
+        {/* Consultation */}
         <Route path="/consultations" element={<ConsultationList />} />
+
+        {/* User */}
         <Route path="/users" element={<UserList />} />
         <Route path="/users/create" element={<UserCreate />} />
       </Route>

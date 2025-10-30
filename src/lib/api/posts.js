@@ -7,7 +7,14 @@ const BASE_URL =
 
 const TOKEN = import.meta.env.VITE_API_TOKEN;
 
-// Get Posts
+const headers = {
+  Authorization: `Bearer ${TOKEN}`,
+  "Content-Type": "application/json",
+};
+
+// ===========================
+// GET ALL POSTS (with pagination)
+// ===========================
 export async function fetchPosts(
   page = 1,
   sort = "publish_at",
@@ -17,9 +24,7 @@ export async function fetchPosts(
   try {
     const response = await axios.get(`${BASE_URL}/posts`, {
       params: { page, sort, order, search },
-      headers: {
-        Authorization: `Bearer ${TOKEN}`,
-      },
+      headers,
     });
 
     return {
@@ -35,10 +40,24 @@ export async function fetchPosts(
   }
 }
 
-// Create Post
+// ===========================
+// GET SINGLE POST (for Edit Page)
+// ===========================
+export async function getPostById(id) {
+  try {
+    const response = await axios.get(`${BASE_URL}/posts/${id}`, { headers });
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching post by ID:", error);
+    return null;
+  }
+}
+
+// ===========================
+// CREATE POST
+// ===========================
 export async function createPost(payload) {
   try {
-    console.log(payload);
     const response = await axios.post(
       `${BASE_URL}/posts`,
       {
@@ -55,12 +74,7 @@ export async function createPost(payload) {
         publish_at: payload.publish_at,
         content: payload.content || "",
       },
-      {
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }
+      { headers }
     );
 
     return {
@@ -70,56 +84,62 @@ export async function createPost(payload) {
     };
   } catch (error) {
     console.error("Error creating post:", error);
-
     return {
       success: false,
       message:
         error.response?.data?.message ||
         "Failed to create post. Please check your input.",
-      error: error.response?.data?.error || null,
     };
   }
 }
 
-// Update Post (mock)
+// ===========================
+// UPDATE POST
+// ===========================
 export async function updatePost(id, payload) {
   try {
-    console.log(`Mock update post ${id}:`, payload);
+    const response = await axios.put(
+      `${BASE_URL}/posts/${id}`,
+      {
+        title: payload.title,
+        sapo_text: payload.sapo_text,
+        slug: payload.slug,
+        category_ids: payload.category_ids || [],
+        featured_media_id: payload.featured_media_id || null,
+        seo_title: payload.seo_title,
+        seo_description: payload.seo_description,
+        seo_keywords: payload.seo_keywords,
+        status: payload.status,
+        visibility: payload.visibility,
+        publish_at: payload.publish_at,
+        content: payload.content,
+      },
+      { headers }
+    );
+
     return {
-      message: "Post updated successfully (mock)",
-      data: { id, ...payload },
+      success: response.data.success,
+      message: response.data.message || "Post updated successfully",
+      data: response.data.data,
     };
   } catch (error) {
     console.error("Error updating post:", error);
-    throw error;
-  }
-}
-
-// Get single Post (mock)
-export async function fetchPost(id) {
-  try {
-    console.log("Mock fetch post id:", id);
     return {
-      id,
-      title: "Mock Post Title",
-      thumbnail: "/mock-thumbnail.jpg",
-      status: "published",
-      visibility: "public",
-      publish_at: "2025-10-17T00:00:00Z",
+      success: false,
+      message:
+        error.response?.data?.message ||
+        "Failed to update post. Please try again.",
     };
-  } catch (error) {
-    console.error("Error fetching post:", error);
-    return null;
   }
 }
 
-// Delete single Post
+// ===========================
+// DELETE SINGLE POST
+// ===========================
 export async function deletePost(id) {
   try {
     const response = await axios.delete(`${BASE_URL}/posts/${id}`, {
-      headers: {
-        Authorization: `Bearer ${TOKEN}`,
-      },
+      headers,
     });
 
     return {
@@ -137,18 +157,15 @@ export async function deletePost(id) {
   }
 }
 
-// Delete multiple Posts
+// ===========================
+// BULK DELETE POSTS
+// ===========================
 export async function bulkDeletePosts(ids) {
   try {
     const response = await axios.post(
       `${BASE_URL}/posts/bulk-destroy`,
-      { ids }, // arr id
-      {
-        headers: {
-          Authorization: `Bearer ${TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }
+      { ids },
+      { headers }
     );
 
     return {
