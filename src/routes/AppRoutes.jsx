@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import AdminLayout from "@/components/layout/AdminLayout";
 import Dashboard from "@/components/dashboard/Dashboard";
+import LoginPage from "@/pages/auth/LoginPage";
 import CategoryList from "@/components/categories/CategoryList";
 import CategoryCreate from "@/components/categories/CategoryCreate";
 import CategoryEdit from "@/components/categories/CategoryEdit";
@@ -17,6 +18,10 @@ import ConsultationList from "@/components/consultations/ConsultationList";
 function AppRoutes() {
   return (
     <Routes>
+      {/* Public route */}
+      <Route path="/login" element={<LoginPage />} />
+
+      {/* Protected routes with layout */}
       <Route element={<AdminLayout />}>
         <Route path="/" element={<Dashboard />} />
 
