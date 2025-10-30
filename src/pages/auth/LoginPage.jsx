@@ -22,13 +22,13 @@ export default function LoginPage() {
         {/* Form */}
         <div className="w-full max-w-md bg-white shadow-xl rounded-xl p-8 z-10 relative">
           {/* Logo */}
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-4">
             <img src={logo} alt="Pion Logo" className="w-14 h-14 rounded-lg" />
           </div>
 
           {/* Heading */}
-          <h2 className="text-3xl font-semibold text-center text-gray-800 mb-7">
-            Đăng nhập Pion CMS
+          <h2 className="text-4xl font-semibold text-center text-gray-800 mb-7 uppercase">
+            Pion CMS
           </h2>
 
           {/* Form */}
@@ -43,7 +43,7 @@ export default function LoginPage() {
                 type="email"
                 placeholder="you@example.com"
                 autoComplete="email"
-                className="border !py-5 !text-base border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
+                className="border !pt-5 !pb-6 !text-base border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
                 focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-xl"
               />
             </div>
@@ -58,13 +58,13 @@ export default function LoginPage() {
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 autoComplete="current-password"
-                className=" !py-5 !text-base border border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
+                className=" !pt-5 !pb-6 !text-base border border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
                 focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-xl"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-[38px] text-gray-500 hover:text-gray-700 cursor-pointer"
+                className="absolute right-4 top-[40px] text-gray-500 hover:text-gray-700 cursor-pointer"
               >
                 {showPassword ? (
                   <Eye className="w-5 h-5" />
