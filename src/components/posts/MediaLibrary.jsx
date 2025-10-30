@@ -1,10 +1,17 @@
 import React, { useState, useRef } from "react";
 import ReactDOM from "react-dom";
+import { format } from "date-fns";
 import { Upload, Image, CloudUpload, FileUp, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Info } from "lucide-react";
 
 import { useMedia } from "@/hooks/useMedia";
 import { uploadMedia } from "@/lib/api/media";
@@ -26,6 +33,11 @@ export default function MediaLibrary({
   const [imageCaption, setImageCaption] = useState("");
   const [imageDescription, setImageDescription] = useState("");
 
+  const [errors, setErrors] = useState({
+    title: false,
+    caption: false,
+  });
+
   // Dùng hook gọi API thật
   const { mediaList, loading, reloadMedia, BASE_MEDIA_URL } = useMedia();
 
@@ -33,8 +45,14 @@ export default function MediaLibrary({
   const handleImageClick = (img) => {
     if (selectedImage && selectedImage.id === img.id) {
       setSelectedImage(null);
+      setImageTitle("");
+      setImageCaption("");
+      setImageDescription("");
     } else {
       setSelectedImage(img);
+      setImageTitle(img.title || "");
+      setImageCaption(img.caption || "");
+      setImageDescription(img.description || "");
     }
   };
 
@@ -228,7 +246,7 @@ export default function MediaLibrary({
             <div className="mb-3">
               <img
                 src={getImageSrc(selectedImage)}
-                alt={selectedImage?.caption || "Preview"}
+                alt={selectedImage?.title || "Preview"}
                 className="rounded border w-full h-32 object-cover"
                 onError={(e) => (e.target.src = IMAGE_DEFAULT)}
               />
@@ -244,10 +262,18 @@ export default function MediaLibrary({
               </div>
               <div>
                 <strong>Ngày tải lên:</strong>{" "}
-                <span>{selectedImage ? selectedImage.created_at : "-"}</span>
+                <span>
+                  {" "}
+                  {selectedImage?.created_at
+                    ? format(
+                        new Date(selectedImage.created_at),
+                        "dd/MM/yyyy HH:mm"
+                      )
+                    : "-"}
+                </span>
               </div>
               <div>
-                <strong>Kích thước:</strong>{" "}
+                <strong>Dung lượng ảnh:</strong>{" "}
                 <span>
                   {selectedImage
                     ? `${(
@@ -256,13 +282,36 @@ export default function MediaLibrary({
                     : "-"}
                 </span>
               </div>
-              <div>
-                <strong>Kích thước ảnh:</strong>{" "}
+
+              {/* kích thước ảnh */}
+              <div className="flex items-center gap-1">
+                <strong>Kích thước ảnh: </strong>{" "}
                 <span>
                   {selectedImage
                     ? `${selectedImage.meta?.variants?.thumbnail?.width}x${selectedImage.meta?.variants?.thumbnail?.height}`
                     : "-"}
                 </span>
+                {/* Ghi chú bằng Popover */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      className="ml-2 text-gray-400 hover:text-gray-600 transition"
+                      aria-label="Ghi chú về kích thước ảnh"
+                    >
+                      <Info className="w-4 h-4" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-72 text-xs text-gray-600 z-[9999]">
+                    <p className="italic">
+                      * Kích thước hiển thị ở đây là kích thước tự động của
+                      phiên bản
+                      <strong> thumbnail (400×250)</strong>. Ảnh khi chèn vào
+                      bài viết sẽ có <strong>max-width 850px</strong> và{" "}
+                      <strong>max-height 500px</strong>.
+                    </p>
+                  </PopoverContent>
+                </Popover>
               </div>
 
               <button
@@ -277,33 +326,59 @@ export default function MediaLibrary({
 
             {/* Form Inputs */}
             <div className="space-y-4 text-sm text-gray-700">
-              {/* Tiêu đề */}
+              {/* Tiêu đề ảnh */}
               <div className="space-y-1">
                 <Label htmlFor="image-title">Tiêu đề ảnh *</Label>
                 <Input
                   id="image-title"
                   value={imageTitle}
-                  onChange={(e) => setImageTitle(e.target.value)}
-                  placeholder="Nhập tiêu đề ảnh"
+                  onChange={(e) => {
+                    setImageTitle(e.target.value);
+                    if (errors.title && e.target.value.trim()) {
+                      setErrors((prev) => ({ ...prev, title: false }));
+                    }
+                  }}
+                  placeholder="Dùng làm Alt text & Tên tệp (slug)"
                   required
-                  className="border border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
-                  focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-lg"
+                  className={`border ${
+                    errors.title
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : "border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600"
+                  } focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-lg`}
                 />
+                {errors.title && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Trường này là bắt buộc
+                  </p>
+                )}
               </div>
 
-              {/* Chú thích */}
+              {/* Chú thích ảnh */}
               <div className="space-y-1">
                 <Label htmlFor="image-caption">Chú thích ảnh *</Label>
                 <Textarea
                   id="image-caption"
                   value={imageCaption}
-                  onChange={(e) => setImageCaption(e.target.value)}
-                  placeholder="Chú thích sẽ hiển thị dưới ảnh và dùng làm alt text"
+                  onChange={(e) => {
+                    setImageCaption(e.target.value);
+                    if (errors.caption && e.target.value.trim()) {
+                      setErrors((prev) => ({ ...prev, caption: false }));
+                    }
+                  }}
+                  placeholder="Chú thích sẽ hiển thị dưới ảnh"
                   rows={3}
                   required
-                  className="border border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
-                  focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-lg"
+                  className={`border ${
+                    errors.caption
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : "border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600"
+                  } focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-lg`}
                 />
+                {errors.caption && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Trường này là bắt buộc
+                  </p>
+                )}
               </div>
 
               {/* Mô tả */}
@@ -331,7 +406,26 @@ export default function MediaLibrary({
           <button
             onClick={() => {
               if (!selectedImage) return;
-              onSelectThumbnail?.(selectedImage); // <-- gọi callback và truyền ảnh đã chọn
+
+              const newErrors = {
+                title: !imageTitle.trim(),
+                caption: !imageCaption.trim(),
+              };
+              setErrors(newErrors);
+
+              if (newErrors.title || newErrors.caption) {
+                toast.error("Vui lòng nhập đầy đủ Tiêu đề và Chú thích ảnh!");
+                return;
+              }
+
+              // Gọi callback với metadata (đầy đủ như khi chèn bài viết)
+              onSelectThumbnail?.({
+                ...selectedImage,
+                title: imageTitle.trim(),
+                alt: imageTitle.trim(),
+                caption: imageCaption.trim(),
+                description: imageDescription.trim(),
+              });
             }}
             disabled={!selectedImage}
             className={`border border-indigo-600 text-indigo-600 px-4 py-2 rounded flex items-center gap-2 transition 
@@ -349,10 +443,33 @@ export default function MediaLibrary({
             disabled={!selectedImage}
             onClick={() => {
               if (!selectedImage) return;
-              onInsertImage?.(selectedImage); // ✅ gọi callback từ PostCreate
+
+              const newErrors = {
+                title: !imageTitle.trim(),
+                caption: !imageCaption.trim(),
+              };
+              setErrors(newErrors);
+
+              if (newErrors.title || newErrors.caption) {
+                toast.error("Vui lòng nhập đầy đủ Tiêu đề và Chú thích ảnh!");
+                return;
+              }
+
+              // Gọi callback với metadata
+              onInsertImage?.({
+                ...selectedImage,
+                title: imageTitle.trim(),
+                alt: imageTitle.trim(),
+                caption: imageCaption.trim(),
+                description: imageDescription.trim(),
+              });
             }}
             className={`bg-indigo-600 text-white px-6 py-2 rounded flex items-center gap-2 transition 
-  ${selectedImage ? "hover:bg-indigo-700" : "opacity-50 cursor-not-allowed"}`}
+            ${
+              selectedImage
+                ? "hover:bg-indigo-700"
+                : "opacity-50 cursor-not-allowed"
+            }`}
           >
             <FileUp className="w-4 h-4" /> Chèn vào bài viết
           </button>

@@ -58,24 +58,6 @@ function PostCreate() {
     seoDescription: seoData.seoDescription || "",
   };
 
-  // Kiểm tra dữ liệu seo nhận ngược về từ SeoManager
-  // useEffect(() => {
-  //   console.log("🟢 Updated SEO data from SeoManager:", seoData);
-  // }, [seoData]);
-
-  // useEffect(() => {
-  //   const payload = {
-  //     title: title,
-  //     content: editor?.getText() || "",
-  //     rawHtml: editor?.getHTML() || "",
-  //     seoTitle: seoData.seoTitle || title,
-  //     seoSlug: slugify(title),
-  //     seoDescription: "",
-  //   };
-
-  //   console.log("BASE_SEO_PAYLOAD:", payload);
-  // }, [title, editor]);
-
   // get all categories
   useEffect(() => {
     const getCategories = async () => {
@@ -303,13 +285,14 @@ function PostCreate() {
           }}
           onInsertImage={(media) => {
             if (!editor) return;
+
             const BASE_MEDIA_URL =
               import.meta.env.MODE === "development"
                 ? import.meta.env.VITE_BASE_MEDIA_URL_LOCAL
                 : import.meta.env.VITE_BASE_MEDIA_URL_PRODUCTION;
 
             const imageUrl = `${BASE_MEDIA_URL}${
-              media.url.startsWith("/") ? media.url : "/" + media.url
+              media.meta?.variants?.medium?.url || media.url
             }`;
 
             // ⚡ Chèn vào tiptap

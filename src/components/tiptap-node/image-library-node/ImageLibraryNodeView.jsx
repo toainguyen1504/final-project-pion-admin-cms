@@ -36,7 +36,7 @@ export default function ImageLibraryNodeView(props) {
           draggable={false}
         />
         {caption && (
-          <figcaption className="text-sm text-gray-500 mt-1">
+          <figcaption className="text-sm text-center text-gray-500 mt-1">
             {caption}
           </figcaption>
         )}
