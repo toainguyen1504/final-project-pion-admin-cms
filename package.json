@@ -54,6 +54,7 @@
     "@tiptap/starter-kit": "^3.6.6",
     "axios": "^1.12.2",
     "class-variance-authority": "^0.7.1",
+    "classnames": "^2.5.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "lodash.throttle": "^4.1.1",

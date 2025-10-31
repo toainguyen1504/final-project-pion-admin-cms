@@ -1,0 +1,156 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Sora:wght@100..800&display=swap");
+
+// Variables
+$post-font: "Montserrat", sans-serif;
+$post-font-size: 16px;
+$post-line-height: 1.7;
+$post-primary: #ce232d;
+$post-text: #5b5b5c;
+$post-heading: #171717;
+$post-subheading: #343a30;
+$post-border-radius: 8px;
+$post-heading-1-size: 36px;
+$post-heading-2-size: 24px;
+$post-heading-3-size: 20px;
+$post-caption-color: #555;
+$post-caption-size: 14px;
+$post-icon-size: 19.2px;
+$post-spacing-sm: 12px;
+$post-spacing-md: 16px;
+$post-spacing-lg: 32px;
+$post-indent-32: 32px;
+$post-indent-24: 24px;
+.post-wrapper {
+  display: flex;
+  flex-direction: column;
+
+  .post-content {
+    font-family: $post-font;
+    font-size: $post-font-size;
+    line-height: $post-line-height;
+    color: $post-text;
+    margin-bottom: 100px;
+    counter-reset: section;
+
+    /* === H1 === */
+    h1 {
+      font-size: $post-heading-1-size;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-bottom: $post-spacing-md;
+      color: $post-heading;
+    }
+
+    /* === H2 === */
+    h2 {
+      font-size: $post-heading-2-size;
+      color: $post-primary;
+      margin-top: 12px;
+      margin-bottom: 8px;
+      counter-increment: section;
+      position: relative;
+      font-weight: 600;
+
+      &::before {
+        content: counter(section) ". ";
+        margin-right: 4px;
+      }
+
+      strong {
+        font-weight: 600;
+      }
+    }
+
+    /* === H3 === */
+    h3 {
+      position: relative;
+      font-size: $post-heading-3-size;
+      line-height: $post-line-height;
+      color: $post-subheading;
+      margin: 0 0 8px 0;
+      text-indent: $post-indent-32;
+      font-weight: 600;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 4px;
+        left: 3px;
+        width: 24px;
+        height: 24px;
+        background-color: $post-primary;
+        mask: url("/icons/icon.svg") no-repeat center;
+        mask-size: contain;
+      }
+
+      strong {
+        font-weight: 500;
+      }
+    }
+
+    /* === UL / LI === */
+    ul {
+      list-style: none;
+      padding-left: 0;
+      margin: $post-spacing-md 0;
+
+      li {
+        position: relative;
+        margin-bottom: $post-spacing-md;
+
+        /* Chỉ áp dụng icon khi LI KHÔNG chứa h2 hoặc h3 */
+        &:not(:has(h2)):not(:has(h3)) {
+          font-size: $post-font-size;
+          font-weight: 400;
+          line-height: $post-line-height;
+          color: $post-text;
+          text-indent: $post-indent-24;
+          margin-bottom: $post-spacing-sm;
+
+          &::before {
+            content: "";
+            position: absolute;
+            top: 9px;
+            left: 3px;
+            width: 8px;
+            height: 8px;
+            background-color: $post-primary;
+            mask: url("/icons/circle.svg") no-repeat center;
+            mask-size: contain;
+          }
+        }
+      }
+
+      /* Nếu ul không có h2 hoặc h3 thì thêm padding trái */
+      &:not(:has(h2)):not(:has(h3)) {
+        padding-left: 16px;
+      }
+    }
+
+    /* === Hình ảnh và caption === */
+    img {
+      display: block;
+      max-width: 100%;
+      width: 100%;
+      height: auto;
+      max-height: 480px;
+      object-fit: cover;
+      border-radius: $post-border-radius;
+      aspect-ratio: 16 / 9;
+      margin: 24px auto 12px;
+    }
+
+    .post-body {
+      i,
+      em,
+      figcaption {
+        display: block;
+        text-align: center !important;
+        font-style: italic !important;
+        font-size: $post-caption-size !important;
+        color: $post-caption-color !important;
+        margin-top: 4px;
+      }
+    }
+  }
+}

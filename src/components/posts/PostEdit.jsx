@@ -7,6 +7,12 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Eye, Image, Save } from "lucide-react";
 
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
@@ -17,8 +23,11 @@ import MediaLibrary from "./MediaLibrary";
 import { slugify } from "@/lib/utils";
 import { fetchCategories } from "@/lib/api/categories";
 import { getPostById, updatePost } from "@/lib/api/posts";
+import classNames from "classnames/bind";
 
 import "@/components/tiptap-templates/simple/simple-editor.scss";
+import styles from "./Posts.module.scss";
+const cx = classNames.bind(styles);
 
 function PostEdit() {
   const { id } = useParams();
@@ -42,6 +51,9 @@ function PostEdit() {
   const [showMediaLibrary, setShowMediaLibrary] = useState(false);
   const [isCategoryPopupOpen, setIsCategoryPopupOpen] = useState(false);
   const [postData, setPostData] = useState(null);
+
+  // review modal
+  const [showReview, setShowReview] = useState(false);
 
   const handleEditorReady = useCallback((editorInstance) => {
     setEditor(editorInstance);
@@ -230,6 +242,7 @@ function PostEdit() {
 
           <div className="flex items-center gap-3">
             <Button
+              onClick={() => setShowReview(true)}
               variant="outline"
               className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2 cursor-pointer"
             >
@@ -326,6 +339,35 @@ function PostEdit() {
         />
       </div>
 
+      {/* Review Modal */}
+      <Dialog open={showReview} onOpenChange={setShowReview}>
+        <DialogContent className="min-w-4xl max-h-[90vh] overflow-hidden">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold mb-4">
+              Review Post
+            </DialogTitle>
+          </DialogHeader>
+
+          <div
+            className={cx("post-wrapper", "max-h-[85vh]", "overflow-y-auto")}
+          >
+            <div className={cx("post-content")}>
+              {/* Tiêu đề */}
+              <h1>{title || "Untitled Post"}</h1>
+
+              {/* Nội dung từ editor */}
+              <div
+                className={cx("post-body")}
+                dangerouslySetInnerHTML={{
+                  __html: editor?.getHTML() || "<p>No content yet.</p>",
+                }}
+              />
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Media library Modal */}
       {showMediaLibrary && (
         <MediaLibrary
           onClose={() => setShowMediaLibrary(false)}
