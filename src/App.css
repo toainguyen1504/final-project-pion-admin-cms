@@ -4,7 +4,6 @@
 /* import css for tiptap editor */
 @import "./styles/_variables.scss";
 @import "./styles/_keyframe-animations.scss";
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
 
 @custom-variant dark (&:where(.dark, .dark *));
 

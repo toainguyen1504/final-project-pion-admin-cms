@@ -30,10 +30,10 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { truncateText } from "@/lib/utils";
+import { truncateText, getImageThumbnailSrc } from "@/lib/utils";
 
 import TablePagination from "@/components/shared/table/TablePagination";
-import DEFAULT_THUMB from "@/assets/images/toaicdev.png";
+// import DEFAULT_THUMB from "@/assets/images/toaicdev.png";
 
 export default function PostTableBody({
   data = [],
@@ -47,6 +47,7 @@ export default function PostTableBody({
   setDeleteMode = () => {},
   setSelectedPost = () => {},
   setDeleteDialogOpen = () => {},
+  mediaMap = {},
 }) {
   const navigate = useNavigate();
 
@@ -98,7 +99,7 @@ export default function PostTableBody({
             {visibleColumns.thumbnail && (
               <TableCell className="px-4 py-3 text-center">
                 <img
-                  src={post.featured_media_url || DEFAULT_THUMB}
+                  src={getImageThumbnailSrc(mediaMap[post.featured_media_id])}
                   alt={post.title || "Thumbnail"}
                   className="w-16 h-12 object-cover rounded-md border border-slate-300 dark:border-slate-600"
                 />
@@ -123,10 +124,50 @@ export default function PostTableBody({
               </TableCell>
             )}
 
+            {visibleColumns.slug && (
+              <TableCell className="min-w-3xs px-4 py-3 whitespace-nowrap font-medium text-slate-800 dark:text-slate-200">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="block max-w-[220px] truncate cursor-default">
+                      {truncateText(post.slug, 60)}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="bottom"
+                    className="max-w-xs break-words"
+                  >
+                    {post.slug}
+                  </TooltipContent>
+                </Tooltip>
+              </TableCell>
+            )}
+
             {/* Category */}
             {visibleColumns.category && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {post.category_name || "—"}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="block max-w-[200px] truncate cursor-default">
+                      {post.categories && post.categories.length > 0
+                        ? truncateText(
+                            post.categories
+                              .map((c) => c?.name)
+                              .filter(Boolean)
+                              .join(", "),
+                            60
+                          )
+                        : "—"}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="bottom"
+                    className="max-w-xs break-words"
+                  >
+                    {post.categories && post.categories.length > 0
+                      ? post.categories.map((c) => c.name).join(", ")
+                      : "—"}
+                  </TooltipContent>
+                </Tooltip>
               </TableCell>
             )}
 

@@ -141,7 +141,7 @@ export default function MediaLibrary({
         <div className="flex border-b">
           <button
             onClick={() => setActiveTab("upload")}
-            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium transition ${
+            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium transition cursor-pointer ${
               activeTab === "upload"
                 ? "text-indigo-700 bg-indigo-50 border-b-2 border-indigo-600"
                 : "text-gray-700 hover:bg-gray-50"
@@ -152,7 +152,7 @@ export default function MediaLibrary({
 
           <button
             onClick={() => setActiveTab("library")}
-            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium transition ${
+            className={`flex items-center gap-2 px-5 py-3 text-sm font-medium transition cursor-pointer ${
               activeTab === "library"
                 ? "text-indigo-700 bg-indigo-50 border-b-2 border-indigo-600"
                 : "text-gray-700 hover:bg-gray-50"
@@ -491,7 +491,7 @@ export default function MediaLibrary({
               });
             }}
             disabled={!selectedImage}
-            className={`border border-indigo-600 text-indigo-600 px-4 py-2 rounded flex items-center gap-2 transition 
+            className={`border border-indigo-600 text-indigo-600 px-4 py-2 rounded flex items-center gap-2 transition-all duration-300 cursor-pointer
             ${
               selectedImage
                 ? "hover:bg-indigo-600 hover:text-white"
@@ -527,7 +527,7 @@ export default function MediaLibrary({
                 description: imageDescription.trim(),
               });
             }}
-            className={`bg-indigo-600 text-white px-6 py-2 rounded flex items-center gap-2 transition 
+            className={`bg-indigo-600 text-white px-6 py-2 rounded flex items-center gap-2 transition-all duration-300 cursor-pointer
             ${
               selectedImage
                 ? "hover:bg-indigo-700"

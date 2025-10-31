@@ -33,6 +33,11 @@ function CategoryEdit() {
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
 
+  // state lưu giá trị gốc để check điều kiện Save btn disable
+  const [originalName, setOriginalName] = useState("");
+  const [originalType, setOriginalType] = useState("post");
+  const [originalIsFeatured, setOriginalIsFeatured] = useState(false);
+
   // get old data
   useEffect(() => {
     const loadCategory = async () => {
@@ -43,6 +48,11 @@ function CategoryEdit() {
         setSlug(data.slug || "");
         setType(data.type || "post");
         setIsFeatured(data.is_featured || false);
+
+        // Lưu giá trị gốc
+        setOriginalName(data.name || "");
+        setOriginalType(data.type || "post");
+        setOriginalIsFeatured(data.is_featured || false);
       } else {
         toast.error("Category not found!");
         navigate("/categories");
@@ -56,6 +66,12 @@ function CategoryEdit() {
   useEffect(() => {
     setSlug(slugify(name));
   }, [name]);
+
+  // check change value
+  const isChanged =
+    name !== originalName ||
+    type !== originalType ||
+    isFeatured !== originalIsFeatured;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -114,7 +130,7 @@ function CategoryEdit() {
           form="category-form"
           className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
             text-white min-w-40 cursor-pointer select-none transition-all duration-300"
-          disabled={loading}
+          disabled={loading || !isChanged} // disable nếu loading hoặc chưa thay đổi
         >
           {loading && <Spinner className="w-4 h-4 mr-2 text-white" />}
           Save

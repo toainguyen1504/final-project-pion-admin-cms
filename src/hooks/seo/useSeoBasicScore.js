@@ -163,19 +163,19 @@ export default function useSeoBasicScore() {
       ];
 
       // 🔍 Debug log (tuỳ chọn)
-      console.groupCollapsed(
-        "%c📈 SEO Basic Analysis",
-        "color:#16a34a;font-weight:bold"
-      );
-      console.log("Total Score:", totalScore);
-      console.log("Details:", {
-        titleCheck,
-        descCheck,
-        slugCheck,
-        first10Check,
-        contentLengthCheck,
-      });
-      console.groupEnd();
+      // console.groupCollapsed(
+      //   "%c📈 SEO Basic Analysis",
+      //   "color:#16a34a;font-weight:bold"
+      // );
+      // console.log("Total Score:", totalScore);
+      // console.log("Details:", {
+      //   titleCheck,
+      //   descCheck,
+      //   slugCheck,
+      //   first10Check,
+      //   contentLengthCheck,
+      // });
+      // console.groupEnd();
 
       return {
         totalScore,

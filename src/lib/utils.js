@@ -9,7 +9,10 @@ export function normalizeText(input) {
   // đảm bảo trả về chuỗi rỗng với các giá trị null/undefined
   const str = typeof input === "string" ? input : input ?? "";
   return str.normalize
-    ? str.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+    ? str
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
     : str.toLowerCase().trim();
 }
 
@@ -32,6 +35,24 @@ export function truncateText(text, maxLength = 60) {
   return text.length > maxLength ? text.slice(0, maxLength) + "…" : text;
 }
 
+// hiển thị cho post list
+export const getImageThumbnailSrc = (mediaPath) => {
+  // nếu mediaPath là undefined/null/empty
+  if (!mediaPath) return "/placeholder_img.png";
+
+  const BASE_MEDIA_URL =
+    import.meta.env.MODE === "development"
+      ? import.meta.env.VITE_BASE_MEDIA_URL_LOCAL
+      : import.meta.env.VITE_BASE_MEDIA_URL_PRODUCTION;
+
+  // đảm bảo có / giữa base url và path
+  const url = mediaPath.startsWith("/")
+    ? `${BASE_MEDIA_URL}${mediaPath}`
+    : `${BASE_MEDIA_URL}/${mediaPath}`;
+
+  return url;
+};
+
 export const getImagePostSrc = (media) => {
   if (!media) return "";
   const BASE_MEDIA_URL =
@@ -42,6 +63,7 @@ export const getImagePostSrc = (media) => {
   return `${BASE_MEDIA_URL}${media.meta?.variants?.medium?.url || media.url}`;
 };
 
+// Đang dùng trong create and edit post
 export const getImageOGSrc = (media) => {
   if (!media) return "";
 

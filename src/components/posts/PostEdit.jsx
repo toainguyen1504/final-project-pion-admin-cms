@@ -61,7 +61,7 @@ function PostEdit() {
     const loadPost = async () => {
       try {
         const data = await getPostById(id);
-        console.log("data in edit:", data);
+        // console.log("data in edit:", data);
         setPostData(data);
 
         // set keywords
@@ -69,7 +69,7 @@ function PostEdit() {
           ? data.seo_keywords.split(",").map((k) => k.trim())
           : [];
         setAllKeywords(keywordsArray);
-        console.log("keywordsArray", keywordsArray);
+        // console.log("keywordsArray", keywordsArray);
 
         setTitle(data.title);
         setVisibility(data.visibility || "private");
@@ -230,18 +230,8 @@ function PostEdit() {
 
           <div className="flex items-center gap-3">
             <Button
-              type="button"
-              onClick={() => setShowMediaLibrary(true)}
               variant="outline"
-              className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2"
-            >
-              <Image className="w-4 h-4" />
-              Media Library
-            </Button>
-
-            <Button
-              variant="outline"
-              className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2"
+              className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2 cursor-pointer"
             >
               <Eye className="w-4 h-4" />
               Review
@@ -250,7 +240,7 @@ function PostEdit() {
             <Button
               type="button"
               onClick={handleUpdate}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl flex items-center gap-2 min-w-40"
+              className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl flex items-center gap-2 min-w-40 cursor-pointer"
             >
               <Save className="w-4 h-4" />
               Update
@@ -288,12 +278,26 @@ function PostEdit() {
             } text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]`}
           />
 
-          <div
-            className={`bg-background text-foreground shadow-lg rounded-xl ${
-              hasContentError ? "border-2 border-red-500" : ""
-            }`}
-          >
-            <SimpleEditor onReady={handleEditorReady} />
+          {/* Editor and media library */}
+          <div className="space-y-3">
+            <Button
+              type="button"
+              onClick={() => setShowMediaLibrary(true)}
+              variant="outline"
+              className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2 cursor-pointer"
+            >
+              <Image className="w-4 h-4" />
+              Media Library
+            </Button>
+
+            {/* Editor */}
+            <div
+              className={`bg-background text-foreground shadow-lg rounded-xl ${
+                hasContentError ? "border-2 border-red-500" : ""
+              }`}
+            >
+              <SimpleEditor onReady={handleEditorReady} />
+            </div>
           </div>
 
           {/* SeoManager mới - dùng ref initialLoad bên trong */}

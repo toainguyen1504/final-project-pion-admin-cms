@@ -35,7 +35,7 @@ function CategoryCreate() {
     e.preventDefault();
     setLoading(true);
     const payload = { name, slug, type, is_featured: isFeatured };
-    console.log("Submit category:", payload);
+    // console.log("Submit category:", payload);
 
     try {
       const res = await createCategory(payload);

@@ -251,20 +251,20 @@ export default function useSeoReadabilityScore() {
     ];
 
     // 🧩 Debug log
-    console.groupCollapsed(
-      "%c📖 SEO Readability Analysis",
-      "color:#0284c7;font-weight:bold"
-    );
-    console.log("📊 Total Score:", totalScore);
-    console.log("📋 Details:", {
-      titleStart,
-      titleNumber,
-      titleLength,
-      paragraph,
-      images,
-      media,
-    });
-    console.groupEnd();
+    // console.groupCollapsed(
+    //   "%c📖 SEO Readability Analysis",
+    //   "color:#0284c7;font-weight:bold"
+    // );
+    // console.log("📊 Total Score:", totalScore);
+    // console.log("📋 Details:", {
+    //   titleStart,
+    //   titleNumber,
+    //   titleLength,
+    //   paragraph,
+    //   images,
+    //   media,
+    // });
+    // console.groupEnd();
 
     return {
       totalScore,

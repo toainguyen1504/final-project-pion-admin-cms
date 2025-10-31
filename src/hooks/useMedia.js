@@ -16,10 +16,11 @@ export function useMedia() {
     try {
       setLoading(true);
       const data = await fetchMedia();
-      console.log("✅ Media fetched from API:", data);
+      // console.log("✅ Media fetched from API:", data);
       setMediaList(data);
+    // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      console.error("❌ Error loading media:", error);
+      // console.error("❌ Error loading media:", error);
     } finally {
       setLoading(false);
     }

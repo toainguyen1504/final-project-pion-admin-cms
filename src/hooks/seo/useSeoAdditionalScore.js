@@ -373,19 +373,19 @@ export default function useSeoAdditionalScore() {
         },
       ];
 
-      console.groupCollapsed(
-        "%c⚙️ SEO Additional Analysis",
-        "color:#f97316;font-weight:bold"
-      );
-      console.log("Total Score:", totalScore);
-      console.log("Details:", {
-        density,
-        headings,
-        imageAlt,
-        internalLinks,
-        externalLinks,
-      });
-      console.groupEnd();
+      // console.groupCollapsed(
+      //   "%c⚙️ SEO Additional Analysis",
+      //   "color:#f97316;font-weight:bold"
+      // );
+      // console.log("Total Score:", totalScore);
+      // console.log("Details:", {
+      //   density,
+      //   headings,
+      //   imageAlt,
+      //   internalLinks,
+      //   externalLinks,
+      // });
+      // console.groupEnd();
 
       return {
         totalScore,

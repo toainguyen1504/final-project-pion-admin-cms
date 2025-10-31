@@ -16,12 +16,13 @@ export async function fetchMedia() {
       },
     });
 
-    console.log(">>> get data media", response.data.data);
+    // console.log(">>> get data media", response.data.data);
     // Nếu API trả về { data: [...], meta: {...} }
     // thì chỉ cần trả về mảng data
     return response.data.data || [];
+  // eslint-disable-next-line no-unused-vars
   } catch (error) {
-    console.error("❌ Error fetching media:", error);
+    // console.error("❌ Error fetching media:", error);
     return [];
   }
 }
@@ -41,10 +42,10 @@ export async function uploadMedia(files) {
       },
     });
 
-    console.log("✅ Upload response:", response.data);
+    // console.log("✅ Upload response:", response.data);
     return response.data.data || [];
   } catch (error) {
-    console.error("❌ Error uploading media:", error);
+    console.error("Error uploading media:", error);
     throw error;
   }
 }
@@ -58,10 +59,10 @@ export async function deleteMedia(id) {
       },
     });
 
-    console.log("✅ Media deleted:", response.data);
+    // console.log("✅ Media deleted:", response.data);
     return response.data;
   } catch (error) {
-    console.error("❌ Error deleting media:", error);
+    console.error("Error deleting media:", error);
     throw error;
   }
 }

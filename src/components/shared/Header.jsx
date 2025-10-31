@@ -69,7 +69,7 @@ function Header({ onToggleSidebar }) {
   const handleSearch = () => {
     // handle here
     if (!searchQuery.trim()) return;
-    console.log("Searching for:", searchQuery);
+    // console.log("Searching for:", searchQuery);
   };
 
   // read theme from localStorage

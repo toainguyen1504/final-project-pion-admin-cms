@@ -15,7 +15,9 @@ import DeleteConfirmDialog from "@/components/shared/DeleteConfirmDialog";
 import TableToolbar from "@/components/shared/table/TableToolbar";
 import PostTableBody from "@/components/posts/components/PostTableBody";
 
-import { deletePost, bulkDeletePosts } from "@/lib/api/posts"; // ⚠️ bạn sẽ cần tạo file API này
+// api
+import { fetchMedia } from "@/lib/api/media";
+import { deletePost, bulkDeletePosts } from "@/lib/api/posts";
 
 function PostTable({
   data,
@@ -39,6 +41,7 @@ function PostTable({
   const defaultColumns = {
     thumbnail: true,
     title: true,
+    slug: false,
     category: false,
     status: false,
     visibility: true,
@@ -61,6 +64,22 @@ function PostTable({
 
   const isTempInitializedRef = useRef(false);
   const allSelected = data.length > 0 && selectedIds.length === data.length;
+
+  // media
+  const [mediaList, setMediaList] = useState([]);
+  useEffect(() => {
+    const loadMedia = async () => {
+      const media = await fetchMedia();
+      setMediaList(media);
+    };
+    loadMedia();
+  }, []);
+
+  // Tạo map: id => url
+  const mediaMap = {};
+  mediaList.forEach((m) => {
+    mediaMap[m.id] = m.url; // hoặc m.src tuỳ API trả về
+  });
 
   // Toggle select all
   const handleSelectAll = (checked) => {
@@ -155,6 +174,7 @@ function PostTable({
                   columnsConfig={[
                     { key: "thumbnail", label: "Thumbnail" },
                     { key: "title", label: "Title" },
+                    { key: "slug", label: "Slug" },
                     { key: "category", label: "Category" },
                     { key: "status", label: "Status" },
                     { key: "visibility", label: "Visibility" },
@@ -205,6 +225,12 @@ function PostTable({
                     setSort={setSort}
                     setOrder={setOrder}
                   />
+                </TableCell>
+              )}
+
+              {visibleColumns.slug && (
+                <TableCell className="px-4 py-3 font-semibold">
+                  Slug
                 </TableCell>
               )}
 
@@ -283,6 +309,7 @@ function PostTable({
 
           <PostTableBody
             data={data}
+            mediaMap={mediaMap}
             visibleColumns={visibleColumns}
             selectedIds={selectedIds}
             handleSelectRow={handleSelectRow}

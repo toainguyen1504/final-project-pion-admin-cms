@@ -100,24 +100,24 @@ export default function useSeoScore() {
       ];
 
       // --- Debug ---
-      console.groupCollapsed(
-        "%c💥 SEO Overall Analysis",
-        "color:#9333ea;font-weight:bold"
-      );
-      console.log("🧩 Basic Score:", basic.totalScore, basic.details);
-      console.log(
-        "📖 Readability Score:",
-        readability.totalScore,
-        readability.details
-      );
-      console.log(
-        "⚙️ Additional Score:",
-        additional.totalScore,
-        additional.details
-      );
-      console.log("💫 Secondary Keyword Bonus:", bonusScore, secondaryResults);
-      console.log("🔥 Total SEO Score:", totalScore);
-      console.groupEnd();
+      // console.groupCollapsed(
+      //   "%c💥 SEO Overall Analysis",
+      //   "color:#9333ea;font-weight:bold"
+      // );
+      // console.log("🧩 Basic Score:", basic.totalScore, basic.details);
+      // console.log(
+      //   "📖 Readability Score:",
+      //   readability.totalScore,
+      //   readability.details
+      // );
+      // console.log(
+      //   "⚙️ Additional Score:",
+      //   additional.totalScore,
+      //   additional.details
+      // );
+      // console.log("💫 Secondary Keyword Bonus:", bonusScore, secondaryResults);
+      // console.log("🔥 Total SEO Score:", totalScore);
+      // console.groupEnd();
 
       return {
         totalScore,

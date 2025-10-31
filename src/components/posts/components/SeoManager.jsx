@@ -73,6 +73,7 @@ export function SeoManager({
   useEffect(() => {
     if (!title && !content && !seo.title && !seo.desc) return;
 
+    // eslint-disable-next-line no-unused-vars
     const { totalScore, checklist } = calculateSeoScore({
       title: seo.title,
       description: seo.desc,
@@ -87,8 +88,8 @@ export function SeoManager({
       rawHtml,
     });
 
-    console.log("🎯 Total SEO Score:", totalScore);
-    console.log("🎯 slug:", seo.slug);
+    // console.log("🎯 Total SEO Score:", totalScore);
+    // console.log("🎯 slug:", seo.slug);
     setChecklist(checklist);
   }, [seo.title, seo.desc, seo.slug, content, focusKeyword]);
 

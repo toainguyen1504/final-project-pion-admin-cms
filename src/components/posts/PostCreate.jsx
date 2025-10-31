@@ -174,17 +174,6 @@ function PostCreate() {
           {/* Button */}
           <div className="flex items-center gap-3">
             <Button
-              type="button"
-              onClick={() => setShowMediaLibrary(true)}
-              variant="outline"
-              className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2
-                cursor-pointer transition-all duration-300"
-            >
-              <Image className="w-4 h-4" />
-              Media Library
-            </Button>
-
-            <Button
               variant="outline"
               className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2
               cursor-pointer transition-all duration-300"
@@ -239,13 +228,28 @@ function PostCreate() {
             />
           </div>
 
-          {/* Editor */}
-          <div
-            className={`bg-background text-foreground shadow-lg dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)] rounded-xl ${
-              hasContentError ? "border-2 border-red-500" : ""
-            }`}
-          >
-            <SimpleEditor onReady={handleEditorReady} />
+          {/* Editor and media library */}
+          <div className="space-y-3">
+            {/* button */}
+            <Button
+              type="button"
+              onClick={() => setShowMediaLibrary(true)}
+              variant="outline"
+              className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2
+                cursor-pointer transition-all duration-300"
+            >
+              <Image className="w-4 h-4" />
+              Media Library
+            </Button>
+
+            {/* Editor */}
+            <div
+              className={`bg-background text-foreground shadow-lg dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)] rounded-xl ${
+                hasContentError ? "border-2 border-red-500" : ""
+              }`}
+            >
+              <SimpleEditor onReady={handleEditorReady} />
+            </div>
           </div>
 
           {/* Rank math SEO - Truyền callback để nhận seoData*/}
