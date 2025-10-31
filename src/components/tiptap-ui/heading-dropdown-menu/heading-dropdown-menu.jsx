@@ -82,7 +82,7 @@ export const HeadingDropdownMenu = React.forwardRef((
                   <HeadingButton
                     editor={editor}
                     level={level}
-                    text={`Heading ${level}`}
+                    text={`Heading ${level} - Auto đánh số hoặc Icon, nên mở review (không dùng số ở đây)`}
                     showTooltip={false} />
                 </DropdownMenuItem>
               ))}

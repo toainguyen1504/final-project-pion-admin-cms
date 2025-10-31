@@ -8,12 +8,17 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Eye, Image, Save } from "lucide-react";
+import { Eye, Image, Save, Info } from "lucide-react";
 
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import { SeoManager } from "./components/SeoManager";
@@ -307,15 +312,43 @@ function PostEdit() {
 
           {/* Editor and media library */}
           <div className="space-y-3">
-            <Button
-              type="button"
-              onClick={() => setShowMediaLibrary(true)}
-              variant="outline"
-              className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2 cursor-pointer"
-            >
-              <Image className="w-4 h-4" />
-              Media Library
-            </Button>
+            {/* Button media library and Tip viết bài */}
+            <div className="flex items-center gap-3">
+              <Button
+                type="button"
+                onClick={() => setShowMediaLibrary(true)}
+                variant="outline"
+                className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2 cursor-pointer"
+              >
+                <Image className="w-4 h-4" />
+                Media Library
+              </Button>
+              {/* Popover TIP Viết bài */}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2 cursor-pointer"
+                  >
+                    <Info className="w-4 h-4 text-blue-500" />
+                    TIP Viết bài
+                  </Button>
+                </PopoverTrigger>
+
+                <PopoverContent className="max-w-sm p-4 text-sm leading-relaxed text-slate-700 dark:text-slate-200">
+                  <p>
+                    ✍️ Viết bài viết đơn giản,{" "}
+                    <strong>không style nhiều</strong>. Style sẽ được định dạng
+                    tự động tương tự như khi xem <strong>REVIEW</strong>, vì vậy
+                    hãy luôn kiểm tra REVIEW để tránh lỗi giao diện!
+                    <br />
+                    📱 Nhắn <strong>Zalo: 0963001504 (ToaiCdev)</strong> để được
+                    hướng dẫn.
+                  </p>
+                </PopoverContent>
+              </Popover>
+            </div>
 
             {/* Editor */}
             <div
