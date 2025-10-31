@@ -46,7 +46,7 @@ export async function fetchPosts(
 export async function getPostById(id) {
   try {
     const response = await axios.get(`${BASE_URL}/posts/${id}`, { headers });
-    // console.log("GET SINGLE POST (for Edit Page)", response.data.data);
+    console.log("GET SINGLE POST (for Edit Page)", response.data.data);
     return response.data.data;
     // eslint-disable-next-line no-unused-vars
   } catch (error) {

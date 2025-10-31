@@ -55,8 +55,15 @@ function PostEdit() {
   // review modal
   const [showReview, setShowReview] = useState(false);
 
+  const [contentLoaded, setContentLoaded] = useState(false);
+
   const handleEditorReady = useCallback((editorInstance) => {
+    console.log("✅ Editor is ready:", editorInstance);
     setEditor(editorInstance);
+
+    // Log nội dung ban đầu nếu có
+    console.log("Initial HTML:", editorInstance.getHTML());
+    console.log("Initial Text:", editorInstance.getText());
   }, []);
 
   // Fetch categories
@@ -130,10 +137,17 @@ function PostEdit() {
 
   // Load content vào editor 1 lần
   useEffect(() => {
-    if (editor && postData?.content?.content_html) {
+    if (editor && postData?.content?.content_html && !contentLoaded) {
       editor.commands.setContent(postData.content.content_html);
+      console.log(
+        "✅ Loaded content into editor:",
+        postData.content.content_html
+      );
+      console.log("✅ Editor current HTML:", editor.getHTML());
+      console.log("✅ Editor current Text:", editor.getText());
+      setContentLoaded(true);
     }
-  }, [editor, postData?.content?.content_html]);
+  }, [editor, postData?.content?.content_html, contentLoaded]);
 
   const mapVisibilityToStatus = (visibility) => {
     switch (visibility) {
@@ -359,7 +373,7 @@ function PostEdit() {
               <div
                 className={cx("post-body")}
                 dangerouslySetInnerHTML={{
-                  __html: editor?.getHTML() || "<p>No content yet.</p>",
+                  __html: editor?.getHTML() || "",
                 }}
               />
             </div>
@@ -386,7 +400,7 @@ function PostEdit() {
             editor
               .chain()
               .focus()
-              .setImage({
+              .setImageLibrary({
                 src: imageUrl,
                 alt: media.title || "Image",
                 title: media.title || "",
