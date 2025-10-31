@@ -79,7 +79,7 @@ export function PostSidebar({
 
   const displayMedia = getFeaturedMedia(featuredMedia);
 
-  console.log("featuredMedia:", featuredMedia);
+  // console.log("featuredMedia:", featuredMedia);
 
   return (
     <div className="w-[320px] border-l border-border rounded-xl p-6 bg-card text-card-foreground space-y-6">

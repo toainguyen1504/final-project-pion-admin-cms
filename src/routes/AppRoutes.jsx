@@ -15,6 +15,8 @@ import PostEdit from "@/components/posts/PostEdit";
 // import UserCreate from "@/components/users/UserCreate";
 import ConsultationList from "@/components/consultations/ConsultationList";
 
+import NotFound from "@/pages/NotFound"; // 404 page
+
 function AppRoutes() {
   return (
     <Routes>
@@ -37,6 +39,9 @@ function AppRoutes() {
 
         {/* Consultation */}
         <Route path="/consultations" element={<ConsultationList />} />
+
+        {/* ✅ Catch-all route for 404 */}
+        <Route path="*" element={<NotFound />} />
 
         {/* User */}
         {/* <Route path="/users" element={<UserList />} />
