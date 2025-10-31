@@ -11,8 +11,8 @@ import PostList from "@/components/posts/PostList";
 import PostCreate from "@/components/posts/PostCreate";
 import PostEdit from "@/components/posts/PostEdit";
 
-import UserList from "@/components/users/UserList";
-import UserCreate from "@/components/users/UserCreate";
+// import UserList from "@/components/users/UserList";
+// import UserCreate from "@/components/users/UserCreate";
 import ConsultationList from "@/components/consultations/ConsultationList";
 
 function AppRoutes() {
@@ -39,8 +39,8 @@ function AppRoutes() {
         <Route path="/consultations" element={<ConsultationList />} />
 
         {/* User */}
-        <Route path="/users" element={<UserList />} />
-        <Route path="/users/create" element={<UserCreate />} />
+        {/* <Route path="/users" element={<UserList />} />
+        <Route path="/users/create" element={<UserCreate />} /> */}
       </Route>
     </Routes>
   );

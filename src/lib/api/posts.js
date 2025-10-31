@@ -48,7 +48,7 @@ export async function getPostById(id) {
     const response = await axios.get(`${BASE_URL}/posts/${id}`, { headers });
     // console.log("GET SINGLE POST (for Edit Page)", response.data.data);
     return response.data.data;
-  // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars
   } catch (error) {
     // console.error("Error fetching post by ID:", error);
     return null;
@@ -181,6 +181,33 @@ export async function bulkDeletePosts(ids) {
       message:
         error.response?.data?.message ||
         "Failed to delete posts. Please try again.",
+    };
+  }
+}
+
+// Tính thống kê cho stats dashboard
+export async function fetchPostStats() {
+  try {
+    const response = await axios.get(`${BASE_URL}/posts/stats`, {
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+
+    const { data } = response.data;
+
+    return {
+      total: data.total || 0,
+      this_month: data.this_month || 0,
+      last_month: data.last_month || 0,
+    };
+  // eslint-disable-next-line no-unused-vars
+  } catch (error) {
+    // console.error("Error fetching post stats:", error);
+    return {
+      total: 0,
+      this_month: 0,
+      last_month: 0,
     };
   }
 }

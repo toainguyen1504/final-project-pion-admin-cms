@@ -23,7 +23,7 @@ function Dashboard() {
 
       {/* Table section */}
       <div className="w-full">
-        <TableSection />
+        {/* <TableSection /> */}
       </div>
     </div>
   );

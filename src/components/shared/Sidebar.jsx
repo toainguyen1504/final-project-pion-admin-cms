@@ -9,6 +9,7 @@ import {
 import { useLocation, useNavigate, matchPath } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { flushSync } from "react-dom";
+
 import toaicdevImg from "@/assets/images/toaicdev.png";
 import logo_icon from "@/assets/images/logo_icon.png";
 
@@ -31,7 +32,7 @@ const menuItems = [
         path: "/categories/create",
       },
     ],
-    count: "19",
+    count: "",
   },
   {
     id: "posts",
@@ -42,20 +43,20 @@ const menuItems = [
       { id: "create-post", label: "Create Post", path: "/posts/create" },
       // { id: "drafts", label: "Drafts", path: "/posts/drafts" },
     ],
-    count: "99",
+    count: "",
   },
-  {
-    id: "users",
-    icon: Users,
-    label: "Users",
-    submenu: [
-      { id: "users", label: "All Users", path: "/users" },
-      { id: "create-user", label: "Create User", path: "/users/create" },
-      // { id: "roles", label: "Roles & Permissions", path: "/users/roles" },
-      // { id: "activity", label: "User Activity", path: "/users/activity" },
-      // { id: "feedback", label: "User Feedback", path: "/users/feedback" },
-    ],
-  },
+  // {
+  //   id: "users",
+  //   icon: Users,
+  //   label: "Users",
+  //   submenu: [
+  //     { id: "users", label: "All Users", path: "/users" },
+  //     { id: "create-user", label: "Create User", path: "/users/create" },
+  //     // { id: "roles", label: "Roles & Permissions", path: "/users/roles" },
+  //     // { id: "activity", label: "User Activity", path: "/users/activity" },
+  //     // { id: "feedback", label: "User Feedback", path: "/users/feedback" },
+  //   ],
+  // },
   {
     id: "consultations",
     icon: MessagesSquare,

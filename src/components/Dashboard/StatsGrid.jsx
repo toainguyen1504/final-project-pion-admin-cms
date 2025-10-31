@@ -7,54 +7,58 @@ import {
   ArrowDownRight,
 } from "lucide-react";
 
-const stats = [
-  {
-    title: "Total Categories",
-    value: "32",
-    change: "+4.1%",
-    trend: "up",
-    icon: FolderKanban,
-    color: "from-yellow-500 to-orange-600",
-    bgColor: "from-yellow-50 to-orange-100",
-    darkBgColor: "dark:from-yellow-900 dark:to-orange-900",
-    textColor: "text-yellow-600 dark:text-yellow-400",
-  },
-  {
-    title: "Total Posts",
-    value: "1,245",
-    change: "+6.8%",
-    trend: "up",
-    icon: FileText,
-    color: "from-indigo-500 to-purple-600",
-    bgColor: "from-indigo-50 to-purple-100",
-    darkBgColor: "dark:from-indigo-900 dark:to-purple-900",
-    textColor: "text-indigo-600 dark:text-indigo-400",
-  },
-  {
-    title: "Consultations",
-    value: "328",
-    change: "-2.3%",
-    trend: "down",
-    icon: MessagesSquare,
-    color: "from-red-500 to-pink-600",
-    bgColor: "from-red-50 to-pink-100",
-    darkBgColor: "dark:from-red-900 dark:to-pink-900",
-    textColor: "text-red-600 dark:text-red-400",
-  },
-  {
-    title: "Active Users",
-    value: "8,549",
-    change: "+3.2%",
-    trend: "up",
-    icon: Users,
-    color: "from-blue-500 to-teal-600",
-    bgColor: "from-blue-50 to-teal-100",
-    darkBgColor: "dark:from-blue-900 dark:to-teal-900",
-    textColor: "text-blue-600 dark:text-blue-400",
-  },
-];
+import { fetchCategoryStats } from "@/lib/api/categories";
+import { fetchPostStats } from "@/lib/api/posts";
+import { useLoadStats } from "@/hooks/useLoadStats";
+
+// Mock data Consultations và Users: const stats = [
+//   // {
+//   //   title: "Consultations",
+//   //   value: "328",
+//   //   change: "-2.3%",
+//   //   trend: "down",
+//   //   icon: MessagesSquare,
+//   //   color: "from-red-500 to-pink-600",
+//   //   bgColor: "from-red-50 to-pink-100",
+//   //   darkBgColor: "dark:from-red-900 dark:to-pink-900",
+//   //   textColor: "text-red-600 dark:text-red-400",
+//   // },
+//   // {
+//   //   title: "Active Users",
+//   //   value: "8,549",
+//   //   change: "+3.2%",
+//   //   trend: "up",
+//   //   icon: Users,
+//   //   color: "from-blue-500 to-teal-600",
+//   //   bgColor: "from-blue-50 to-teal-100",
+//   //   darkBgColor: "dark:from-blue-900 dark:to-teal-900",
+//   //   textColor: "text-blue-600 dark:text-blue-400",
+//   // },
+// ];
 
 function StatsGrid() {
+  const categoryStat = useLoadStats(fetchCategoryStats, "Total Categories");
+  const postStat = useLoadStats(fetchPostStats, "Total Posts");
+
+  const stats = [
+    {
+      ...categoryStat,
+      icon: FolderKanban,
+      color: "from-yellow-500 to-orange-600",
+      bgColor: "from-yellow-50 to-orange-100",
+      darkBgColor: "dark:from-yellow-900 dark:to-orange-900",
+      textColor: "text-yellow-600 dark:text-yellow-400",
+    },
+    {
+      ...postStat,
+      icon: FileText,
+      color: "from-indigo-500 to-purple-600",
+      bgColor: "from-indigo-50 to-purple-100",
+      darkBgColor: "dark:from-indigo-900 dark:to-purple-900",
+      textColor: "text-indigo-600 dark:text-indigo-400",
+    },
+  ];
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
       {stats.map((stat, index) => {
@@ -105,7 +109,8 @@ function StatsGrid() {
             <div className="mt-4 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
               <div
                 className={`h-full bg-gradient-to-r ${stat.color} rounded-full transition-all duration-100`}
-                style={{ width: stat.trend === "up" ? "75%" : "45%" }}
+                // style={{ width: stat.trend === "up" ? "75%" : "45%" }}
+                style={{ width: stat.progressWidth || "0%" }}
               ></div>
             </div>
           </div>

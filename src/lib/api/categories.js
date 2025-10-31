@@ -115,3 +115,30 @@ export async function bulkDeleteCategories(ids) {
     throw error;
   }
 }
+
+// Tính thống kê cho stats dashboard
+export async function fetchCategoryStats() {
+  try {
+    const response = await axios.get(`${BASE_URL}/categories/stats`, {
+      headers: {
+        Authorization: `Bearer ${TOKEN}`,
+      },
+    });
+
+    const { data } = response.data;
+
+    return {
+      total: data.total || 0,
+      this_month: data.this_month || 0,
+      last_month: data.last_month || 0,
+    };
+  // eslint-disable-next-line no-unused-vars
+  } catch (error) {
+    // console.error("Error fetching category stats:", error);
+    return {
+      total: 0,
+      this_month: 0,
+      last_month: 0,
+    };
+  }
+}

@@ -14,7 +14,7 @@ function SalesChart() {
     <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-b-2xl border border-slate-200/50 dark:border-slate-700/50 p-6">
       <div className="mb-6">
         <h3 className="text-xl font-bold text-slate-800 dark:text-white">
-          Sales by Category
+          Sales by Category DEMO
         </h3>
         <p className="text-sm text-slate-500 dark:text-slate-400">
           Production Distribution
