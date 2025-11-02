@@ -26,6 +26,7 @@ import { PostSidebar } from "./PostSidebar";
 import MediaLibrary from "./MediaLibrary";
 
 import { slugify } from "@/lib/utils";
+import axiosInstance from "@/utils/axiosInstance";
 import { fetchCategories } from "@/lib/api/categories";
 import { getPostById, updatePost } from "@/lib/api/posts";
 import classNames from "classnames/bind";
@@ -106,23 +107,13 @@ function PostEdit() {
         });
 
         if (data.featured_media_id) {
-          const res = await fetch(
-            `${
-              import.meta.env.MODE === "development"
-                ? import.meta.env.VITE_API_URL_LOCAL
-                : import.meta.env.VITE_API_URL_PRODUCTION
-            }/media/${data.featured_media_id}`,
-            {
-              headers: {
-                Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}`,
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          if (res.ok) {
-            const mediaData = await res.json();
-            setFeaturedMedia(mediaData);
-          } else {
+          try {
+            const res = await axiosInstance.get(
+              `/media/${data.featured_media_id}`
+            );
+            setFeaturedMedia(res.data);
+          } catch (mediaErr) {
+            console.error("Error fetching featured media:", mediaErr);
             setFeaturedMedia(null);
           }
         } else {
