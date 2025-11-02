@@ -190,7 +190,7 @@ function Header({ onToggleSidebar }) {
               />
               <p className="hidden md:block">
                 <span className="block text-sm font-medium text-slate-500 dark:text-slate-400">
-                  Kieu Chinh
+                  Quản lý Pion
                 </span>
                 <span className="block text-xs text-slate-500 dark:text-slate-400">
                   Staff marketing
