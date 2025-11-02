@@ -1,8 +1,8 @@
 import { User, Settings, Info, LogOut } from "lucide-react";
-import axiosInstance from "@/utils/axiosInstance"; // ✅ Dùng axiosInstance
+import axiosInstance from "@/utils/axiosInstance";
 import { toast } from "sonner";
 
-function ProfileHeaderPopup({ user = {} }) {
+function ProfileHeaderPopup({ user }) {
   const handleLogout = async () => {
     try {
       // Gọi API logout

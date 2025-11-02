@@ -37,12 +37,26 @@ const notifications = [
 function Header({ onToggleSidebar }) {
   const [theme, setTheme] = useState("light");
   const [searchQuery, setSearchQuery] = useState("");
+  const [user, setUser] = useState(null); // state user info
   const [showProfilePopup, setShowProfilePopup] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const notificationRef = useRef(null);
   const profileRef = useRef(null);
 
   const navigate = useNavigate();
+
+  // Đọc user từ localStorage khi mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+      } catch (error) {
+        console.error("Error parsing user from localStorage:", error);
+      }
+    }
+  }, []);
 
   // handle close popup
   useEffect(() => {
@@ -190,10 +204,10 @@ function Header({ onToggleSidebar }) {
               />
               <p className="hidden md:block">
                 <span className="block text-sm font-medium text-slate-500 dark:text-slate-400">
-                  Quản lý Pion
+                  {user?.name || "Quản lý Pion"}
                 </span>
                 <span className="block text-xs text-slate-500 dark:text-slate-400">
-                  Staff marketing
+                  Tài khoản CMS
                 </span>
               </p>
               <ChevronDown
@@ -203,7 +217,7 @@ function Header({ onToggleSidebar }) {
               />
             </div>
             {/* Popup menu */}
-            {showProfilePopup && <ProfileHeaderPopup />}
+            {showProfilePopup && <ProfileHeaderPopup user={user}/>}
           </div>
           {/* End User profile */}
         </div>
