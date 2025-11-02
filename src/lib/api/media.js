@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "@/utils/axiosInstance";
 
 const BASE_URL =
   import.meta.env.MODE === "development"
@@ -10,17 +10,13 @@ const TOKEN = import.meta.env.VITE_API_TOKEN;
 // 🧩 Lấy toàn bộ media (KHÔNG phân trang)
 export async function fetchMedia() {
   try {
-    const response = await axios.get(`${BASE_URL}/media`, {
-      headers: {
-        Authorization: `Bearer ${TOKEN}`,
-      },
-    });
+    const response = await axiosInstance.get("/media");
 
     // console.log(">>> get data media", response.data.data);
     // Nếu API trả về { data: [...], meta: {...} }
     // thì chỉ cần trả về mảng data
     return response.data.data || [];
-  // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars
   } catch (error) {
     // console.error("❌ Error fetching media:", error);
     return [];
@@ -35,14 +31,13 @@ export async function uploadMedia(files) {
       formData.append("files[]", files[i]);
     }
 
-    const response = await axios.post(`${BASE_URL}/media`, formData, {
+    const response = await axiosInstance.post("/media", formData, {
       headers: {
-        Authorization: `Bearer ${TOKEN}`,
         "Content-Type": "multipart/form-data",
       },
     });
 
-    // console.log("✅ Upload response:", response.data);
+    // console.log("Upload response:", response.data);
     return response.data.data || [];
   } catch (error) {
     console.error("Error uploading media:", error);
@@ -53,13 +48,9 @@ export async function uploadMedia(files) {
 // Xóa media theo ID
 export async function deleteMedia(id) {
   try {
-    const response = await axios.delete(`${BASE_URL}/media/${id}`, {
-      headers: {
-        Authorization: `Bearer ${TOKEN}`,
-      },
-    });
+    const response = await axiosInstance.delete(`/media/${id}`);
 
-    // console.log("✅ Media deleted:", response.data);
+    // console.log("Media deleted:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error deleting media:", error);

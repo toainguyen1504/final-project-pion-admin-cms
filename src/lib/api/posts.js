@@ -1,16 +1,4 @@
-import axios from "axios";
-
-const BASE_URL =
-  import.meta.env.MODE === "development"
-    ? import.meta.env.VITE_API_URL_LOCAL
-    : import.meta.env.VITE_API_URL_PRODUCTION;
-
-const TOKEN = import.meta.env.VITE_API_TOKEN;
-
-const headers = {
-  Authorization: `Bearer ${TOKEN}`,
-  "Content-Type": "application/json",
-};
+import axiosInstance from "@/utils/axiosInstance";
 
 // ===========================
 // GET ALL POSTS (with pagination)
@@ -22,9 +10,8 @@ export async function fetchPosts(
   search = ""
 ) {
   try {
-    const response = await axios.get(`${BASE_URL}/posts`, {
+    const response = await axiosInstance.get("/posts", {
       params: { page, sort, order, search },
-      headers,
     });
 
     return {
@@ -45,8 +32,8 @@ export async function fetchPosts(
 // ===========================
 export async function getPostById(id) {
   try {
-    const response = await axios.get(`${BASE_URL}/posts/${id}`, { headers });
-    console.log("GET SINGLE POST (for Edit Page)", response.data.data);
+    const response = await axiosInstance.get(`/posts/${id}`);
+    // console.log("GET SINGLE POST (for Edit Page)", response.data.data);
     return response.data.data;
     // eslint-disable-next-line no-unused-vars
   } catch (error) {
@@ -60,24 +47,20 @@ export async function getPostById(id) {
 // ===========================
 export async function createPost(payload) {
   try {
-    const response = await axios.post(
-      `${BASE_URL}/posts`,
-      {
-        title: payload.title,
-        sapo_text: payload.sapo_text,
-        slug: payload.slug,
-        category_ids: payload.category_ids || [],
-        featured_media_id: payload.featured_media_id || null,
-        seo_title: payload.seo_title,
-        seo_description: payload.seo_description,
-        seo_keywords: payload.seo_keywords,
-        status: payload.status || "draft",
-        visibility: payload.visibility || "private",
-        publish_at: payload.publish_at,
-        content: payload.content || "",
-      },
-      { headers }
-    );
+    const response = await axiosInstance.post("/posts", {
+      title: payload.title,
+      sapo_text: payload.sapo_text,
+      slug: payload.slug,
+      category_ids: payload.category_ids || [],
+      featured_media_id: payload.featured_media_id || null,
+      seo_title: payload.seo_title,
+      seo_description: payload.seo_description,
+      seo_keywords: payload.seo_keywords,
+      status: payload.status || "draft",
+      visibility: payload.visibility || "private",
+      publish_at: payload.publish_at,
+      content: payload.content || "",
+    });
 
     return {
       success: response.data.success,
@@ -100,24 +83,20 @@ export async function createPost(payload) {
 // ===========================
 export async function updatePost(id, payload) {
   try {
-    const response = await axios.put(
-      `${BASE_URL}/posts/${id}`,
-      {
-        title: payload.title,
-        sapo_text: payload.sapo_text,
-        slug: payload.slug,
-        category_ids: payload.category_ids || [],
-        featured_media_id: payload.featured_media_id || null,
-        seo_title: payload.seo_title,
-        seo_description: payload.seo_description,
-        seo_keywords: payload.seo_keywords,
-        status: payload.status,
-        visibility: payload.visibility,
-        publish_at: payload.publish_at,
-        content: payload.content,
-      },
-      { headers }
-    );
+    const response = await axiosInstance.put(`/posts/${id}`, {
+      title: payload.title,
+      sapo_text: payload.sapo_text,
+      slug: payload.slug,
+      category_ids: payload.category_ids || [],
+      featured_media_id: payload.featured_media_id || null,
+      seo_title: payload.seo_title,
+      seo_description: payload.seo_description,
+      seo_keywords: payload.seo_keywords,
+      status: payload.status,
+      visibility: payload.visibility,
+      publish_at: payload.publish_at,
+      content: payload.content,
+    });
 
     return {
       success: response.data.success,
@@ -140,9 +119,7 @@ export async function updatePost(id, payload) {
 // ===========================
 export async function deletePost(id) {
   try {
-    const response = await axios.delete(`${BASE_URL}/posts/${id}`, {
-      headers,
-    });
+    const response = await axiosInstance.delete(`/posts/${id}`);
 
     return {
       success: response.data.success,
@@ -164,11 +141,7 @@ export async function deletePost(id) {
 // ===========================
 export async function bulkDeletePosts(ids) {
   try {
-    const response = await axios.post(
-      `${BASE_URL}/posts/bulk-destroy`,
-      { ids },
-      { headers }
-    );
+    const response = await axiosInstance.post("/posts/bulk-destroy", { ids });
 
     return {
       success: response.data.success,
@@ -188,11 +161,7 @@ export async function bulkDeletePosts(ids) {
 // Tính thống kê cho stats dashboard
 export async function fetchPostStats() {
   try {
-    const response = await axios.get(`${BASE_URL}/posts/stats`, {
-      headers: {
-        Authorization: `Bearer ${TOKEN}`,
-      },
-    });
+    const response = await axiosInstance.get("/posts/stats");
 
     const { data } = response.data;
 
@@ -201,7 +170,7 @@ export async function fetchPostStats() {
       this_month: data.this_month || 0,
       last_month: data.last_month || 0,
     };
-  // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars
   } catch (error) {
     // console.error("Error fetching post stats:", error);
     return {

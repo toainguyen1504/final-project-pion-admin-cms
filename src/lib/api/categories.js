@@ -1,9 +1,4 @@
-import axios from "axios";
-
-const BASE_URL =
-  import.meta.env.MODE === "development"
-    ? import.meta.env.VITE_API_URL_LOCAL
-    : import.meta.env.VITE_API_URL_PRODUCTION;
+import axiosInstance from "@/utils/axiosInstance";
 
 const TOKEN = import.meta.env.VITE_API_TOKEN;
 
@@ -15,16 +10,8 @@ export async function fetchCategories(
   search = ""
 ) {
   try {
-    const response = await axios.get(`${BASE_URL}/categories`, {
-      params: {
-        page,
-        sort,
-        order,
-        search,
-      },
-      headers: {
-        Authorization: `Bearer ${TOKEN}`,
-      },
+    const response = await axiosInstance.get("/categories", {
+      params: { page, sort, order, search },
     });
 
     return {
@@ -43,11 +30,7 @@ export async function fetchCategories(
 // Create Category
 export async function createCategory(payload) {
   try {
-    const response = await axios.post(`${BASE_URL}/categories`, payload, {
-      headers: {
-        Authorization: `Bearer ${TOKEN}`,
-      },
-    });
+    const response = await axiosInstance.post("/categories", payload);
 
     return response.data;
   } catch (error) {
@@ -59,11 +42,7 @@ export async function createCategory(payload) {
 // Update Category
 export async function updateCategory(id, payload) {
   try {
-    const response = await axios.put(`${BASE_URL}/categories/${id}`, payload, {
-      headers: {
-        Authorization: `Bearer ${TOKEN}`,
-      },
-    });
+    const response = await axiosInstance.put(`/categories/${id}`, payload);
     return response.data;
   } catch (error) {
     console.error("Error updating category:", error);
@@ -74,11 +53,7 @@ export async function updateCategory(id, payload) {
 // Get single category
 export async function fetchCategory(id) {
   try {
-    const response = await axios.get(`${BASE_URL}/categories/${id}`, {
-      headers: {
-        Authorization: `Bearer ${TOKEN}`,
-      },
-    });
+    const response = await axiosInstance.get(`/categories/${id}`);
     return response.data.data;
   } catch (error) {
     console.error("Error fetching category:", error);
@@ -89,9 +64,7 @@ export async function fetchCategory(id) {
 // Delete single category
 export async function deleteCategory(id) {
   try {
-    const response = await axios.delete(`${BASE_URL}/categories/${id}`, {
-      headers: { Authorization: `Bearer ${TOKEN}` },
-    });
+    const response = await axiosInstance.delete(`/categories/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error deleting category:", error);
@@ -102,13 +75,9 @@ export async function deleteCategory(id) {
 // Delete multiple categories
 export async function bulkDeleteCategories(ids) {
   try {
-    const response = await axios.post(
-      `${BASE_URL}/categories/bulk-destroy`,
-      { ids }, // body
-      {
-        headers: { Authorization: `Bearer ${TOKEN}` }, // config
-      }
-    );
+    const response = await axiosInstance.post("/categories/bulk-destroy", {
+      ids,
+    });
     return response.data;
   } catch (error) {
     console.error("Error bulk deleting categories:", error);
@@ -119,12 +88,7 @@ export async function bulkDeleteCategories(ids) {
 // Tính thống kê cho stats dashboard
 export async function fetchCategoryStats() {
   try {
-    const response = await axios.get(`${BASE_URL}/categories/stats`, {
-      headers: {
-        Authorization: `Bearer ${TOKEN}`,
-      },
-    });
-
+    const response = await axiosInstance.get("/categories/stats");
     const { data } = response.data;
 
     return {
@@ -132,7 +96,7 @@ export async function fetchCategoryStats() {
       this_month: data.this_month || 0,
       last_month: data.last_month || 0,
     };
-  // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars
   } catch (error) {
     // console.error("Error fetching category stats:", error);
     return {
