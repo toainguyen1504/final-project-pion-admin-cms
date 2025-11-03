@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AdminLayout from "@/components/layout/AdminLayout";
 import Dashboard from "@/components/dashboard/Dashboard";
 import LoginPage from "@/pages/auth/LoginPage";
@@ -24,7 +25,13 @@ function AppRoutes() {
       <Route path="/login" element={<LoginPage />} />
 
       {/* Protected routes with layout */}
-      <Route element={<AdminLayout />}>
+      <Route
+        element={
+          <ProtectedRoute>
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route path="/" element={<Dashboard />} />
 
         {/* Category */}
