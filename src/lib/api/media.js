@@ -7,6 +7,7 @@ const BASE_URL =
 
 const TOKEN = import.meta.env.VITE_API_TOKEN;
 
+// ----------- PUBLIC ROUTES (index, show, stats) -----------
 // 🧩 Lấy toàn bộ media (KHÔNG phân trang)
 export async function fetchMedia() {
   try {
@@ -23,6 +24,7 @@ export async function fetchMedia() {
   }
 }
 
+// ----------- ADMIN ROUTES (create, update, delete, bulk) -----------
 // 🧩 Upload media (1 hoặc nhiều file)
 export async function uploadMedia(files) {
   try {
@@ -31,7 +33,7 @@ export async function uploadMedia(files) {
       formData.append("files[]", files[i]);
     }
 
-    const response = await axiosInstance.post("/media", formData, {
+    const response = await axiosInstance.post("/admin/media", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -48,7 +50,7 @@ export async function uploadMedia(files) {
 // Xóa media theo ID
 export async function deleteMedia(id) {
   try {
-    const response = await axiosInstance.delete(`/media/${id}`);
+    const response = await axiosInstance.delete(`/admin/media/${id}`);
 
     // console.log("Media deleted:", response.data);
     return response.data;
