@@ -1,4 +1,3 @@
-// src/lib/api/consultation.js
 import axiosInstance from "@/utils/axiosInstance";
 
 // Lấy danh sách consultations (admin)

@@ -6,7 +6,7 @@ function ProfileHeaderPopup({ user }) {
   const handleLogout = async () => {
     try {
       // Gọi API logout
-      await axiosInstance.post("/logout");
+      await axiosInstance.post("admin/logout");
 
       // Xóa dữ liệu trong localStorage
       localStorage.removeItem("authToken");
