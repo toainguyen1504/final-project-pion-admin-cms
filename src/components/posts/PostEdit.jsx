@@ -111,13 +111,11 @@ function PostEdit() {
             const res = await axiosInstance.get(
               `/media/${data.featured_media_id}`
             );
-            setFeaturedMedia(res.data);
+            setFeaturedMedia(res.data || featuredMedia); // giữ giá trị cũ nếu có
           } catch (mediaErr) {
             console.error("Error fetching featured media:", mediaErr);
-            setFeaturedMedia(null);
+            setFeaturedMedia((prev) => prev); // giữ nguyên media cũ, không null
           }
-        } else {
-          setFeaturedMedia(null);
         }
 
         setLoading(false);
@@ -205,7 +203,8 @@ function PostEdit() {
       visibility,
       publish_at: getPublishDate(),
       category_ids: selectedCategories,
-      featured_media_id: featuredMedia?.id || null,
+      featured_media_id:
+        featuredMedia?.id ?? postData?.featured_media_id ?? null,
     };
 
     try {

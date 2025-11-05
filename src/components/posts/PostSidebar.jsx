@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/popover";
 
 import { normalizeText, getImageOGSrc } from "@/lib/utils";
-import { useMedia } from "@/hooks/useMedia";
+// import { useMedia } from "@/hooks/useMedia";
 import { ScheduledPanel } from "./components/ScheduledPanel";
 
 const getFeaturedMedia = (media) => {
@@ -75,11 +75,11 @@ export function PostSidebar({
   };
 
   // Dùng hook gọi BASE URL
-  const { BASE_MEDIA_URL } = useMedia();
+  // const { BASE_MEDIA_URL } = useMedia();
 
   const displayMedia = getFeaturedMedia(featuredMedia);
-
-  // console.log("featuredMedia:", featuredMedia);
+  // console.log("displayMedia", displayMedia)
+  // console.log("featuredMedia", featuredMedia)
 
   return (
     <div className="w-[320px] border-l border-border rounded-xl p-6 bg-card text-card-foreground space-y-6">
@@ -299,7 +299,8 @@ export function PostSidebar({
             </PopoverContent>
           </Popover>
         </div>
-
+        {/* // debug: check để load image được vào edit (thumbnail) - không truyền path đúng */}
+        {/* src="http://127.0.0.1:8000/storage/" */}
         {/* Thumbnail */}
         {displayMedia ? (
           <div className="relative w-full h-32 rounded-md overflow-hidden bg-slate-100 dark:bg-slate-800 flex items-center justify-center">

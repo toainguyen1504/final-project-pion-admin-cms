@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 
@@ -31,9 +31,20 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { truncateText, getImageThumbnailSrc } from "@/lib/utils";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 import TablePagination from "@/components/shared/table/TablePagination";
 // import DEFAULT_THUMB from "@/assets/images/toaicdev.png";
+
+import classNames from "classnames/bind";
+import styles from "@/components/posts/Posts.module.scss"; // dùng lại style của PostEdit
+
+const cx = classNames.bind(styles);
 
 export default function PostTableBody({
   data = [],
@@ -51,10 +62,15 @@ export default function PostTableBody({
 }) {
   const navigate = useNavigate();
 
+  // lấy số lượng cột
   const getVisibleColSpan = () => {
     const visibleCount = Object.values(visibleColumns).filter(Boolean).length;
     return visibleCount + 2; // +1 checkbox +1 actions
   };
+
+  // modal review
+  const [showReview, setShowReview] = useState(false);
+  const [reviewPost, setReviewPost] = useState(null);
 
   return (
     <TableBody>
@@ -110,7 +126,14 @@ export default function PostTableBody({
               <TableCell className="min-w-3xs px-4 py-3 whitespace-nowrap font-medium text-slate-800 dark:text-slate-200">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="block max-w-[220px] truncate cursor-default">
+                    <span
+                      onClick={() => {
+                        setReviewPost(post);
+                        setShowReview(true);
+                      }}
+                      className="block max-w-[220px] truncate cursor-pointer text-indigo-600 hover:underline"
+                      title="Click to review"
+                    >
                       {truncateText(post.title, 60)}
                     </span>
                   </TooltipTrigger>
@@ -316,6 +339,34 @@ export default function PostTableBody({
           </div>
         </TableCell>
       </TableRow>
+
+      {showReview && reviewPost && (
+        <Dialog open={showReview} onOpenChange={setShowReview}>
+          <DialogContent className="min-w-4xl max-h-[90vh] overflow-hidden">
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold mb-4">
+                Review Post
+              </DialogTitle>
+            </DialogHeader>
+
+            <div
+              className={cx("post-wrapper", "max-h-[85vh]", "overflow-y-auto")}
+            >
+              <div className={cx("post-content")}>
+                <h1>{reviewPost.title || "Untitled Post"}</h1>
+                <div
+                  className={cx("post-body")}
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      reviewPost.content?.content_html ||
+                      "<p>No content available.</p>",
+                  }}
+                />
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </TableBody>
   );
 }
