@@ -52,6 +52,7 @@ export const ImageUploadNode = Node.create({
 
   parseHTML() {
     return [{ tag: "img[src]" }];
+    
     // return [{ tag: 'div[data-type="image-upload"]' }];
   },
 

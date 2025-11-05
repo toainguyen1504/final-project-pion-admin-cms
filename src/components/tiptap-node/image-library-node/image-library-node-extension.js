@@ -18,6 +18,31 @@ export const ImageLibraryNode = Image.extend({
     };
   },
 
+  // Bổ sung parseHTML để nhận figcaption
+  parseHTML() {
+    return [
+      {
+        tag: "figure.image",
+        getAttrs: (el) => {
+          const img = el.querySelector("img");
+          const figcaption = el.querySelector("figcaption");
+
+          return {
+            src: img?.getAttribute("src") || "",
+            alt: img?.getAttribute("alt") || "",
+            title: img?.getAttribute("title") || "",
+            caption:
+              figcaption?.textContent?.trim() ||
+              img?.getAttribute("caption") ||
+              "",
+          };
+        },
+        // Chặn parse nội dung con như figcaption thành text node (tag p)
+        getContent: () => [],
+      },
+    ];
+  },
+
   renderHTML({ HTMLAttributes }) {
     return [
       "figure",
