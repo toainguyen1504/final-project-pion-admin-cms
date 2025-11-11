@@ -133,6 +133,8 @@ export default function CategoryTableBody({
                   <Pencil className="w-4 h-4" />
                   Edit
                 </Button>
+
+                {/* tạm thời disable nút delete -> sau này phân quyền sau (đang disable ở modal) */}
                 <Button
                   onClick={() => {
                     setDeleteMode("single");

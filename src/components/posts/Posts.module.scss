@@ -141,15 +141,51 @@ $post-indent-24: 24px;
     }
 
     .post-body {
-      i,
-      em,
-      figcaption {
+      // image
+      figure,
+      .image {
+        i,
+        em,
+        figcaption {
+          display: block;
+          text-align: center !important;
+          font-style: italic !important;
+          font-size: $post-caption-size !important;
+          color: $post-caption-color !important;
+          margin-top: 4px;
+        }
+      }
+
+      // blockquote and link
+      blockquote {
         display: block;
-        text-align: center !important;
-        font-style: italic !important;
-        font-size: $post-caption-size !important;
-        color: $post-caption-color !important;
-        margin-top: 4px;
+        padding: 12px 16px;
+        margin: 16px 0;
+        border-left: 4px solid #ccc;
+        font-size: $post-font-size;
+        line-height: 1.2;
+
+        p {
+          display: flex;
+          font-style: italic;
+          margin: 0;
+
+          a {
+            text-decoration: none;
+            color: $post-primary;
+            border-bottom: 1px dashed $post-primary;
+            margin-left: 4px;
+            cursor: pointer;
+
+            &:hover {
+              opacity: 0.95;
+            }
+          }
+
+          em {
+            font-style: italic;
+          }
+        }
       }
     }
   }

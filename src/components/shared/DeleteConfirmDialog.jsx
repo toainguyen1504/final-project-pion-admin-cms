@@ -38,7 +38,8 @@ export default function DeleteConfirmDialog({
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
-            disabled={loading}
+            // disabled={loading} //disable khi loading
+            disabled // tạm disable -> sau này phân quyền thì mở lại bình thường
             className="bg-red-600 hover:bg-red-700 dark:text-red-100 cursor-pointer"
           >
             {loading && <Spinner className="w-4 h-4 mr-2 text-white" />}

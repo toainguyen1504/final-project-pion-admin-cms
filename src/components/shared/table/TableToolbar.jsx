@@ -52,7 +52,9 @@ export default function TableToolbar({
             : "opacity-0 -translate-y-1 invisible"
         )}
       >
+        {/* tạm thời disable -> sau này phân quyền sau */}
         <Button
+          disabled
           onClick={onDeleteSelected}
           variant="destructive"
           size="sm"
