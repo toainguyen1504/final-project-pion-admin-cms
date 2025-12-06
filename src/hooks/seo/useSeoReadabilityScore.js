@@ -141,8 +141,8 @@ export default function useSeoReadabilityScore() {
   }
 
   // ===== Check 5: Images =====
-  function checkImages(content) {
-    const imgCount = (content.match(/<img\b[^>]*>/gi) || []).length;
+  function checkImages(rawHtml) {
+    const imgCount = (rawHtml.match(/<img\b[^>]*>/gi) || []).length;
     let score = 0;
     let message = "";
     let status = "fail";
@@ -165,8 +165,8 @@ export default function useSeoReadabilityScore() {
   }
 
   // ===== Check 6: Media (video/audio/iframe) =====
-  function checkMedia(content) {
-    const mediaCount = (content.match(/<(video|audio|iframe)\b[^>]*>/gi) || [])
+  function checkMedia(rawHtml) {
+    const mediaCount = (rawHtml.match(/<(video|audio|iframe)\b[^>]*>/gi) || [])
       .length;
 
     return mediaCount >= 1
@@ -186,13 +186,14 @@ export default function useSeoReadabilityScore() {
     title = "",
     content = "",
     keyword = "",
+    rawHtml = "",
   }) {
     const titleStart = checkKeywordNearTitleStart(title, keyword);
     const titleNumber = checkTitleHasNumber(title);
     const titleLength = checkTitlePostLength(title);
     const paragraph = checkParagraphLength(content);
-    const images = checkImages(content);
-    const media = checkMedia(content);
+    const images = checkImages(rawHtml);
+    const media = checkMedia(rawHtml);
 
     const totalScore =
       titleStart.score +

@@ -39,6 +39,7 @@ export default function useSeoScore() {
         title,
         content,
         keyword: mainKeyword,
+        rawHtml,
       });
 
       const additional = calculateAdditionalScore
