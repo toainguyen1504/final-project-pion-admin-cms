@@ -92,7 +92,7 @@ const MainToolbarContent = ({ onHighlighterClick, onLinkClick, isMobile }) => {
       <ToolbarGroup>
         <HeadingDropdownMenu levels={[2, 3]} portal={isMobile} />
         <ListDropdownMenu
-          types={["bulletList", "orderedList", "taskList"]}
+          types={["bulletList"]}
           portal={isMobile}
         />
         <BlockquoteButton />
