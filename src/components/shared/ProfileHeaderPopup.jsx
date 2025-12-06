@@ -3,24 +3,25 @@ import axiosInstance from "@/utils/axiosInstance";
 import { toast } from "sonner";
 
 function ProfileHeaderPopup({ user }) {
+
+  // Handle logout
   const handleLogout = async () => {
     try {
-      // Gọi API logout
+      // Call API logout
       await axiosInstance.post("admin/logout");
-
-      // Xóa dữ liệu trong localStorage
+      toast.success("Successfully signed out!");
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("Unable to sign out. Please try again later.");
+    } finally {
+      // Always clear localStorage
       localStorage.removeItem("authToken");
       localStorage.removeItem("user");
 
-      toast.success("Đăng xuất thành công!");
-
-      // Delay trước khi chuyển hướng
+      // Redirect to login page
       setTimeout(() => {
         window.location.href = "/login";
-      }, 1000);
-    } catch (error) {
-      console.error("Logout error:", error);
-      toast.error("Không thể đăng xuất. Vui lòng thử lại sau.");
+      }, 500);
     }
   };
 
