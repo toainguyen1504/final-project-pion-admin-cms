@@ -202,7 +202,7 @@ export default function useSeoReadabilityScore() {
       images.score +
       media.score;
 
-    // 🧾 Checklist
+    // Checklist
     const checklist = [
       {
         title: "Content Readability",

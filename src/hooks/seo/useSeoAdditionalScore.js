@@ -1,5 +1,10 @@
 import { useCallback } from "react";
 
+// check if a URL is internal based on the base domain
+function isInternalLink(url, baseDomain) {
+  return url.hostname === baseDomain || url.hostname.endsWith(`.${baseDomain}`);
+}
+
 /* =========================================================
  🧩 Helper 1: Keyword Density
 ========================================================= */
@@ -212,7 +217,7 @@ function checkInternalLink(rawHtml, baseDomain) {
   for (const [_, href] of anchors) {
     try {
       const url = new URL(href, `https://${baseDomain}`);
-      if (url.hostname === baseDomain) {
+      if (isInternalLink(url, baseDomain)) {
         internalCount++;
       }
     } catch {
@@ -256,8 +261,11 @@ function checkExternalLink(rawHtml, baseDomain) {
       const url = new URL(href, `https://${baseDomain}`);
       if (url.hostname !== baseDomain) {
         externalCount++;
-        if (/rel=["'](nofollow|dofollow)["']/i.test(fullMatch)) {
-          relCount++;
+        if (!isInternalLink(url, baseDomain)) {
+          externalCount++;
+          if (/rel=["'](nofollow|dofollow)["']/i.test(fullMatch)) {
+            relCount++;
+          }
         }
       }
     } catch {
@@ -301,7 +309,7 @@ export default function useSeoAdditionalScore() {
       rawHtml = "",
       keyword = "",
       normalizedTitleInput = "",
-      baseDomain = "example.com",
+      baseDomain = "pion.edu.vn",
     }) => {
       const density = checkKeywordDensity(content, keyword);
       const headings = checkKeywordInHeadings(
