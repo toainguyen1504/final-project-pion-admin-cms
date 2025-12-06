@@ -173,11 +173,13 @@ export default function useSeoReadabilityScore() {
       ? {
           score: 5,
           message: `The article includes ${mediaCount} video/media item(s) – Great!`,
+          status: "good",
         }
       : {
           score: 0,
           message:
             "The article does not include any video or supporting media.",
+          status: "ok",
         };
   }
 
