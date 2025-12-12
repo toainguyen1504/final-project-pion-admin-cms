@@ -175,25 +175,25 @@ function PostEdit() {
   const handleUpdate = async () => {
     const newErrors = [];
 
-    if (!title.trim()) newErrors.push("Please enter a post title.");
-    if (!editor) newErrors.push("Editor is not ready.");
+    if (!title.trim()) newErrors.push("Vui lòng nhập tiêu đề bài viết.");
+    if (!editor) newErrors.push("Trình soạn thảo chưa sẵn sàng.");
     else {
       const textContent = editor.getText().trim();
-      if (!textContent) newErrors.push("Please enter post content.");
+      if (!textContent) newErrors.push("Vui lòng nhập nội dung bài viết.");
       if (textContent.length < 50)
         newErrors.push(
-          `Post content must be at least 50 characters (currently ${textContent.length}).`
+          `Nội dung bài viết phải có ít nhất 50 ký tự (hiện tại là ${textContent.length}).`
         );
     }
     if (!selectedCategories.length)
-      newErrors.push("Please select at least one category.");
+      newErrors.push("Vui lòng chọn ít nhất một danh mục.");
 
     setErrors(newErrors);
     if (newErrors.length) return;
 
     const payload = {
       title,
-      sapo_text: "Short summary for the post",
+      sapo_text: "",
       slug: slugify(seoData.seoTitle || title),
       seo_title: seoData.seoTitle,
       seo_description: seoData.seoDescription,
@@ -210,9 +210,9 @@ function PostEdit() {
     try {
       await updatePost(id, payload);
       toast.success("Cập nhật bài viết thành công!");
-      navigate("/posts");
+      navigate("/bai-viet");
     } catch (error) {
-      console.error("Error updating post:", error);
+      console.error("Có lỗi cập nhật bài viết", error);
       toast.error("Cập nhật thất bại! Vui lòng thử lại.");
     }
   };
@@ -234,7 +234,10 @@ function PostEdit() {
     <div className="p-4">
       <Helmet>
         <title>Chỉnh Sửa Bài Viết | Pion CMS</title>
-        <meta name="description" content="Edit existing post in system" />
+        <meta
+          name="description"
+          content="Chỉnh sửa bài viết cho hệ thống quản lý"
+        />
       </Helmet>
 
       <div className="mb-6">
@@ -274,7 +277,7 @@ function PostEdit() {
         <div className="flex-1 space-y-5">
           {errors.length > 0 && (
             <Alert variant="destructive" className="mb-5">
-              <AlertTitle>Lỗi Khi Gửi</AlertTitle>
+              <AlertTitle>Lỗi Khi Cập Nhật Bài Viết</AlertTitle>
               <AlertDescription>
                 <ul className="list-disc list-inside">
                   {errors.map((err, i) => (
@@ -310,7 +313,7 @@ function PostEdit() {
                 className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2 cursor-pointer"
               >
                 <Image className="w-4 h-4" />
-                Media Library
+                Thư Viện Ảnh
               </Button>
               {/* Popover TIP Viết bài */}
               <Popover>
@@ -321,7 +324,7 @@ function PostEdit() {
                     className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2 cursor-pointer"
                   >
                     <Info className="w-4 h-4 text-blue-500" />
-                    TIP Viết bài
+                    TIP Viết Bài
                   </Button>
                 </PopoverTrigger>
 
@@ -380,7 +383,7 @@ function PostEdit() {
         <DialogContent className="min-w-4xl max-h-[90vh] overflow-hidden">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold mb-4">
-              Review Post
+              Xem Trước Bài Viết
             </DialogTitle>
           </DialogHeader>
 
@@ -389,13 +392,13 @@ function PostEdit() {
           >
             <div className={cx("post-content")}>
               {/* Tiêu đề */}
-              <h1>{title || "Untitled Post"}</h1>
+              <h1>{title || "Chưa có tiêu đề bài viết"}</h1>
 
               {/* Nội dung từ editor */}
               <div
                 className={cx("post-body")}
                 dangerouslySetInnerHTML={{
-                  __html: editor?.getHTML() || "",
+                  __html: editor?.getHTML() || "Hiện tại chưa có nội dung",
                 }}
               />
             </div>

@@ -18,51 +18,44 @@ const menuItems = [
     id: "dashboard",
     icon: LayoutDashboard,
     label: "Tổng Quan",
+    slug: "",
     path: "/",
   },
   {
     id: "categories",
     icon: FolderKanban,
     label: "Danh Mục",
+    slug: "danh-muc",
     submenu: [
-      { id: "categories", label: "Tất cả danh mục", path: "/categories" },
+      { id: "categories", label: "Tất cả danh mục", path: "/danh-muc" },
       {
         id: "create-category",
         label: "Tạo mới danh mục",
-        path: "/categories/create",
+        path: "/danh-muc/tao-moi",
       },
     ],
-    count: "",
   },
   {
     id: "posts",
     icon: FileText,
     label: "Bài Viết",
+    slug: "bai-viet",
     submenu: [
-      { id: "posts", label: "Tất cả bài viết", path: "/posts" },
-      { id: "create-post", label: "Tạo mới bài viết", path: "/posts/create" },
-      // { id: "drafts", label: "Drafts", path: "/posts/drafts" },
+      { id: "posts", label: "Tất cả bài viết", path: "/bai-viet" },
+      {
+        id: "create-post",
+        label: "Tạo mới bài viết",
+        path: "/bai-viet/tao-moi",
+      },
     ],
-    count: "",
   },
-  // {
-  //   id: "users",
-  //   icon: Users,
-  //   label: "Users",
-  //   submenu: [
-  //     { id: "users", label: "All Users", path: "/users" },
-  //     { id: "create-user", label: "Create User", path: "/users/create" },
-  //     // { id: "roles", label: "Roles & Permissions", path: "/users/roles" },
-  //     // { id: "activity", label: "User Activity", path: "/users/activity" },
-  //     // { id: "feedback", label: "User Feedback", path: "/users/feedback" },
-  //   ],
-  // },
   {
     id: "consultations",
     icon: MessagesSquare,
     label: "Danh Sách Tư Vấn",
+    slug: "tu-van",
     badge: "New",
-    path: "/consultations",
+    path: "/tu-van",
   },
 ];
 
@@ -74,11 +67,8 @@ function Sidebar({ collapsed }) {
 
   // ======== Helper: create a dynamic pattern for edit/view paths ========
   const getDynamicPatterns = (item) => {
-    // Use the base path from the first submenu (e.g., /categories)
-    if (!item.submenu || item.submenu.length === 0) return [];
-    const base = item.submenu[0].path?.split("/")[1];
-    if (!base) return [];
-    return [`/${base}/:id/edit`, `/${base}/:id`];
+    if (!item.slug) return [];
+    return [`/${item.slug}/:id/chinh-sua`, `/${item.slug}/:id`];
   };
 
   // Determine the active menu/submenu based on the current URL
@@ -120,7 +110,7 @@ function Sidebar({ collapsed }) {
       }
       if (found) break;
 
-      // 3) check dynamic patterns (like /categories/:id/edit or /categories/:id)
+      // 3) check dynamic patterns (like /categories/:id/edit or /categories/:id) - change /danh-muc/:id/chinh-sua
       const dynamicPatterns = getDynamicPatterns(item);
       for (const pat of dynamicPatterns) {
         const matchedDyn = matchPath({ path: pat, end: false }, currentPath);

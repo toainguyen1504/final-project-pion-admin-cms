@@ -7,6 +7,7 @@ import {
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
+import { slugify } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
 export default function AppBreadcrumb({
@@ -18,7 +19,7 @@ export default function AppBreadcrumb({
   // List → Don't display breadcrumb
   if (current === "List") return null;
 
-  const basePath = `/${module.toLowerCase()}`;
+  const basePath = `/${slugify(module)}`;
 
   return (
     <Breadcrumb>

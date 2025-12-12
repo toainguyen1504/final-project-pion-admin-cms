@@ -45,7 +45,7 @@ function PostList() {
         </div>
 
         <Button
-          onClick={() => navigate("/posts/create")}
+          onClick={() => navigate("/bai-viet/tao-moi")}
           className="bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 
           transition-colors duration-300 min-w-36 cursor-pointer rounded-xl"
         >

@@ -14,7 +14,7 @@ function NotFound() {
 
       <p className="text-base text-slate-600 dark:text-slate-300 mb-6 max-w-md">
         Có thể đường dẫn bạn nhập không đúng hoặc trang đã bị xoá. Hãy quay về
-        Dashboard để tiếp tục.
+        <strong> Tổng Quan </strong> để tiếp tục.
       </p>
 
       <Link

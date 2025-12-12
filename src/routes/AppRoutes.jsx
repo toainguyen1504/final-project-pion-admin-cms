@@ -35,19 +35,19 @@ function AppRoutes() {
         <Route path="/" element={<Dashboard />} />
 
         {/* Category */}
-        <Route path="/categories" element={<CategoryList />} />
-        <Route path="/categories/create" element={<CategoryCreate />} />
-        <Route path="/categories/:id/edit" element={<CategoryEdit />} />
+        <Route path="/danh-muc" element={<CategoryList />} />
+        <Route path="/danh-muc/tao-moi" element={<CategoryCreate />} />
+        <Route path="/danh-muc/:id/chinh-sua" element={<CategoryEdit />} />
 
         {/* Post */}
-        <Route path="/posts" element={<PostList />} />
-        <Route path="/posts/create" element={<PostCreate />} />
-        <Route path="/posts/:id/edit" element={<PostEdit />} />
+        <Route path="/bai-viet" element={<PostList />} />
+        <Route path="/bai-viet/tao-moi" element={<PostCreate />} />
+        <Route path="/bai-viet/:id/chinh-sua" element={<PostEdit />} />
 
         {/* Consultation */}
-        <Route path="/consultations" element={<ConsultationList />} />
+        <Route path="/tu-van" element={<ConsultationList />} />
 
-        {/* ✅ Catch-all route for 404 */}
+        {/* Catch-all route for 404 */}
         <Route path="*" element={<NotFound />} />
 
         {/* User */}

@@ -105,7 +105,7 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
         className="max-w-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100"
       >
         <DialogHeader>
-          <DialogTitle>Preview Snippet Editor</DialogTitle>
+          <DialogTitle>Xem trước & Chỉnh sửa Snippet</DialogTitle>
         </DialogHeader>
 
         {/* --- Preview --- */}
@@ -127,14 +127,14 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
           {/* Title */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label>Title</Label>
+              <Label>Tiêu đề</Label>
               <div className="w-2/3">
                 <ProgressBar type="title" value={draftTitle} max={MAX_TITLE} />
               </div>
             </div>
             <Input
               value={draftTitle}
-              placeholder="Enter your post title (SEO)"
+              placeholder="Nhập tiêu đề bài viết (SEO)"
               maxLength={MAX_TITLE + 20}
               onChange={(e) => setDraftTitle(e.target.value)}
               className="focus-visible:ring-1 focus-visible:ring-blue-600 dark:focus-visible:ring-blue-400 
@@ -145,7 +145,7 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
           {/* Slug */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label>Permalink</Label>
+              <Label>Đường dẫn (Slug)</Label>
               <div className="w-2/3">
                 <ProgressBar type="slug" value={draftSlug} max={MAX_SLUG} />
               </div>
@@ -156,7 +156,7 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
               </span>
               <Input
                 value={draftSlug}
-                placeholder="Auto-generated from title (SEO) if left blank"
+                placeholder="Tự động tạo từ tiêu đề nếu để trống"
                 maxLength={MAX_SLUG + 20}
                 onChange={(e) => setDraftSlug(e.target.value)}
                 className="rounded-l-none flex-1 border-slate-200 dark:border-gray-700 
@@ -169,7 +169,7 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
           {/* Description */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <Label>Description</Label>
+              <Label>Mô tả</Label>
               <div className="w-2/3">
                 <ProgressBar
                   type="description"
@@ -180,7 +180,7 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
             </div>
             <Textarea
               value={draftDesc}
-              placeholder="Write a short SEO-friendly description"
+              placeholder="Viết mô tả ngắn gọn về nội dung bài viết"
               maxLength={MAX_DESC + 40}
               onChange={(e) => setDraftDesc(e.target.value)}
               rows={3}
@@ -204,7 +204,7 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
             onClick={handleSave}
             className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 cursor-pointer"
           >
-            Save changes
+            Lưu thay đổi
           </Button>
         </div>
       </DialogContent>

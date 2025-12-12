@@ -164,7 +164,7 @@ function PostTable({
                 <TableToolbar
                   searchValue={typingValue}
                   onSearchChange={setTypingValue}
-                  searchPlaceholder="Search posts by title or seo title..."
+                  searchPlaceholder="Tìm kiếm bài viết theo tiêu đề hoặc tiêu đề SEO..."
                   searchLoading={searchLoading}
                   selectedCount={selectedIds.length}
                   visibleColumns={visibleColumns}
@@ -173,16 +173,16 @@ function PostTable({
                   defaultColumns={defaultColumns}
                   columnsConfig={[
                     { key: "thumbnail", label: "Thumbnail" },
-                    { key: "title", label: "Title" },
+                    { key: "title", label: "Tiêu Đề" },
                     { key: "slug", label: "Slug" },
-                    { key: "category", label: "Category" },
-                    { key: "status", label: "Status" },
-                    { key: "visibility", label: "Visibility" },
-                    { key: "seo_title", label: "SEO Title" },
-                    { key: "seo_description", label: "SEO Description" },
-                    { key: "seo_keywords", label: "SEO Keywords" },
-                    { key: "publish_at", label: "Publish At" },
-                    { key: "updated_at", label: "Last Modified" },
+                    { key: "category", label: "Danh Mục" },
+                    { key: "status", label: "Trạng Thái" },
+                    { key: "visibility", label: "Hiển Thị" },
+                    { key: "seo_title", label: "Tiêu Đề SEO" },
+                    { key: "seo_description", label: "Mô Tả SEO" },
+                    { key: "seo_keywords", label: "Từ Khóa SEO" },
+                    { key: "publish_at", label: "Thời Điểm Xuất Bản" },
+                    { key: "updated_at", label: "Chỉnh Sửa Lần Cuối" },
                   ]}
                   popoverOpen={popoverOpen}
                   setPopoverOpen={setPopoverOpen}
@@ -218,7 +218,7 @@ function PostTable({
               {visibleColumns.title && (
                 <TableCell className="px-4 py-3 font-semibold">
                   <SortableHeaderCell
-                    label="Title"
+                    label="Tiêu Đề"
                     sortKey="title"
                     currentSort={sort}
                     order={order}
@@ -229,33 +229,31 @@ function PostTable({
               )}
 
               {visibleColumns.slug && (
-                <TableCell className="px-4 py-3 font-semibold">
-                  Slug
-                </TableCell>
+                <TableCell className="px-4 py-3 font-semibold">Slug</TableCell>
               )}
 
               {visibleColumns.category && (
                 <TableCell className="px-4 py-3 font-semibold">
-                  Category
+                  Danh Mục
                 </TableCell>
               )}
 
               {visibleColumns.status && (
                 <TableCell className="px-4 py-3 font-semibold">
-                  Status
+                  Trạng Thái
                 </TableCell>
               )}
 
               {visibleColumns.visibility && (
                 <TableCell className="px-4 py-3 font-semibold">
-                  Visibility
+                  Hiển Thị
                 </TableCell>
               )}
 
               {visibleColumns.seo_title && (
                 <TableCell className="px-4 py-3 font-semibold">
                   <SortableHeaderCell
-                    label="SEO Title"
+                    label="Tiêu Đề SEO"
                     sortKey="seo_title"
                     currentSort={sort}
                     order={order}
@@ -267,20 +265,20 @@ function PostTable({
 
               {visibleColumns.seo_description && (
                 <TableCell className="px-4 py-3 font-semibold">
-                  SEO Description
+                  Mô Tả SEO
                 </TableCell>
               )}
 
               {visibleColumns.seo_keywords && (
                 <TableCell className="px-4 py-3 font-semibold">
-                  SEO Keywords
+                  Từ Khóa SEO
                 </TableCell>
               )}
 
               {visibleColumns.publish_at && (
                 <TableCell className="px-4 py-3 font-semibold">
                   <SortableHeaderCell
-                    label="Publish At"
+                    label="Thời Điểm Xuất Bản"
                     sortKey="publish_at"
                     currentSort={sort}
                     order={order}
@@ -293,7 +291,7 @@ function PostTable({
               {visibleColumns.updated_at && (
                 <TableCell className="px-4 py-3 font-semibold">
                   <SortableHeaderCell
-                    label="Last Modified"
+                    label="Chỉnh Sửa Lần Cuối"
                     sortKey="updated_at"
                     currentSort={sort}
                     order={order}
@@ -328,11 +326,11 @@ function PostTable({
       <DeleteConfirmDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
-        title="Delete confirmation"
+        title="Xác Nhận Xóa Bài Viết"
         description={
           deleteMode === "bulk"
-            ? `Are you sure you want to delete ${selectedIds.length} selected posts?`
-            : `Are you sure you want to delete "${selectedPost?.title}"?`
+            ? `Bạn có chắc chắn muốn xóa ${selectedIds.length} bài viết đã chọn không?`
+            : `Bạn có chắc chắn muốn xóa "${selectedPost?.title}" không?`
         }
         onConfirm={handleConfirmDelete}
         loading={loadingDelete}

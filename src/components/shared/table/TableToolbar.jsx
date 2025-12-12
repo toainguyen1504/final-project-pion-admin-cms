@@ -60,7 +60,7 @@ export default function TableToolbar({
           size="sm"
           className="bg-red-600 hover:bg-red-500 dark:bg-red-600 text-white rounded-xl px-3 py-1.5 text-xs"
         >
-          Delete selected
+          Xóa {selectedCount} mục đã chọn
         </Button>
       </div>
 
@@ -151,7 +151,7 @@ export default function TableToolbar({
                          dark:bg-indigo-500 dark:hover:bg-indigo-400 transition-all duration-300 
                          min-w-36 cursor-pointer rounded-xl"
             >
-              Apply columns
+              Áp dụng
             </Button>
           </PopoverContent>
         </Popover>

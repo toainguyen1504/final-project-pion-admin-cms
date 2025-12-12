@@ -83,11 +83,11 @@ export default function PostTableBody({
                 <EmptyMedia variant="icon">
                   <FolderKanban className="w-6 h-6" />
                 </EmptyMedia>
-                <EmptyTitle>No posts found</EmptyTitle>
+                <EmptyTitle>Không tìm thấy bài viết</EmptyTitle>
                 <EmptyDescription>
                   {search && search.trim() !== ""
-                    ? "No posts match your search. Try a different keyword."
-                    : "You haven’t added any posts yet. Start by creating one."}
+                    ? "Không có bài viết nào khớp với tìm kiếm của bạn. Hãy thử từ khóa khác."
+                    : "Bạn chưa thêm bài viết nào. Hãy bắt đầu bằng cách tạo một bài viết mới."}
                 </EmptyDescription>
               </EmptyHeader>
               <EmptyContent>{/* optional actions */}</EmptyContent>
@@ -132,7 +132,7 @@ export default function PostTableBody({
                         setShowReview(true);
                       }}
                       className="block max-w-[220px] truncate cursor-pointer text-indigo-600 hover:underline"
-                      title="Click to review"
+                      title="Nhấn để xem trước bài viết"
                     >
                       {truncateText(post.title, 60)}
                     </span>
@@ -200,17 +200,17 @@ export default function PostTableBody({
                 {post.status === "published" ? (
                   <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
                     <CheckCircle2 className="w-4 h-4" />
-                    <span className="text-xs font-medium">Published</span>
+                    <span className="text-xs font-medium">Đã xuất bản</span>
                   </div>
                 ) : post.status === "pending" ? (
                   <div className="flex items-center gap-1 text-yellow-600 dark:text-yellow-400">
                     <Clock className="w-4 h-4" />
-                    <span className="text-xs font-medium">Pending</span>
+                    <span className="text-xs font-medium">Chờ xuất bản</span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-1 text-red-600 dark:text-red-400">
                     <FileWarning className="w-4 h-4" />
-                    <span className="text-xs font-medium">Draft</span>
+                    <span className="text-xs font-medium">Nháp</span>
                   </div>
                 )}
               </TableCell>
@@ -222,12 +222,12 @@ export default function PostTableBody({
                 {post.visibility === "public" ? (
                   <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
                     <Eye className="w-4 h-4" />
-                    <span className="text-xs font-medium">Public</span>
+                    <span className="text-xs font-medium">Công khai</span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-1 text-red-600 dark:text-red-400">
                     <EyeOff className="w-4 h-4" />
-                    <span className="text-xs font-medium">Private</span>
+                    <span className="text-xs font-medium">Riêng tư</span>
                   </div>
                 )}
               </TableCell>
@@ -296,13 +296,13 @@ export default function PostTableBody({
             <TableCell className="w-auto px-4 py-3 whitespace-nowrap">
               <div className="flex items-center gap-2">
                 <Button
-                  onClick={() => navigate(`/posts/${post.id}/edit`)}
+                  onClick={() => navigate(`/bai-viet/${post.id}/chinh-sua`)}
                   variant="ghost"
                   size="sm"
                   className="flex items-center gap-1 !text-indigo-600 dark:!text-indigo-500 hover:!bg-indigo-100 dark:!hover:bg-indigo-100 transition-colors cursor-pointer"
                 >
                   <Pencil className="w-4 h-4" />
-                  Edit
+                  Chỉnh Sửa
                 </Button>
                 <Button
                   onClick={() => {
@@ -315,7 +315,7 @@ export default function PostTableBody({
                   className="!text-red-600 dark:!text-red-500 hover:!bg-red-50 dark:hover:!bg-red-100 transition-colors duration-300 flex items-center gap-1 cursor-pointer"
                 >
                   <Trash2 className="w-4 h-4" />
-                  Delete
+                  Xóa
                 </Button>
               </div>
             </TableCell>
@@ -345,7 +345,7 @@ export default function PostTableBody({
           <DialogContent className="min-w-4xl max-h-[90vh] overflow-hidden">
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold mb-4">
-                Review Post
+                Xem Trước Bài Viết
               </DialogTitle>
             </DialogHeader>
 
@@ -353,13 +353,13 @@ export default function PostTableBody({
               className={cx("post-wrapper", "max-h-[85vh]", "overflow-y-auto")}
             >
               <div className={cx("post-content")}>
-                <h1>{reviewPost.title || "Untitled Post"}</h1>
+                <h1>{reviewPost.title || "Chưa có tiêu đề bài viết"}</h1>
                 <div
                   className={cx("post-body")}
                   dangerouslySetInnerHTML={{
                     __html:
                       reviewPost.content?.content_html ||
-                      "<p>No content available.</p>",
+                      "<p>Chưa có nội dung bài viết</p>",
                   }}
                 />
               </div>

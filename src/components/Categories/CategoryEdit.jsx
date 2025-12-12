@@ -54,8 +54,8 @@ function CategoryEdit() {
         setOriginalType(data.type || "post");
         setOriginalIsFeatured(data.is_featured || false);
       } else {
-        toast.error("Category not found!");
-        navigate("/categories");
+        toast.error("Danh mục không tồn tại!");
+        navigate("/danh-muc");
       }
       setLoadingData(false);
     };
@@ -81,17 +81,17 @@ function CategoryEdit() {
     try {
       const res = await updateCategory(id, payload);
       if (res.success) {
-        toast.success("Category updated successfully!");
-        setTimeout(() => navigate("/categories"), 1000);
+        toast.success("Cập nhât danh mục thành công!");
+        setTimeout(() => navigate("/danh-muc"), 1000);
       } else {
-        toast.error(res.message || "Failed to update category!");
+        toast.error(res.message || "Cập nhật danh mục thất bại! Vui lòng thử lại.");
       }
     } catch (error) {
       if (error.response?.status === 422) {
         setErrors(error.response.data.errors || {});
-        toast.error("Validation failed!");
+        toast.error("Vui lòng kiểm tra lại biểu mẫu!");
       } else {
-        toast.error("An unexpected error occurred!");
+        toast.error("Đã xảy ra lỗi không mong muốn! Vui lòng thử lại.");
       }
     } finally {
       setLoading(false);

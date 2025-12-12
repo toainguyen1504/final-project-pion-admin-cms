@@ -40,19 +40,19 @@ function CategoryCreate() {
     try {
       const res = await createCategory(payload);
       if (res.success) {
-        toast.success("Category created successfully!");
-        setTimeout(() => navigate("/categories"), 1000);
+        toast.success("Thêm danh mục thành công!");
+        setTimeout(() => navigate("/danh-muc"), 1000);
       } else {
         toast.error(
-          res.message || "Failed to create category! Please try again."
+          res.message || "Thêm danh mục thất bại! Vui lòng thử lại."
         );
       }
     } catch (error) {
       if (error.response?.status === 422) {
         setErrors(error.response.data.errors || {});
-        toast.error("Validation failed!");
+        toast.error("Vui lòng kiểm tra lại biểu mẫu!");
       } else {
-        toast.error("An unexpected error occurred!");
+        toast.error("Đã xảy ra lỗi không mong muốn! Vui lòng thử lại.");
       }
     } finally {
       setLoading(false);
@@ -67,7 +67,7 @@ function CategoryCreate() {
     <div className="px-4 pt-4 pb-10 space-y-3">
       <Helmet>
         <title>Thêm Danh Mục | Pion CMS</title>
-        <meta name="description" content="Tạo Danh Mục cho Hệ Thống Quản Lý" />
+        <meta name="description" content="Tạo Danh Mục cho hệ thống quản lý" />
         <link rel="icon" href="/assets/favicon/favicon-96x96.png" />
       </Helmet>
 

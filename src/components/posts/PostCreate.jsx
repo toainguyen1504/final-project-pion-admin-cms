@@ -110,18 +110,18 @@ function PostCreate() {
   const handleSubmit = async () => {
     const newErrors = [];
 
-    if (!title.trim()) newErrors.push("Please enter a post title.");
-    if (!editor) newErrors.push("Editor is not ready.");
+    if (!title.trim()) newErrors.push("Vui lòng nhập tiêu đề bài viết.");
+    if (!editor) newErrors.push("Trình soạn thảo chưa sẵn sàng.");
     else {
       const textContent = editor.getText().trim();
-      if (!textContent) newErrors.push("Please enter post content.");
+      if (!textContent) newErrors.push("Vui lòng nhập nội dung bài viết.");
       if (textContent.length < 50)
         newErrors.push(
-          `Post content must be at least 50 characters (currently ${textContent.length}).`
+          `Nội dung bài viết phải có ít nhất 50 ký tự (hiện tại là ${textContent.length}).`
         );
     }
     if (!selectedCategories.length)
-      newErrors.push("Please select at least one category.");
+      newErrors.push("Vui lòng chọn ít nhất một danh mục.");
 
     setErrors(newErrors);
     if (newErrors.length) return; // Stop submit if errors exist
@@ -144,7 +144,7 @@ function PostCreate() {
 
     try {
       await createPost(payload);
-      toast.success("Post created successfully!");
+      toast.success("Tạo bài viết thành công!");
       setTitle("");
       setSelectedCategories([]);
       editor.commands.clearContent();
@@ -152,10 +152,10 @@ function PostCreate() {
       setErrors([]);
 
       // Chuyển về danh sách post
-      navigate("/posts");
+      navigate("/bai-viet");
     } catch (error) {
-      console.error("Error creating post:", error);
-      toast.error("Failed to create post! Please try again.");
+      console.error("Lỗi khi tạo bài viết:", error);
+      toast.error("Tạo bài viết thất bại! Vui lòng thử lại.");
     }
   };
 
@@ -217,7 +217,7 @@ function PostCreate() {
           {/* Error list */}
           {errors.length > 0 && (
             <Alert variant="destructive" className="mb-5">
-              <AlertTitle>Lỗi Khi Gửi</AlertTitle>
+              <AlertTitle>Lỗi Khi Lưu Bài Viết</AlertTitle>
               <AlertDescription>
                 <ul className="list-disc list-inside">
                   {errors.map((err, i) => (
@@ -236,7 +236,7 @@ function PostCreate() {
               maxLength={100}
               onChange={(e) => setTitle(e.target.value)}
               required
-              placeholder="Write a clear and catchy post title (max 100 characters)"
+              placeholder="Viết một tiêu đề bài viết rõ ràng và thu hút (tối đa 100 ký tự)"
               className={`py-6 px-6 !text-base border rounded-xl caret-blue-600 focus:outline-none focus-visible:ring-1 focus-visible:ring-offset-0 ${
                 hasTitleError
                   ? "border-2 border-red-500 focus-visible:ring-red-500"
@@ -257,7 +257,7 @@ function PostCreate() {
                 className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2 cursor-pointer"
               >
                 <Image className="w-4 h-4" />
-                Media Library
+                Thư Viện Ảnh
               </Button>
               {/* Popover TIP Viết bài */}
               <Popover>
@@ -268,7 +268,7 @@ function PostCreate() {
                     className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2 cursor-pointer"
                   >
                     <Info className="w-4 h-4 text-blue-500" />
-                    TIP Viết bài
+                    TIP Viết Bài
                   </Button>
                 </PopoverTrigger>
 
@@ -276,8 +276,8 @@ function PostCreate() {
                   <p>
                     ✍️ Viết bài viết đơn giản,{" "}
                     <strong>không style nhiều</strong>. Style sẽ được định dạng
-                    tự động tương tự như khi xem <strong>REVIEW</strong>, vì vậy
-                    hãy luôn kiểm tra REVIEW để tránh lỗi giao diện!
+                    tự động tương tự như khi <strong> Xem Trước</strong>, vì vậy
+                    hãy luôn kiểm tra trước để tránh lỗi giao diện!
                     <br />
                     📱 Nhắn <strong>Zalo: 0963001504 (ToaiCdev)</strong> để được
                     hướng dẫn.
@@ -325,7 +325,7 @@ function PostCreate() {
         <DialogContent className="min-w-4xl max-h-[90vh] overflow-hidden">
           <DialogHeader>
             <DialogTitle className="text-2xl font-bold mb-4">
-              Review Post
+              Xem Trước Bài Viết
             </DialogTitle>
           </DialogHeader>
 
@@ -334,13 +334,14 @@ function PostCreate() {
           >
             <div className={cx("post-content")}>
               {/* Tiêu đề */}
-              <h1>{title || "Untitled Post"}</h1>
+              <h1>{title || "Chưa có tiêu đề bài viết"}</h1>
 
               {/* Nội dung từ editor */}
               <div
                 className={cx("post-body")}
                 dangerouslySetInnerHTML={{
-                  __html: editor?.getHTML() || "<p>No content yet.</p>",
+                  __html:
+                    editor?.getHTML() || "<p>Hiện tại chưa có nội dung</p>",
                 }}
               />
             </div>

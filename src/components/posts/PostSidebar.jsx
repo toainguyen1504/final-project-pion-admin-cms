@@ -86,7 +86,9 @@ export function PostSidebar({
       {/* Section: Publish */}
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <h3 className="text-lg font-semibold dark:text-slate-200">Publish</h3>
+          <h3 className="text-lg font-semibold dark:text-slate-200">
+            Xuất Bản
+          </h3>
 
           {/* Help Icon */}
           <Popover>
@@ -94,17 +96,17 @@ export function PostSidebar({
               <button
                 type="button"
                 className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-                aria-label="Help about publish settings"
+                aria-label="Trợ giúp về cài đặt xuất bản"
               >
                 <HelpCircle className="w-5 h-5 cursor-pointer" />
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-64 text-sm">
               <p>
-                Choose <strong>Public</strong> to make your post visible to
-                everyone. Use <strong>Scheduled</strong> to publish at a future
-                date, or
-                <strong>Private</strong> to keep it hidden.
+                Chọn <strong>Công khai</strong> để hiển thị bài viết cho mọi
+                người. Dùng <strong>Lên lịch</strong> để xuất bản vào một thời
+                điểm trong tương lai, hoặc <strong>Riêng tư</strong> để giữ bài
+                viết ở chế độ ẩn.
               </p>
             </PopoverContent>
           </Popover>
@@ -123,7 +125,7 @@ export function PostSidebar({
                 dark:data-[state=active]:bg-indigo-500 dark:data-[state=active]:text-indigo-100
                 text-slate-700 dark:text-slate-300"
             >
-              Public
+              Công khai
             </TabsTrigger>
             <TabsTrigger
               value="scheduled_public"
@@ -132,7 +134,7 @@ export function PostSidebar({
                 dark:data-[state=active]:bg-indigo-500 dark:data-[state=active]:text-indigo-100
                 text-slate-700 dark:text-slate-300"
             >
-              Scheduled
+              Lên lịch
             </TabsTrigger>
             <TabsTrigger
               value="private"
@@ -141,7 +143,7 @@ export function PostSidebar({
                 dark:data-[state=active]:bg-indigo-500 dark:data-[state=active]:text-indigo-100
                 text-slate-700 dark:text-slate-300"
             >
-              Private
+              Riêng tư
             </TabsTrigger>
           </TabsList>
 
@@ -156,11 +158,11 @@ export function PostSidebar({
       {/* Section: Categories */}
       <div className="space-y-2">
         <h3
-          className={`text-lg font-semibold text-slate-500 dark:text-slate-200 ${
+          className={`text-lg font-semibold text-slate-700 dark:text-slate-200 ${
             categoryError ? "!text-red-500" : ""
           }`}
         >
-          Categories *
+          Danh Mục *
         </h3>
         <div className="relative w-full max-w-sm">
           <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400 dark:text-slate-500" />
@@ -169,7 +171,7 @@ export function PostSidebar({
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onFocus={handleOpenPopup}
-            placeholder="Search categories..."
+            placeholder="Tìm danh mục..."
             className="pl-10 pr-4 pt-2 pb-2.5 border border-slate-300 dark:border-slate-600 focus-visible:ring-blue-600 
              focus-visible:ring-1 focus-visible:ring-offset-0 caret-blue-600 rounded-xl"
           />
@@ -221,7 +223,7 @@ export function PostSidebar({
                   ))
                 ) : (
                   <div className="text-slate-400 dark:text-slate-500 p-2 text-sm">
-                    No categories found
+                    Không tìm thấy danh mục nào
                   </div>
                 )}
               </div>
@@ -233,7 +235,7 @@ export function PostSidebar({
                   onClick={() => setIsCategoryPopupOpen(false)}
                   className="cursor-pointer select-none"
                 >
-                  Cancel
+                  Hủy
                 </Button>
                 <Button
                   size="sm"
@@ -243,7 +245,7 @@ export function PostSidebar({
                   }}
                   className="bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer select-none"
                 >
-                  OK
+                  Đồng ý
                 </Button>
               </div>
             </div>
@@ -276,7 +278,7 @@ export function PostSidebar({
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200">
-            Thumbnail Image
+            Ảnh đại diện (Thumbnail)
           </h3>
 
           {/* Help Icon */}
@@ -285,16 +287,17 @@ export function PostSidebar({
               <button
                 type="button"
                 className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-                aria-label="Help about thumbnail"
+                aria-label="Trợ giúp về ảnh đại diện"
               >
                 <HelpCircle className="w-5 h-5 cursor-pointer" />
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-72 text-sm">
               <p>
-                This thumbnail will be used as the featured image of the post on
-                the frontend interface. It also serves as the preview image when
-                the post is shared on social media (OG image).
+                Ảnh đại diện này sẽ được sử dụng làm hình nổi bật của bài viết
+                trên giao diện người dùng (ở mục tất cả tin tức). Nó cũng được
+                dùng làm ảnh xem trước khi bài viết được chia sẻ lên mạng xã hội
+                (ảnh OG).
               </p>
             </PopoverContent>
           </Popover>
@@ -316,7 +319,7 @@ export function PostSidebar({
             className="w-full h-32 px-4 text-center bg-muted rounded-md flex items-center justify-center 
     text-slate-500 dark:text-slate-200 text-sm"
           >
-            No image selected - Render auto from media library
+            Chưa chọn ảnh – Tự động hiển thị từ thư viện media
           </div>
         )}
       </div>

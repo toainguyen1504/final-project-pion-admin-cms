@@ -53,11 +53,12 @@ export default function CategoryTableBody({
                 <EmptyMedia variant="icon">
                   <FolderKanban className="w-6 h-6" />
                 </EmptyMedia>
-                <EmptyTitle>No categories found</EmptyTitle>
+                <EmptyTitle>Không tìm thấy danh mục</EmptyTitle>
+
                 <EmptyDescription>
                   {search && search.trim() !== ""
-                    ? "No categories match your search. Try a different keyword."
-                    : "You haven’t added any categories yet. Start by creating one."}
+                    ? "Không có danh mục nào khớp với tìm kiếm của bạn. Hãy thử từ khóa khác."
+                    : "Bạn chưa thêm danh mục nào. Hãy bắt đầu bằng cách tạo một danh mục mới."}
                 </EmptyDescription>
               </EmptyHeader>
               <EmptyContent>{/* optional buttons */}</EmptyContent>
@@ -125,7 +126,7 @@ export default function CategoryTableBody({
             <TableCell className="w-auto px-4 py-3 whitespace-nowrap">
               <div className="flex items-center gap-2">
                 <Button
-                  onClick={() => navigate(`/categories/${category.id}/edit`)}
+                  onClick={() => navigate(`/danh-muc/${category.id}/chinh-sua`)}
                   variant="ghost"
                   size="sm"
                   className="flex items-center gap-1 !text-indigo-600 dark:!text-indigo-500 hover:!bg-indigo-100 dark:!hover:bg-indigo-100 transition-colors cursor-pointer"

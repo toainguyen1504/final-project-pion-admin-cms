@@ -188,7 +188,7 @@ export function SimpleEditor({ onReady }) {
         },
       }),
       Placeholder.configure({
-        placeholder: "Write your post content here...",
+        placeholder: "Viết nội dung bài viết ở đây...",
         showOnlyWhenEditable: true,
         showOnlyCurrent: false,
       }),

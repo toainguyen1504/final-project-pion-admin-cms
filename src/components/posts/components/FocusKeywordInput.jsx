@@ -57,9 +57,9 @@ export function FocusKeywordInput({
 
     // Validation
     if (value.length > MAX_LENGTH)
-      return setError(`Keyword cannot exceed ${MAX_LENGTH} characters.`);
+      return setError(`Từ khóa không được vượt quá ${MAX_LENGTH} ký tự.`);
     if (keywords.length >= MAX_KEYWORDS)
-      return setError(`Maximum ${MAX_KEYWORDS} keywords allowed.`);
+      return setError(`Chỉ được phép tối đa ${MAX_KEYWORDS} từ khóa.`);
 
     // eslint-disable-next-line no-useless-escape
     const isValid = /^[a-zA-Z0-9À-ỹ\s\-]+$/.test(value);
@@ -76,12 +76,12 @@ export function FocusKeywordInput({
       !notSpamRepeat
     ) {
       return setError(
-        "Invalid keyword! Please enter at least 2 meaningful words."
+        "Từ khóa không hợp lệ! Vui lòng nhập ít nhất 2 từ có ý nghĩa."
       );
     }
 
     if (keywords.some((k) => k === value))
-      return setError("Keyword already exists.");
+      return setError("Từ khóa này đã tồn tại.");
 
     setKeywords([...keywords, value]);
     setInputValue("");
@@ -150,7 +150,7 @@ export function FocusKeywordInput({
         {/* label + help */}
         <div className="flex items-center gap-2">
           <Label htmlFor="focus-keyword" className="text-base ml-2">
-            Focus Keyword
+            Từ khóa trọng tâm
           </Label>
 
           {/* Help Icon */}
@@ -159,20 +159,20 @@ export function FocusKeywordInput({
               <button
                 type="button"
                 className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-                aria-label="Help about focus keyword"
+                aria-label="Giải thích về từ khóa trọng tâm"
               >
                 <HelpCircle className="w-5 h-5 cursor-pointer" />
               </button>
             </PopoverTrigger>
             <PopoverContent className="w-80 text-sm">
               <p>
-                To calculate SEO score, please enter a{" "}
-                <strong>focus keyword</strong>. The first keyword you enter will
-                be used as the primary keyword for analysis.
+                Để tính điểm SEO, vui lòng nhập một{" "}
+                <strong>từ khóa trọng tâm</strong>. Từ khóa đầu tiên bạn nhập sẽ
+                được dùng làm từ khóa chính để phân tích.
                 <br />
                 <br />
-                Additional keywords (secondary) may contribute bonus points if
-                they are found in the post content, title, or slug.
+                Các từ khóa bổ sung (phụ) có thể giúp tăng điểm nếu chúng xuất
+                hiện trong nội dung bài viết, tiêu đề hoặc slug.
               </p>
             </PopoverContent>
           </Popover>
@@ -192,7 +192,7 @@ export function FocusKeywordInput({
       <div className="space-y-2">
         <Input
           id="focus-keyword"
-          placeholder="Enter keyword and press Enter..."
+          placeholder="Nhập từ khóa và nhấn Enter..."
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleAddKeyword}
@@ -218,7 +218,7 @@ export function FocusKeywordInput({
                 type="button"
                 onClick={() => handleRemove(kw)}
                 className="ml-1 pt-0.5 text-gray-500 hover:text-red-500 cursor-pointer duration-300 transition-colors"
-                title="Remove keyword"
+                title="Xóa từ khóa"
               >
                 <X size={14} />
               </button>

@@ -10,9 +10,9 @@ export function useSeoSnippet() {
 
   // --- Default constants
   const DEFAULT_SEO = {
-    title: "Your post title will appear here...",
-    slug: "your-post-url",
-    desc: "A short SEO-friendly description of your post will appear here...",
+    title: "Tiêu đề bài viết sẽ hiển thị tại đây...",
+    slug: "duong-dan-bai-viet",
+    desc: "Một mô tả ngắn gọn, thân thiện SEO của bài viết sẽ hiển thị tại đây...",
   };
 
   // States

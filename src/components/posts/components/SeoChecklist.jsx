@@ -9,8 +9,8 @@ function SeoChecklist({ data = [] }) {
   if (!data.length) {
     return (
       <div className="p-4 text-sm text-muted-foreground text-center">
-        Please enter a keyword and provide at least one field (e.g. title or
-        content) to generate SEO checklist.
+        Vui lòng nhập một từ khóa và cung cấp ít nhất một trường (ví dụ: tiêu đề
+        hoặc nội dung) để có danh sách kiểm tra SEO.
       </div>
     );
   }

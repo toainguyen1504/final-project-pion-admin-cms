@@ -103,7 +103,7 @@ export function SeoManager({
       {/* SEO Preview */}
       <div className="space-y-2">
         <h4 className="font-semibold text-slate-700 dark:text-slate-200">
-          SEO Preview
+          Xem trước
         </h4>
         <div className="text-sm space-y-1">
           <p className="text-blue-600 break-all">
@@ -123,7 +123,7 @@ export function SeoManager({
           className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
               !text-white min-w-36 cursor-pointer pb-0.5 mt-2"
         >
-          Edit Snippet
+           Chỉnh sửa Snippet
         </Button>
       </div>
 
