@@ -29,10 +29,10 @@ function CategoryList() {
   return (
     <div className="px-4 pt-4 pb-10 space-y-3">
       <Helmet>
-        <title>All Category | Pion CMS</title>
+        <title>Tất Cả Danh Mục | Pion CMS</title>
         <meta
           name="description"
-          content="List Categories for system management"
+          content="Danh sách danh mục cho hệ thống quản lý"
         />
         <link rel="icon" href="/assets/favicon/favicon-96x96.png" />
       </Helmet>
@@ -40,10 +40,11 @@ function CategoryList() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200">
-            All Categories
+            Tất Cả Danh Mục
           </h2>
           <p className="text-slate-500 mt-0.5">
-            View, manage, and update all categories used across the system.
+            Xem, quản lý và cập nhật toàn bộ danh mục được sử dụng trong hệ
+            thống.
           </p>
         </div>
         <Button
@@ -51,15 +52,15 @@ function CategoryList() {
           className="bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 
         transition-colors duration-300 min-w-36 cursor-pointer rounded-xl"
         >
-          {/* <Plus className="w-4 h-4" /> */}
-          Add New Category
+          <Plus className="w-4 h-4" />
+          Thêm Danh Mục Mới
         </Button>
       </div>
 
       {loading ? (
         <div className="flex items-center justify-center gap-2 text-slate-500 dark:text-slate-300">
           <Spinner className="size-8 text-indigo-600 dark:text-indigo-500" />
-          <span>Loading categories...</span>
+          <span>Đang tải danh mục...</span>
         </div>
       ) : (
         <CategoryTable

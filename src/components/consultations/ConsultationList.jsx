@@ -42,10 +42,10 @@ function ConsultationList() {
   return (
     <div className="px-4 pt-4 pb-10 space-y-3">
       <Helmet>
-        <title>All Consultations | Pion CMS</title>
+        <title>Tất Cả Yêu Cầu Tư Vấn | Pion CMS</title>
         <meta
           name="description"
-          content="List of consultations for system management"
+          content="Danh sách yêu cầu tư vấn cho hệ thống quản lý"
         />
         <link rel="icon" href="/assets/favicon/favicon-96x96.png" />
       </Helmet>
@@ -53,10 +53,10 @@ function ConsultationList() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200">
-            All Consultations
+            Tất Cả Yêu Cầu Tư Vấn
           </h2>
           <p className="text-slate-500 mt-0.5">
-            View, manage, and handle consultation requests from users.
+            Xem, quản lý và xử lý các yêu cầu tư vấn từ người dùng.
           </p>
         </div>
 
@@ -81,7 +81,7 @@ function ConsultationList() {
       {loading ? (
         <div className="flex items-center justify-center gap-2 text-slate-500 dark:text-slate-300">
           <Spinner className="size-8 text-indigo-600 dark:text-indigo-500" />
-          <span>Loading consultations...</span>
+          <span>Đang tải danh sách tư vấn...</span>
         </div>
       ) : (
         <ConsultationTable data={consultations} />

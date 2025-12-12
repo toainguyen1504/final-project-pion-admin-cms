@@ -109,20 +109,20 @@ function CategoryEdit() {
   return (
     <div className="px-4 pt-4 pb-10 space-y-3">
       <Helmet>
-        <title>Edit Category | Pion CMS</title>
+        <title>Chỉnh Sửa Danh Mục | Pion CMS</title>
       </Helmet>
 
       {/* Breadcrumb */}
-      <AppBreadcrumb module="Categories" current="Edit" />
+      <AppBreadcrumb module="Danh mục" current="Chỉnh sửa" />
 
       {/* Header + Button */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200">
-            Edit Category
+            Chỉnh Sửa Danh Mục
           </h2>
           <p className="text-slate-500 mt-1">
-            Edit the category to modify its properties.
+            Chỉnh sửa danh mục để thay đổi các thông tin của nó.
           </p>
         </div>
         <Button
@@ -133,7 +133,7 @@ function CategoryEdit() {
           disabled={loading || !isChanged} // disable nếu loading hoặc chưa thay đổi
         >
           {loading && <Spinner className="w-4 h-4 mr-2 text-white" />}
-          Save
+          Cập Nhật Danh Mục
         </Button>
       </div>
 

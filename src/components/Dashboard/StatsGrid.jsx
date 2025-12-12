@@ -37,8 +37,8 @@ import { useLoadStats } from "@/hooks/useLoadStats";
 // ];
 
 function StatsGrid() {
-  const categoryStat = useLoadStats(fetchCategoryStats, "Total Categories");
-  const postStat = useLoadStats(fetchPostStats, "Total Posts");
+  const categoryStat = useLoadStats(fetchCategoryStats, "Tổng Danh Mục");
+  const postStat = useLoadStats(fetchPostStats, "Tổng Bài Viết");
 
   const stats = [
     {
@@ -93,7 +93,7 @@ function StatsGrid() {
                     {stat.change}
                   </span>
                   <span className="text-sm text-slate-500 dark:text-slate-400">
-                    vs Last month
+                    vs Tháng Trước
                   </span>
                 </div>
               </div>

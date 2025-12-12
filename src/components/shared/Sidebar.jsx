@@ -17,18 +17,18 @@ const menuItems = [
   {
     id: "dashboard",
     icon: LayoutDashboard,
-    label: "Dashboard",
+    label: "Tổng Quan",
     path: "/",
   },
   {
     id: "categories",
     icon: FolderKanban,
-    label: "Categories",
+    label: "Danh Mục",
     submenu: [
-      { id: "categories", label: "All Categories", path: "/categories" },
+      { id: "categories", label: "Tất cả danh mục", path: "/categories" },
       {
         id: "create-category",
-        label: "Create Category",
+        label: "Tạo mới danh mục",
         path: "/categories/create",
       },
     ],
@@ -37,10 +37,10 @@ const menuItems = [
   {
     id: "posts",
     icon: FileText,
-    label: "Posts",
+    label: "Bài Viết",
     submenu: [
-      { id: "posts", label: "All Posts", path: "/posts" },
-      { id: "create-post", label: "Create Post", path: "/posts/create" },
+      { id: "posts", label: "Tất cả bài viết", path: "/posts" },
+      { id: "create-post", label: "Tạo mới bài viết", path: "/posts/create" },
       // { id: "drafts", label: "Drafts", path: "/posts/drafts" },
     ],
     count: "",
@@ -60,7 +60,7 @@ const menuItems = [
   {
     id: "consultations",
     icon: MessagesSquare,
-    label: "All Consultation",
+    label: "Danh Sách Tư Vấn",
     badge: "New",
     path: "/consultations",
   },
@@ -201,7 +201,7 @@ function Sidebar({ collapsed }) {
                 Pion
               </h1>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                CMS panel
+                Trang Quản Lý CMS
               </p>
             </div>
           )}
@@ -318,7 +318,7 @@ function Sidebar({ collapsed }) {
                 ToaiCDev
               </p>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Administrator
+                FullStack Developer
               </p>
             </div>
           </div>

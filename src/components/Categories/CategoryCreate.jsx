@@ -66,25 +66,25 @@ function CategoryCreate() {
   return (
     <div className="px-4 pt-4 pb-10 space-y-3">
       <Helmet>
-        <title>Create Category | Pion CMS</title>
+        <title>Thêm Danh Mục | Pion CMS</title>
         <meta
           name="description"
-          content="Create Categories for system management"
+          content="Tạo Danh Mục cho Hệ Thống Quản Lý"
         />
         <link rel="icon" href="/assets/favicon/favicon-96x96.png" />
       </Helmet>
 
-      <AppBreadcrumb module="Categories" current="Create" />
+      <AppBreadcrumb module="Danh mục" current="Tạo mới" />
 
       {/* Header + Button */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200">
-            Add Category
+            Thêm Danh Mục
           </h2>
           <p className="text-slate-500 mt-1">
-            Create a new category to organize and classify your content more
-            effectively.
+            Tạo danh mục mới để sắp xếp và phân loại nội dung của bạn hiệu quả
+            hơn.
           </p>
         </div>
         <Button
@@ -95,7 +95,7 @@ function CategoryCreate() {
           disabled={loading}
         >
           {loading && <Spinner className="w-4 h-4 mr-2 text-white" />}
-          Save
+          Lưu Danh Mục
         </Button>
       </div>
 

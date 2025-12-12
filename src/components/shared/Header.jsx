@@ -130,7 +130,7 @@ function Header({ onToggleSidebar }) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              placeholder="Search Anything"
+              placeholder="Tìm kiếm..."
               className="w-full pl-10 pr-12 py-2.5 bg-slate-100 dark:bg-slate-800 border border-slate-200
             dark:border-slate-700 rounded-xl text-slate-800 dark:text-white placeholder-slate-500
             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
@@ -154,7 +154,7 @@ function Header({ onToggleSidebar }) {
           from-blue-500 to bg-purple-600 text-white rounded-xl hover:shadow-lg transition-all duration-300"
           >
             <Plus className="w-4 h-4" />
-            <span className="text-sm font-medium">New Post</span>
+            <span className="text-sm font-medium">Thêm Bài Viết Mới</span>
           </button>
 
           {/* Toggle */}

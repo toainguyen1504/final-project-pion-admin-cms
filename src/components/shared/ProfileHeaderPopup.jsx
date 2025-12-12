@@ -47,21 +47,21 @@ function ProfileHeaderPopup({ user }) {
          dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg"
         >
           <User className="w-4 h-4" />
-          <span>Edit profile</span>
+          <span>Chỉnh sửa hồ sơ</span>
         </button>
         <button
           className="cursor-pointer w-full flex items-center space-x-2 px-4 py-2 text-sm 
           text-slate-600 dark:text-slate-300  hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg"
         >
           <Settings className="w-4 h-4" />
-          <span>Account settings</span>
+          <span>Cài đặt tài khoản</span>
         </button>
         <button
           className="cursor-pointer w-full flex items-center space-x-2 px-4 py-2 text-sm
         text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg"
         >
           <Info className="w-4 h-4" />
-          <span>Support</span>
+          <span>Hỗ trợ</span>
         </button>
         <button
           onClick={handleLogout}
@@ -69,7 +69,7 @@ function ProfileHeaderPopup({ user }) {
           text-red-500 hover:bg-red-50 dark:hover:bg-slate-700 rounded-lg"
         >
           <LogOut className="w-4 h-4" />
-          <span>Sign out</span>
+          <span>Đăng xuất</span>
         </button>
       </div>
     </div>

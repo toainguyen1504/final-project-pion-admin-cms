@@ -233,7 +233,7 @@ function PostEdit() {
   return (
     <div className="p-4">
       <Helmet>
-        <title>Edit Post | Pion CMS</title>
+        <title>Chỉnh Sửa Bài Viết | Pion CMS</title>
         <meta name="description" content="Edit existing post in system" />
       </Helmet>
 
@@ -241,11 +241,10 @@ function PostEdit() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200">
-              Edit Post
+              Chỉnh Sửa Bài Viết
             </h2>
             <p className="text-slate-500 mt-2">
-              Update and optimize your post content, SEO, and publishing
-              settings.
+              Chỉnh sửa bài viết để thay đổi các thông tin của nó.
             </p>
           </div>
 
@@ -256,7 +255,7 @@ function PostEdit() {
               className="text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600 rounded-xl flex items-center gap-2 cursor-pointer"
             >
               <Eye className="w-4 h-4" />
-              Review
+              Xem Trước
             </Button>
 
             <Button
@@ -265,7 +264,7 @@ function PostEdit() {
               className="bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl flex items-center gap-2 min-w-40 cursor-pointer"
             >
               <Save className="w-4 h-4" />
-              Update
+              Cập Nhật Bài Viết
             </Button>
           </div>
         </div>
@@ -275,7 +274,7 @@ function PostEdit() {
         <div className="flex-1 space-y-5">
           {errors.length > 0 && (
             <Alert variant="destructive" className="mb-5">
-              <AlertTitle>Submission Error</AlertTitle>
+              <AlertTitle>Lỗi Khi Gửi</AlertTitle>
               <AlertDescription>
                 <ul className="list-disc list-inside">
                   {errors.map((err, i) => (

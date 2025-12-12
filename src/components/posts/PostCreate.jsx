@@ -170,8 +170,8 @@ function PostCreate() {
   return (
     <div className="p-4">
       <Helmet>
-        <title>Create Post| Pion CMS</title>
-        <meta name="description" content="Create Post for system management" />
+        <title>Thêm Bài Viết | Pion CMS</title>
+        <meta name="description" content="Tạo bài viết cho hệ thống quản lý" />
       </Helmet>
 
       <div className="mb-6">
@@ -179,11 +179,11 @@ function PostCreate() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200">
-              Add Post
+              Thêm Bài Viết
             </h2>
             <p className="text-slate-500 mt-2">
-              Create SEO-friendly posts with rich formatting, image support, and
-              structured publishing tools.
+              Tạo bài viết chuẩn SEO với định dạng đơn giản, hỗ trợ hình ảnh và
+              các công cụ xuất bản chuyên nghiệp.
             </p>
           </div>
 
@@ -196,7 +196,7 @@ function PostCreate() {
               cursor-pointer transition-all duration-300"
             >
               <Eye className="w-4 h-4" />
-              Review
+              Xem Trước
             </Button>
 
             <Button
@@ -205,7 +205,7 @@ function PostCreate() {
               className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
             text-white min-w-40 cursor-pointer transition-all duration-300"
             >
-              Save
+              Lưu Bài Viết
             </Button>
           </div>
         </div>
@@ -217,7 +217,7 @@ function PostCreate() {
           {/* Error list */}
           {errors.length > 0 && (
             <Alert variant="destructive" className="mb-5">
-              <AlertTitle>Submission Error</AlertTitle>
+              <AlertTitle>Lỗi Khi Gửi</AlertTitle>
               <AlertDescription>
                 <ul className="list-disc list-inside">
                   {errors.map((err, i) => (
