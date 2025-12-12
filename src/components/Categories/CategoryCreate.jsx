@@ -67,10 +67,7 @@ function CategoryCreate() {
     <div className="px-4 pt-4 pb-10 space-y-3">
       <Helmet>
         <title>Thêm Danh Mục | Pion CMS</title>
-        <meta
-          name="description"
-          content="Tạo Danh Mục cho Hệ Thống Quản Lý"
-        />
+        <meta name="description" content="Tạo Danh Mục cho Hệ Thống Quản Lý" />
         <link rel="icon" href="/assets/favicon/favicon-96x96.png" />
       </Helmet>
 
@@ -100,7 +97,11 @@ function CategoryCreate() {
       </div>
 
       {/* Form */}
-      <form id="category-form" onSubmit={handleSubmit} className="space-y-6">
+      <form
+        id="category-form"
+        onSubmit={handleSubmit}
+        className="space-y-6 mt-8"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Name */}
           <div className="space-y-2">
@@ -108,7 +109,7 @@ function CategoryCreate() {
               htmlFor="name"
               className="ml-2 text-slate-700 dark:text-slate-300 inline-flex items-center gap-1"
             >
-              Name
+              Tên Danh Mục
               <span className="text-red-500 text-sm">*</span>
             </Label>
 
@@ -117,7 +118,7 @@ function CategoryCreate() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              placeholder="Enter category name"
+              placeholder="Tên danh mục (VD: Tin tức,...)"
               className="py-5 px-4 border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
               focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
                text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
@@ -142,7 +143,7 @@ function CategoryCreate() {
               id="slug"
               value={slug}
               disabled
-              placeholder="Auto-generate category Slug"
+              placeholder="Tự động tạo Slug cho danh mục"
               className="py-5 px-4 border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
               focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
                text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 
@@ -151,10 +152,12 @@ function CategoryCreate() {
           </div>
         </div>
 
-        <div className="ml-2 grid grid-cols-2 md:grid-cols-4 gap-6 items-center">
+        <div className="ml-2 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
           {/* Type */}
           <div className="flex items-center space-x-4 pt-6 md:pt-0">
-            <Label className="text-slate-700 dark:text-slate-300">Type</Label>
+            <Label className="text-slate-700 dark:text-slate-300">
+              Loại Danh Mục
+            </Label>
             <Tabs value={type} onValueChange={setType}>
               <TabsList className="bg-slate-200 dark:bg-slate-700 rounded-full p-1">
                 <TabsTrigger
@@ -164,7 +167,7 @@ function CategoryCreate() {
                     dark:data-[state=active]:bg-indigo-500 dark:data-[state=active]:text-indigo-50
                     text-slate-700 dark:text-slate-300"
                 >
-                  Post
+                  Bài viết
                 </TabsTrigger>
 
                 <TabsTrigger
@@ -174,7 +177,7 @@ function CategoryCreate() {
                     dark:data-[state=active]:bg-indigo-500 dark:data-[state=active]:text-indigo-100
                     text-slate-700 dark:text-slate-300"
                 >
-                  Course
+                  Khóa học
                 </TabsTrigger>
               </TabsList>
             </Tabs>
@@ -187,7 +190,7 @@ function CategoryCreate() {
                 htmlFor="featured"
                 className="text-slate-700 dark:text-slate-300"
               >
-                Featured Mode
+                Chế Độ Nổi Bật
               </Label>
 
               {/* Tooltip icon */}
@@ -207,9 +210,9 @@ function CategoryCreate() {
                   sideOffset={4}
                   className="max-w-xs p-3 text-sm text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md shadow-md z-50"
                 >
-                  When this mode is enabled, the category will be highlighted in
-                  the user interface. It may appear at the top of the list or be
-                  styled differently to stand out.
+                  Khi chế độ này được bật, danh mục sẽ được làm nổi bật trong
+                  giao diện người dùng. Nó có thể xuất hiện ở đầu danh sách hoặc
+                  được hiển thị với kiểu dáng khác để dễ nhận biết hơn.
                 </PopoverContent>
               </Popover>
             </div>

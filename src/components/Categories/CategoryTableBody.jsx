@@ -104,12 +104,12 @@ export default function CategoryTableBody({
                 {category.is_featured ? (
                   <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
                     <CheckCircle2 className="w-4 h-4" />
-                    <span className="text-xs font-medium">Featured</span>
+                    <span className="text-xs font-medium">Có</span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
                     <XCircle className="w-4 h-4" />
-                    <span className="text-xs font-medium">Normal</span>
+                    <span className="text-xs font-medium">Không</span>
                   </div>
                 )}
               </TableCell>
@@ -131,7 +131,7 @@ export default function CategoryTableBody({
                   className="flex items-center gap-1 !text-indigo-600 dark:!text-indigo-500 hover:!bg-indigo-100 dark:!hover:bg-indigo-100 transition-colors cursor-pointer"
                 >
                   <Pencil className="w-4 h-4" />
-                  Edit
+                  Chỉnh sửa
                 </Button>
 
                 {/* tạm thời disable nút delete -> sau này phân quyền sau (đang disable ở modal) */}
@@ -146,7 +146,7 @@ export default function CategoryTableBody({
                   className="!text-red-600 dark:!text-red-500 hover:!bg-red-50 dark:hover:!bg-red-100 transition-colors duration-300 flex items-center gap-1 cursor-pointer"
                 >
                   <Trash2 className="w-4 h-4" />
-                  Delete
+                  Xóa
                 </Button>
               </div>
             </TableCell>

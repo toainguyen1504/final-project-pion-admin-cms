@@ -172,7 +172,7 @@ function CategoryTable({
                 <TableToolbar
                   searchValue={typingValue}
                   onSearchChange={setTypingValue}
-                  searchPlaceholder="Search categories..."
+                  searchPlaceholder="Tìm kiếm danh mục..."
                   searchLoading={searchLoading}
                   selectedCount={selectedIds.length}
                   visibleColumns={visibleColumns}
@@ -180,11 +180,11 @@ function CategoryTable({
                   onTempColumnToggle={handleTempColumnToggle}
                   defaultColumns={defaultColumns}
                   columnsConfig={[
-                    { key: "name", label: "Name" },
+                    { key: "name", label: "Tên Danh Mục" },
                     { key: "slug", label: "Slug" },
-                    { key: "type", label: "Type" },
-                    { key: "featured", label: "Featured" },
-                    { key: "updated_at", label: "Last Modified" },
+                    { key: "type", label: "Loại Danh Mục" },
+                    { key: "featured", label: "Nổi Bật" },
+                    { key: "updated_at", label: "Chỉnh Sửa Lần Cuối" },
                   ]}
                   popoverOpen={popoverOpen}
                   setPopoverOpen={setPopoverOpen}
@@ -205,7 +205,7 @@ function CategoryTable({
              dark:hover:bg-slate-700 transition-colors duration-300"
             >
               <TableCell className="px-4 py-3 font-semibold">
-                <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center">  
                   <Checkbox
                     checked={allSelected}
                     onCheckedChange={(checked) => handleSelectAll(checked)}
@@ -216,7 +216,7 @@ function CategoryTable({
               {visibleColumns.name && (
                 <TableCell className="px-4 py-3 font-semibold">
                   <SortableHeaderCell
-                    label="Name"
+                    label="Tên Danh Mục"
                     sortKey="name"
                     currentSort={sort}
                     order={order}
@@ -231,19 +231,19 @@ function CategoryTable({
               )}
 
               {visibleColumns.type && (
-                <TableCell className="px-4 py-3 font-semibold">Type</TableCell>
+                <TableCell className="px-4 py-3 font-semibold">Loại Danh Mục</TableCell>
               )}
 
               {visibleColumns.featured && (
                 <TableCell className="px-4 py-3 font-semibold">
-                  Featured
+                  Nổi Bật
                 </TableCell>
               )}
 
               {visibleColumns.updated_at && (
                 <TableCell className="px-4 py-3 font-semibold">
                   <SortableHeaderCell
-                    label="Last Modified"
+                    label="Chỉnh Sửa Lần Cuối"
                     sortKey="updated_at"
                     currentSort={sort}
                     order={order}

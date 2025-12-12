@@ -138,7 +138,11 @@ function CategoryEdit() {
       </div>
 
       {/* Form */}
-      <form id="category-form" onSubmit={handleSubmit} className="space-y-6">
+      <form
+        id="category-form"
+        onSubmit={handleSubmit}
+        className="space-y-6 mt-8"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Name */}
           <div className="space-y-2">
@@ -146,7 +150,7 @@ function CategoryEdit() {
               htmlFor="name"
               className="ml-2 text-slate-700 dark:text-slate-300 inline-flex items-center gap-1"
             >
-              Name <span className="text-red-500 text-sm">*</span>
+              Tên Danh Mục <span className="text-red-500 text-sm">*</span>
             </Label>
             <Input
               id="name"
@@ -187,9 +191,11 @@ function CategoryEdit() {
         </div>
 
         {/* Type + Featured */}
-        <div className="ml-2 grid grid-cols-2 md:grid-cols-4 gap-6 items-center">
+        <div className="ml-2 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
           <div className="flex items-center space-x-4 pt-6 md:pt-0">
-            <Label className="text-slate-700 dark:text-slate-300">Type</Label>
+            <Label className="text-slate-700 dark:text-slate-300">
+              Loại Danh Mục
+            </Label>
             <Tabs value={type} onValueChange={setType}>
               <TabsList className="bg-slate-200 dark:bg-slate-700 rounded-full p-1">
                 <TabsTrigger
@@ -199,7 +205,7 @@ function CategoryEdit() {
                     dark:data-[state=active]:bg-indigo-500 dark:data-[state=active]:text-indigo-50
                     text-slate-700 dark:text-slate-300"
                 >
-                  Post
+                  Bài viết
                 </TabsTrigger>
 
                 <TabsTrigger
@@ -209,7 +215,7 @@ function CategoryEdit() {
                     dark:data-[state=active]:bg-indigo-500 dark:data-[state=active]:text-indigo-100
                     text-slate-700 dark:text-slate-300"
                 >
-                  Course
+                  Khóa học
                 </TabsTrigger>
               </TabsList>
             </Tabs>
@@ -221,7 +227,7 @@ function CategoryEdit() {
                 htmlFor="featured"
                 className="text-slate-700 dark:text-slate-300"
               >
-                Featured Mode
+                Chế Độ Nổi Bật
               </Label>
               <Popover>
                 <PopoverTrigger asChild>
@@ -238,8 +244,9 @@ function CategoryEdit() {
                   sideOffset={4}
                   className="max-w-xs p-3 text-sm text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-md shadow-md z-50"
                 >
-                  When this mode is enabled, the category will be highlighted in
-                  the user interface.
+                  Khi chế độ này được bật, danh mục sẽ được làm nổi bật trong
+                  giao diện người dùng. Nó có thể xuất hiện ở đầu danh sách hoặc
+                  được hiển thị với kiểu dáng khác để dễ nhận biết hơn.
                 </PopoverContent>
               </Popover>
             </div>
