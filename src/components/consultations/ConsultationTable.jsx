@@ -22,13 +22,17 @@ export default function ConsultationTable({ data }) {
         <TableHeader className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
           <TableRow>
             <TableCell className="px-4 py-3 font-semibold">#</TableCell>
-            <TableCell className="px-4 py-3 font-semibold">Request</TableCell>
             <TableCell className="px-4 py-3 font-semibold">
-              Guest Info
+              Yêu Cầu Tư Vấn
             </TableCell>
-            <TableCell className="px-4 py-3 font-semibold">Status</TableCell>
             <TableCell className="px-4 py-3 font-semibold">
-              Requested At
+              Thông Tin Khách
+            </TableCell>
+            <TableCell className="px-4 py-3 font-semibold">
+              Trạng Thái
+            </TableCell>
+            <TableCell className="px-4 py-3 font-semibold">
+              Thời Điểm Yêu Cầu
             </TableCell>
           </TableRow>
         </TableHeader>
@@ -38,9 +42,9 @@ export default function ConsultationTable({ data }) {
             <TableRow>
               <TableCell colSpan={5} className="py-10">
                 <Empty>
-                  <EmptyTitle>No consultations found</EmptyTitle>
+                  <EmptyTitle>Chưa có yêu cầu tư vấn</EmptyTitle>
                   <EmptyDescription>
-                    There are no consultation requests yet.
+                    Hiện tại không có yêu cầu tư vấn nào được ghi nhận.
                   </EmptyDescription>
                 </Empty>
               </TableCell>
@@ -91,17 +95,17 @@ export default function ConsultationTable({ data }) {
                 {item.status === "approved" ? (
                   <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
                     <CheckCircle2 className="w-4 h-4" />
-                    <span className="text-xs font-medium">Approved</span>
+                    <span className="text-xs font-medium">Đã duyệt</span>
                   </div>
                 ) : item.status === "rejected" ? (
                   <div className="flex items-center gap-1 text-red-600 dark:text-red-400">
                     <XCircle className="w-4 h-4" />
-                    <span className="text-xs font-medium">Rejected</span>
+                    <span className="text-xs font-medium">Từ chối</span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-1 text-yellow-600 dark:text-yellow-400">
                     <Clock className="w-4 h-4" />
-                    <span className="text-xs font-medium">Pending</span>
+                    <span className="text-xs font-medium">Đang chờ</span>
                   </div>
                 )}
               </TableCell>
