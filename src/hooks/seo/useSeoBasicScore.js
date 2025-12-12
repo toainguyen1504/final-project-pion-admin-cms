@@ -109,10 +109,10 @@ export default function useSeoBasicScore() {
       // 🧾 Checklist tạo tự động
       const checklist = [
         {
-          title: "Basic SEO",
+          title: "SEO Cơ Bản",
           items: [
             {
-              text: "Title is optimized",
+              text: "Tiêu đề SEO được tối ưu",
               level:
                 titleCheck.score >= 7
                   ? "success"
@@ -121,7 +121,7 @@ export default function useSeoBasicScore() {
                   : "error",
             },
             {
-              text: "Meta description is optimized",
+              text: "Thẻ mô tả (Meta Description) được tối ưu",
               level:
                 descCheck.score >= 3
                   ? "success"
@@ -130,7 +130,7 @@ export default function useSeoBasicScore() {
                   : "error",
             },
             {
-              text: "Slug is optimized",
+              text: "Đường dẫn (Slug) được tối ưu",
               level:
                 slugCheck.score >= 3
                   ? "success"
@@ -140,17 +140,17 @@ export default function useSeoBasicScore() {
             },
             {
               text: first10Check.hasKeyword
-                ? "Keyword appears in the first 10% of content"
-                : "Keyword missing in the first 10% of content",
+                ? "Từ khóa xuất hiện trong 10% đầu nội dung"
+                : "Từ khóa không xuất hiện trong 10% đầu nội dung",
               level: first10Check.hasKeyword ? "success" : "warning",
             },
             {
               text:
                 contentLengthCheck.wordCount < 600
-                  ? `Content too short (${contentLengthCheck.wordCount} words)`
+                  ? `Nội dung quá ngắn (${contentLengthCheck.wordCount} từ)`
                   : contentLengthCheck.wordCount > 2500
-                  ? `Content too long (${contentLengthCheck.wordCount} words)`
-                  : `Content length is good (${contentLengthCheck.wordCount} words)`,
+                  ? `Nội dung quá dài (${contentLengthCheck.wordCount} từ)`
+                  : `Độ dài nội dung tốt (${contentLengthCheck.wordCount} từ)`,
               level:
                 contentLengthCheck.wordCount < 600
                   ? "error"

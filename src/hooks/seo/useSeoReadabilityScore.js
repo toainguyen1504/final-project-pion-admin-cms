@@ -15,8 +15,8 @@ export default function useSeoReadabilityScore() {
 
     const scoreTitleStart = found ? 5 : 0;
     const messageTitleStart = found
-      ? "The keyword appears near the beginning of the title."
-      : "The keyword does not appear near the beginning of the title.";
+      ? "Từ khóa xuất hiện gần đầu tiêu đề"
+      : "Từ khóa không xuất hiện gần đầu tiêu đề";
 
     return { score: scoreTitleStart, message: messageTitleStart };
   }
@@ -44,8 +44,8 @@ export default function useSeoReadabilityScore() {
 
     const score = found ? 5 : 0;
     const message = found
-      ? "The title contains a valid number (e.g., year, ranking, or quantity)."
-      : "The title does not contain a valid number or the year is not appropriate.";
+      ? "Tiêu đề chứa một con số hợp lệ (ví dụ: năm, xếp hạng hoặc số lượng)"
+      : "Tiêu đề không chứa một con số hợp lệ (ví dụ: năm, xếp hạng hoặc số lượng)";
 
     return { score, message };
   }
@@ -59,19 +59,19 @@ export default function useSeoReadabilityScore() {
 
     if (length >= 40 && length <= 70) {
       score = 5;
-      message = `The title is well-optimized (${length}/70 characters).`;
+      message = `Tiêu đề bài viết được tối ưu tốt (${length}/70 characters)`;
       status = "good";
     } else if (length >= 20 && length < 40) {
       score = 3;
-      message = `The title is a bit short (${length}/70 characters) – consider expanding it.`;
+      message = `Tiêu đề bài viết hơi ngắn (${length}/70 characters) – nên mở rộng thêm`;
       status = "ok";
     } else if (length < 20) {
       score = 0;
-      message = `The title is too short (${length}/70 characters) – not descriptive enough.`;
+      message = `Tiêu đề bài viết quá ngắn (${length}/70 characters) – chưa đủ mô tả`;
       status = "fail";
     } else {
       score = 0;
-      message = `The title is too long (${length}/70 characters) – consider shortening it.`;
+      message = `Tiêu đề bài viết quá dài (${length}/70 characters) – nên rút gọn lại`;
       status = "fail";
     }
 
@@ -88,7 +88,7 @@ export default function useSeoReadabilityScore() {
     if (paragraphs.length === 0) {
       return {
         score: 0,
-        message: "No paragraphs found for evaluation.",
+        message: "Không tìm thấy đoạn văn nào để đánh giá",
         status: "fail",
       };
     }
@@ -118,18 +118,17 @@ export default function useSeoReadabilityScore() {
 
     const finalScore = Math.max(0, Math.min(score, 5));
 
-    let message = "All paragraphs are concise, readable, and well-structured.";
+    let message = "Tất cả đoạn văn đều ngắn gọn, dễ đọc và có cấu trúc tốt";
     let status = "good";
 
     if (hasEmptyParagraph) {
-      message = "The article contains empty or whitespace-only paragraphs.";
+      message = "Bài viết chứa các đoạn trống hoặc chỉ có khoảng trắng";
       status = "fail";
     } else if (
       hasExtremeParagraph ||
       finalScore < Math.ceil(paragraphs.length * 0.7)
     ) {
-      message =
-        "Some paragraphs are too long or too short – consider adjusting them.";
+      message = "Một số đoạn quá dài hoặc quá ngắn – nên điều chỉnh lại";
       status = "ok";
     }
 
@@ -149,15 +148,15 @@ export default function useSeoReadabilityScore() {
 
     if (imgCount >= 3) {
       score = 5;
-      message = `The article includes ${imgCount} illustrative images – Excellent!`;
+      message = `Bài viết có ${imgCount} hình minh họa – Rất tốt!`;
       status = "good";
     } else if (imgCount > 0) {
       score = 3;
-      message = `The article includes ${imgCount} image(s) – Decent, but aim for at least 3.`;
+      message = `Bài viết có ${imgCount} hình – Tạm ổn, nhưng nên có ít nhất 3 hình`;
       status = "ok";
     } else {
       score = 0;
-      message = "The article does not include any illustrative images.";
+      message = "Bài viết không có hình minh họa nào";
       status = "fail";
     }
 
@@ -172,13 +171,12 @@ export default function useSeoReadabilityScore() {
     return mediaCount >= 1
       ? {
           score: 5,
-          message: `The article includes ${mediaCount} video/media item(s) – Great!`,
+          message: `Bài viết có ${mediaCount} nội dung media (video/âm thanh) – Tuyệt vời!`,
           status: "good",
         }
       : {
           score: 0,
-          message:
-            "The article does not include any video or supporting media.",
+          message: "Bài viết không có video hoặc nội dung media hỗ trợ",
           status: "ok",
         };
   }

@@ -333,7 +333,7 @@ export default function useSeoAdditionalScore() {
           title: "Additional SEO",
           items: [
             {
-              text: "Keyword density is optimal",
+              text: "Mật độ từ khóa tối ưu",
               level:
                 density.statusDensity === "good"
                   ? "success"
@@ -342,7 +342,7 @@ export default function useSeoAdditionalScore() {
                   : "error",
             },
             {
-              text: "Keyword appears in headings (H1/H2/H3), but may sound unnatural",
+              text: "Từ khóa xuất hiện trong tiêu đề (H1/H2/H3), nhưng có thể chưa tự nhiên",
               level:
                 headings.statusInHeadings === "good"
                   ? "success"
@@ -351,7 +351,7 @@ export default function useSeoAdditionalScore() {
                   : "error",
             },
             {
-              text: "No internal links found in the content",
+              text: "Không tìm thấy liên kết nội bộ trong nội dung",
               level:
                 internalLinks.statusInternalLinks === "good"
                   ? "success"
@@ -360,7 +360,7 @@ export default function useSeoAdditionalScore() {
                   : "error",
             },
             {
-              text: "1–3 external links found, but missing rel attribute",
+              text: "Có 1–3 liên kết ngoài nhưng thiếu thuộc tính rel",
               level:
                 externalLinks.statusExternalLinks === "good"
                   ? "success"
@@ -369,7 +369,7 @@ export default function useSeoAdditionalScore() {
                   : "error",
             },
             {
-              text: "All images (4/4) have keyword-rich and natural alt text",
+              text: "Tất cả hình ảnh (4/4) đều có Alt text chứa từ khóa và tự nhiên",
               level:
                 imageAlt.statusInImageAlt === "good"
                   ? "success"
