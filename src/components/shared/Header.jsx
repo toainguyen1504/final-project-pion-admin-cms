@@ -154,7 +154,7 @@ function Header({ onToggleSidebar }) {
           from-blue-500 to bg-purple-600 text-white rounded-xl hover:shadow-lg transition-all duration-300"
           >
             <Plus className="w-4 h-4" />
-            <span className="text-sm font-medium">Thêm Bài Viết Mới</span>
+            <span className="text-sm font-medium">Tạo Nhanh Bài Viết</span>
           </button>
 
           {/* Toggle */}

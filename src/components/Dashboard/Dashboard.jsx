@@ -7,10 +7,10 @@ function Dashboard() {
   return (
     <div className="px-4 pt-4 pb-10 space-y-6">
       <Helmet>
-        <title>Dashboard | Pion CMS</title>
+        <title>Tổng quan | Pion CMS</title>
         <meta
           name="description"
-          content="Overview dashboard for system management"
+          content="Tông quan hiệu suất và phân tích dữ liệu trong Pion CMS"
         />
         <link rel="icon" href="/assets/favicon/favicon-96x96.png" />
       </Helmet>
