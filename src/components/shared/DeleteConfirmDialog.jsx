@@ -10,6 +10,7 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 
+import { isAdminUser } from "@/utils/auth";
 import { Spinner } from "@/components/ui/spinner";
 
 export default function DeleteConfirmDialog({
@@ -20,6 +21,8 @@ export default function DeleteConfirmDialog({
   onConfirm,
   loading = false,
 }) {
+  const isAdmin = isAdminUser();
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent className="max-w-sm">
@@ -38,8 +41,7 @@ export default function DeleteConfirmDialog({
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
-            // disabled={loading} //disable khi loading
-            disabled // tạm disable -> sau này phân quyền thì mở lại bình thường
+            disabled={!isAdmin || loading}
             className="bg-red-600 hover:bg-red-700 dark:text-red-100 cursor-pointer"
           >
             {loading && <Spinner className="w-4 h-4 mr-2 text-white" />}

@@ -11,6 +11,8 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 
+import { isAdminUser } from "@/utils/auth";
+
 export default function TableToolbar({
   selectedCount = 0,
   searchLoading = false,
@@ -29,6 +31,8 @@ export default function TableToolbar({
   isTempInitializedRef,
   columnsConfig = [], // Dynamic column list
 }) {
+  const isAdmin = isAdminUser();
+
   const hasChangeColumns =
     JSON.stringify(tempColumns) !== JSON.stringify(visibleColumns);
   const hasChangeFromDefaultColumns =
@@ -54,11 +58,11 @@ export default function TableToolbar({
       >
         {/* tạm thời disable -> sau này phân quyền sau */}
         <Button
-          disabled
+          disabled={!isAdmin || selectedCount === 0}
           onClick={onDeleteSelected}
           variant="destructive"
           size="sm"
-          className="bg-red-600 hover:bg-red-500 dark:bg-red-600 text-white rounded-xl px-3 py-1.5 text-xs"
+          className="bg-red-600 hover:bg-red-500 dark:bg-red-600 text-white rounded-xl px-3 py-1.5 text-xs cursor-pointer"
         >
           Xóa {selectedCount} mục đã chọn
         </Button>
