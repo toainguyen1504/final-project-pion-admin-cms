@@ -45,10 +45,10 @@ export function SeoManager({
 
   // Sync dữ liệu ban đầu từ props SEO (chỉ 1 lần khi mount hoặc khi postData thay đổi)
   useEffect(() => {
-    if (!initialLoad.current) {
-      seo.setTitle(seoTitle || "");
-      seo.setSlug(seoSlug || "");
-      seo.setDesc(seoDescription || "");
+    if (!initialLoad.current && seoSlug !== undefined) {
+      seo.setTitle(seoTitle);
+      seo.setSlug(seoSlug);
+      seo.setDesc(seoDescription);
       initialLoad.current = true;
     }
   }, [seoTitle, seoSlug, seoDescription]);
@@ -88,8 +88,6 @@ export function SeoManager({
       rawHtml,
     });
 
-    // console.log("🎯 Total SEO Score:", totalScore);
-    // console.log("🎯 slug:", seo.slug);
     setChecklist(checklist);
   }, [seo.title, seo.desc, seo.slug, content, focusKeyword]);
 
@@ -123,7 +121,7 @@ export function SeoManager({
           className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
               !text-white min-w-36 cursor-pointer pb-0.5 mt-2"
         >
-           Chỉnh sửa Snippet
+          Chỉnh sửa Snippet
         </Button>
       </div>
 

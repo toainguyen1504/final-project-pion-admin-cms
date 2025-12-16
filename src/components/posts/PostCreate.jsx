@@ -130,7 +130,9 @@ function PostCreate() {
     const payload = {
       title,
       sapo_text: "",
-      slug: slugify(seoData.seoTitle || title),
+      slug: slugify(
+        seoData.seoSlug?.trim() || seoData.seoTitle?.trim() || title.trim()
+      ),
       seo_title: seoData.seoTitle,
       seo_description: seoData.seoDescription,
       seo_keywords: allKeywords.length ? allKeywords.join(",") : "", // tất cả keywords

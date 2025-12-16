@@ -36,20 +36,13 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
   useEffect(() => {
     if (open) {
       // If data already exists (not a default placeholder) -> keep it for editing
-      const hasRealData =
-        title !== DEFAULT_SEO.title ||
-        desc !== DEFAULT_SEO.desc ||
-        slug !== DEFAULT_SEO.slug;
+      if (!open) return;
 
-      if (hasRealData) {
-        setDraftTitle(title);
-        setDraftSlug(slug);
-        setDraftDesc(desc);
-      } else {
-        // If it's default data -> display empty fields to use placeholders
-        setDraftTitle("");
-        setDraftSlug("");
-        setDraftDesc("");
+      // Nếu đang edit và slug/title/desc có giá trị thật
+      if (title || slug || desc) {
+        setDraftTitle(title || "");
+        setDraftSlug(slug || "");
+        setDraftDesc(desc || "");
       }
     }
   }, [open, title, slug, desc]);
@@ -58,7 +51,10 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
   const handleSave = () => {
     // Chỉ cập nhật khi có thay đổi thực sự (không dùng placeholder)
     const newTitle = draftTitle.trim() || "";
-    const newSlug = slugify(draftSlug.trim() || draftTitle.trim() || "");
+    const newSlug = slugify(
+      draftSlug.trim() || slug.trim() || draftTitle.trim()
+    );
+
     const newDesc = draftDesc.trim() || "";
 
     if (newTitle) setTitle(newTitle);
@@ -75,7 +71,6 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
   };
 
   // --- Progress Bar
-
   const ProgressBar = ({ type, value, max }) => {
     const length =
       type === "slug" ? slugify(value || "").length : (value || "").length;
@@ -112,7 +107,12 @@ export function SeoSnippetModal({ open, onOpenChange, seo }) {
         <div className="mt-3 text-sm space-y-1 overflow-hidden">
           <p className="text-blue-600 dark:text-blue-400 break-all">
             {BASE_URL +
-              slugify(draftSlug || draftTitle || slug || DEFAULT_SEO.slug)}
+              slugify(
+                draftSlug.trim() ||
+                  slug.trim() ||
+                  draftTitle.trim() ||
+                  DEFAULT_SEO.slug
+              )}
           </p>
           <p className="text-lg font-semibold text-gray-800 dark:text-gray-100 break-words">
             {draftTitle || DEFAULT_SEO.title}

@@ -5,7 +5,7 @@ import { slugify } from "@/lib/utils";
  * SEO snippet hook
  * Logic SEO state (good / ok / bad) for title, description, slug
  */
-export function useSeoSnippet() {
+export function useSeoSnippet(initial = {}) {
   const BASE_URL = "https://pion.edu.vn/";
 
   // --- Default constants
@@ -16,9 +16,9 @@ export function useSeoSnippet() {
   };
 
   // States
-  const [title, setTitle] = useState("");
-  const [slug, setSlug] = useState("");
-  const [desc, setDesc] = useState("");
+  const [title, setTitle] = useState(initial.title || "");
+  const [slug, setSlug] = useState(initial.slug || "");
+  const [desc, setDesc] = useState(initial.desc || "");
   const [isSlugEdited, setIsSlugEdited] = useState(false);
 
   // Limits
@@ -28,7 +28,9 @@ export function useSeoSnippet() {
 
   // Auto slugify if not manually edited
   useEffect(() => {
-    if (!isSlugEdited) setSlug(slugify(title));
+    if (!isSlugEdited && !initial.slug) {
+      setSlug(slugify(title));
+    }
   }, [title, isSlugEdited]);
 
   const handleSlugChange = (value) => {

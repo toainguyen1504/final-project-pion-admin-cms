@@ -43,11 +43,8 @@ function PostEdit() {
   const [visibility, setVisibility] = useState("private");
   const [publishDate, setPublishDate] = useState(new Date());
   const [title, setTitle] = useState("");
-  const [seoData, setSeoData] = useState({
-    seoTitle: "",
-    seoSlug: "",
-    seoDescription: "",
-  });
+  const [seoData, setSeoData] = useState(null);
+
   const [allKeywords, setAllKeywords] = useState([]); // all keywords
   const [allCategories, setAllCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -86,15 +83,19 @@ function PostEdit() {
     const loadPost = async () => {
       try {
         const data = await getPostById(id);
-        // console.log("data in edit:", data);
         setPostData(data);
+
+        setSeoData({
+          seoTitle: data.seo_title || data.title,
+          seoSlug: data.slug || slugify(data.title),
+          seoDescription: data.seo_description || "",
+        });
 
         // set keywords
         const keywordsArray = data.seo_keywords
           ? data.seo_keywords.split(",").map((k) => k.trim())
           : [];
         setAllKeywords(keywordsArray);
-        // console.log("keywordsArray", keywordsArray);
 
         setTitle(data.title);
         setVisibility(data.visibility || "private");
@@ -133,12 +134,6 @@ function PostEdit() {
   useEffect(() => {
     if (editor && postData?.content?.content_html && !contentLoaded) {
       editor.commands.setContent(postData.content.content_html);
-      // console.log(
-      //   "✅ Loaded content into editor:",
-      //   postData.content.content_html
-      // );
-      // console.log("✅ Editor current HTML:", editor.getHTML());
-      // console.log("✅ Editor current Text:", editor.getText());
       setContentLoaded(true);
     }
   }, [editor, postData?.content?.content_html, contentLoaded]);
@@ -167,9 +162,9 @@ function PostEdit() {
     title: title,
     content: editor?.getText() || "",
     rawHtml: editor?.getHTML() || "",
-    seoTitle: seoData.seoTitle || title,
-    seoSlug: seoData.seoSlug,
-    seoDescription: seoData.seoDescription || "",
+    seoTitle: seoData?.seoTitle || title,
+    seoSlug: seoData?.seoSlug,
+    seoDescription: seoData?.seoDescription || "",
   };
 
   const handleUpdate = async () => {
@@ -194,7 +189,7 @@ function PostEdit() {
     const payload = {
       title,
       sapo_text: "",
-      slug: slugify(seoData.seoTitle || title),
+      slug: seoData.seoSlug?.trim(),
       seo_title: seoData.seoTitle,
       seo_description: seoData.seoDescription,
       seo_keywords: allKeywords.length ? allKeywords.join(",") : "", // tất cả keywords
@@ -353,12 +348,19 @@ function PostEdit() {
           </div>
 
           {/* SeoManager mới - dùng ref initialLoad bên trong */}
-          <SeoManager
-            {...BASE_SEO_PAYLOAD}
-            onSeoChange={setSeoData}
-            onAllKeywordsChange={setAllKeywords}
-            initialKeywords={allKeywords}
-          />
+          {seoData && (
+            <SeoManager
+              title={title}
+              content={editor?.getText() || ""}
+              rawHtml={editor?.getHTML() || ""}
+              seoTitle={seoData.seoTitle}
+              seoSlug={seoData.seoSlug}
+              seoDescription={seoData.seoDescription}
+              onSeoChange={setSeoData}
+              onAllKeywordsChange={setAllKeywords}
+              initialKeywords={allKeywords}
+            />
+          )}
         </div>
 
         <PostSidebar
