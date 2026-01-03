@@ -4,18 +4,13 @@ function UserList() {
   return (
     <div className="p-4">
       <Helmet>
-        <title>All User | Pion CMS</title>
-        <meta
-          name="description"
-          content="List User for system management"
-        />
-        <link rel="icon" href="/assets/favicon/favicon-96x96.png" />
+        <title>Tất Cả Người Dùng | Pion CMS</title>
       </Helmet>
 
       <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200">
-        All User
+        Tất Cả Người Dùng
       </h2>
-      <p className="text-slate-500 mt-2">This is the User List page</p>
+      <p className="text-slate-500 mt-2">Danh sách tất cả người dùng</p>
     </div>
   );
 }

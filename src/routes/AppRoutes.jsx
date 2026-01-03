@@ -4,6 +4,7 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AdminLayout from "@/components/layout/AdminLayout";
 import Dashboard from "@/components/dashboard/Dashboard";
 import LoginPage from "@/pages/auth/LoginPage";
+
 import CategoryList from "@/components/categories/CategoryList";
 import CategoryCreate from "@/components/categories/CategoryCreate";
 import CategoryEdit from "@/components/categories/CategoryEdit";
@@ -12,11 +13,16 @@ import PostList from "@/components/posts/PostList";
 import PostCreate from "@/components/posts/PostCreate";
 import PostEdit from "@/components/posts/PostEdit";
 
-// import UserList from "@/components/users/UserList";
-// import UserCreate from "@/components/users/UserCreate";
+import UserList from "@/components/users/UserList";
+import UserCreate from "@/components/users/UserCreate";
+import UserEdit from "@/components/users/UserEdit";
+import UserRole from "@/components/users/UserRole";
+import UserOverview from "@/components/users/UserOverview";
+
 import ConsultationList from "@/components/consultations/ConsultationList";
 
 import NotFound from "@/pages/NotFound"; // 404 page
+import { User } from "lucide-react";
 
 function AppRoutes() {
   return (
@@ -51,8 +57,11 @@ function AppRoutes() {
         <Route path="*" element={<NotFound />} />
 
         {/* User */}
-        {/* <Route path="/users" element={<UserList />} />
-        <Route path="/users/create" element={<UserCreate />} /> */}
+        <Route path="/nguoi-dung" element={<UserList />} />
+        <Route path="/nguoi-dung/tao-moi" element={<UserCreate />} />
+        <Route path="/nguoi-dung/:id/chinh-sua" element={<UserEdit />} />
+        <Route path="/nguoi-dung/quan-li-vai-tro" element={<UserRole />} />
+        <Route path="/nguoi-dung/thong-ke" element={<UserOverview />} />
       </Route>
     </Routes>
   );

@@ -50,6 +50,30 @@ const menuItems = [
     ],
   },
   {
+    id: "users",
+    icon: Users,
+    label: "Người Dùng",
+    slug: "nguoi-dung",
+    submenu: [
+      { id: "users", label: "Tất cả người dùng", path: "/nguoi-dung" },
+      {
+        id: "create-user",
+        label: "Tạo mới người dùng",
+        path: "/nguoi-dung/tao-moi",
+      },
+      {
+        id: "role-user",
+        label: "Vai trò người dùng",
+        path: "/nguoi-dung/quan-li-vai-tro",
+      },
+      {
+        id: "overview-user",
+        label: "Thống kê người dùng",
+        path: "/nguoi-dung/thong-ke",
+      },
+    ],
+  },
+  {
     id: "consultations",
     icon: MessagesSquare,
     label: "Danh Sách Tư Vấn",
