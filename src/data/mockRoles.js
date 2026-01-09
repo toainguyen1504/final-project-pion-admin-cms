@@ -1,0 +1,42 @@
+export const mockRoles = [
+  {
+    id: 1,
+    name: "super_admin",
+    label: "Super Administrator",
+    description: "Quyền cao nhất, quản lý toàn bộ hệ thống",
+    createdAt: "2025-01-01T08:00:00Z",
+    updatedAt: "2025-12-01T10:00:00Z",
+  },
+  {
+    id: 2,
+    name: "admin",
+    label: "Administrator",
+    description: "Quản lý người dùng, nội dung và phân quyền",
+    createdAt: "2025-02-01T08:00:00Z",
+    updatedAt: "2025-11-15T09:00:00Z",
+  },
+  {
+    id: 3,
+    name: "staff",
+    label: "Staff",
+    description: "Nhân viên hỗ trợ, quản lý nội dung cơ bản",
+    createdAt: "2025-03-01T08:00:00Z",
+    updatedAt: "2025-10-20T09:00:00Z",
+  },
+  {
+    id: 4,
+    name: "learner",
+    label: "Learner",
+    description: "Người học, có quyền truy cập khóa học",
+    createdAt: "2025-04-01T08:00:00Z",
+    updatedAt: "2025-09-10T09:00:00Z",
+  },
+  {
+    id: 5,
+    name: "guest",
+    label: "Guest",
+    description: "Khách truy cập, quyền hạn giới hạn",
+    createdAt: "2025-05-01T08:00:00Z",
+    updatedAt: "2025-08-05T09:00:00Z",
+  },
+];
