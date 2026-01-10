@@ -90,19 +90,31 @@ export default function UserTableBody({
 
             {visibleColumns.display_name && (
               <TableCell className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">
-                {user.display_name}
+                {user.display_name || "—"}
               </TableCell>
             )}
 
             {visibleColumns.username && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {user.username}
+                {user.username || "—"}
               </TableCell>
             )}
 
             {visibleColumns.email && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {user.email}
+                {user.email || "—"}
+              </TableCell>
+            )}
+
+            {visibleColumns.gender && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {user.gender || "—"}
+              </TableCell>
+            )}
+
+            {visibleColumns.phone && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {user.phone || "—"}
               </TableCell>
             )}
 

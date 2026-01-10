@@ -40,8 +40,8 @@ export function useUsers() {
         return valA < valB ? 1 : -1;
       });
 
-      // phân trang giả lập (5 item mỗi trang)
-      const perPage = 5;
+      // phân trang giả lập (10 item mỗi trang)
+      const perPage = 10;
       const start = (page - 1) * perPage;
       const paginated = data.slice(start, start + perPage);
       setUsers(paginated);

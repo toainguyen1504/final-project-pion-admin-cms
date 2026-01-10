@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import UserTable from "@/components/users/UserTable";
 import { useUsers } from "@/hooks";
 
-// 1. UI: Check lại UI/UX của trang danh sách người dùng
+// 1. UI: Check lại UI/UX của trang danh sách người dùng - ok
 // 2. UI: Cần tạo Page để thêm mới người dùng (/nguoi-dung/tao-moi)
 // 3. UI: Cần tạo Page để chỉnh sửa người dùng (/nguoi-dung/:id/chinh-sua)
 // 4. Logic: Kết nối API từ Backend để lấy danh sách người dùng, tạo mới, chỉnh sửa, xóa vai trò (làm sau khi backend sẵn sàng)

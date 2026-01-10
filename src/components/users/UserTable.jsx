@@ -35,8 +35,10 @@ function UserTable({
   const defaultColumns = {
     profile_image: true,
     display_name: true,
-    username: true,
+    username: false,
     email: true,
+    gender: false,
+    phone: true,
     role: true,
     createdAt: true,
   };
@@ -155,6 +157,8 @@ function UserTable({
                     { key: "display_name", label: "Tên hiển thị" },
                     { key: "username", label: "Tên đăng nhập" },
                     { key: "email", label: "Email" },
+                    { key: "gender", label: "Giới tính" },
+                    { key: "phone", label: "Số điện thoại" },
                     { key: "role", label: "Vai trò" },
                     { key: "createdAt", label: "Ngày tạo" },
                   ]}
@@ -207,6 +211,14 @@ function UserTable({
 
               {visibleColumns.email && (
                 <TableCell className="px-4 py-3 font-semibold">Email</TableCell>
+              )}
+
+              {visibleColumns.gender && (
+                <TableCell className="px-4 py-3 font-semibold">Giới tính</TableCell>
+              )}
+
+              {visibleColumns.phone && (
+                <TableCell className="px-4 py-3 font-semibold">Số điện thoại</TableCell>
               )}
 
               {visibleColumns.role && (
