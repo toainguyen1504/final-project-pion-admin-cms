@@ -219,7 +219,7 @@ function UserCreate() {
             {errors.phone && (
               <p className="ml-2 text-sm mt-1 text-red-600 dark:text-red-400">
                 {errors.phone[0]}
-              </p>  
+              </p>
             )}
           </div>
         </div>
