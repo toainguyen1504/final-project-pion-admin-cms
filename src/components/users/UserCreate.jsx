@@ -54,12 +54,12 @@ function UserCreate() {
         <Button
           type="submit"
           form="user-form"
-          className="bg-blue-600 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400 
-             rounded-xl text-white min-w-40 cursor-pointer select-none transition-all duration-300"
+          className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
+            text-white min-w-40 cursor-pointer select-none transition-all duration-300"
           // disabled={loading}
         >
           {/* {loading && <Spinner className="w-4 h-4 mr-2 text-white" />} */}
-          Tạo Người Dùng
+          Lưu Người Dùng
         </Button>
       </div>
 
