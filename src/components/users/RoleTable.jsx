@@ -149,7 +149,7 @@ function RoleTable({
                   columnsConfig={[
                     { key: "name", label: "Tên Role (key)" },
                     { key: "label", label: "Tên hiển thị" },
-                    { key: "description", label: "Mô tả" },
+                    { key: "description", label: "Mô tả (Role Permissions)" },
                     { key: "createdAt", label: "Ngày tạo" },
                     { key: "updatedAt", label: "Ngày cập nhật" },
                   ]}
@@ -191,11 +191,13 @@ function RoleTable({
               )}
 
               {visibleColumns.label && (
-                <TableCell className="px-4 py-3 font-semibold">Tên hiển thị</TableCell>
+                <TableCell className="px-4 py-3 font-semibold">
+                  Tên hiển thị
+                </TableCell>
               )}
 
               {visibleColumns.description && (
-                <TableCell className="px-4 py-3 font-semibold">Mô tả</TableCell>
+                <TableCell className="px-4 py-3 font-semibold">Mô tả (Role Permissions)</TableCell>
               )}
 
               {visibleColumns.createdAt && (
