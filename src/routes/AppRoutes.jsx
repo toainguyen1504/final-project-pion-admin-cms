@@ -23,7 +23,7 @@ import ConsultationList from "@/components/consultations/ConsultationList";
 
 import NotFound from "@/pages/NotFound"; // 404 page
 import Forbidden from "@/pages/auth/Forbidden"; // 404 page
-import { ROLES, USER_MANAGEMENT_ROLES } from "@/constants/roles";
+import { ADMIN_CMS_ROLES, USER_MANAGEMENT_ROLES } from "@/constants/roles";
 
 function AppRoutes() {
   return (
@@ -33,7 +33,8 @@ function AppRoutes() {
       <Route path="/403" element={<Forbidden />} />
 
       {/* Authenticated */}
-      <Route element={<ProtectedRoute />}>
+      {/* Admin CMS routes - chỉ cho phép ADMIN_CMS_ROLES */}
+      <Route element={<ProtectedRoute allowedRoles={ADMIN_CMS_ROLES} />}>
         {/* Admin layout */}
         <Route element={<AdminLayout />}>
           <Route path="/" element={<Dashboard />} />

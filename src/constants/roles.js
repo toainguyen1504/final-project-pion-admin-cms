@@ -8,6 +8,13 @@ export const ROLES = {
   GUEST: "guest",
 };
 
+export const ADMIN_CMS_ROLES = [
+  ROLES.SUPER_ADMIN,
+  ROLES.ADMIN,
+  ROLES.STAFF,
+  ROLES.STAFFADS,
+];
+
 // role được phép CRUD user
 export const USER_MANAGEMENT_ROLES = [ROLES.ADMIN, ROLES.SUPER_ADMIN];
 

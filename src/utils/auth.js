@@ -1,4 +1,9 @@
-import { USER_MANAGEMENT_ROLES } from "@/constants/roles";
+import { USER_MANAGEMENT_ROLES, ADMIN_CMS_ROLES } from "@/constants/roles";
+
+export function canAccessAdminCMS() {
+  const role = getCurrentRole();
+  return ADMIN_CMS_ROLES.includes(role);
+}
 
 export function getCurrentUser() {
   try {

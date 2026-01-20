@@ -7,6 +7,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 import axiosInstance from "@/utils/axiosInstance";
+import { ADMIN_CMS_ROLES } from "@/constants/roles";
 import logo from "@/assets/images/logo_icon_gradient.png";
 
 export default function LoginPage() {
@@ -31,6 +32,14 @@ export default function LoginPage() {
       // Nếu đăng nhập thành công
       const { token, user } = response.data;
 
+      // Kiểm tra role có quyền vào Admin CMS
+      if (!ADMIN_CMS_ROLES.includes(user.role?.name)) {
+        setError("Tài khoản không có quyền truy cập hệ thống quản trị.");
+        toast.error("Bạn không được phép truy cập vào Admin CMS.");
+        setLoading(false);
+        return;
+      }
+
       // Lưu token vào localStorage -> optimize: nên nâng cấp bảo mật (làm sau)
       localStorage.setItem("authToken", token);
       localStorage.setItem("user", JSON.stringify(user));
@@ -41,6 +50,7 @@ export default function LoginPage() {
       setTimeout(() => {
         window.location.href = "/"; // chuyển về dashboard
       }, 1000);
+
     } catch (err) {
       if (err.response?.status === 401) {
         setError("Sai email/username hoặc mật khẩu.");
