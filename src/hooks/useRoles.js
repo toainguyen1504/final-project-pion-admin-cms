@@ -38,8 +38,8 @@ export function useRoles() {
         return valA < valB ? 1 : -1;
       });
 
-      // phân trang giả lập (5 item/trang)
-      const perPage = 5;
+      // phân trang giả lập (6 item/trang)
+      const perPage = 6;
       const start = (page - 1) * perPage;
       const paginated = data.slice(start, start + perPage);
 

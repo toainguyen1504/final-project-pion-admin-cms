@@ -94,8 +94,9 @@ function UserCreate() {
         onSubmit={handleSubmit}
         className="space-y-6 mt-8 bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md"
       >
-        {/* Display Name + Username */}
+        {/* Display Name + Role */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Display name */}
           <div className="space-y-2">
             <Label
               htmlFor="display_name"
@@ -120,54 +121,7 @@ function UserCreate() {
             )}
           </div>
 
-          <div className="space-y-2">
-            <Label
-              htmlFor="username"
-              className="ml-2 text-slate-700 dark:text-slate-300 inline-flex items-center gap-1"
-            >
-              Username
-            </Label>
-            <Input
-              id="username"
-              name="username"
-              value={formData.username}
-              disabled
-              placeholder="Username sẽ được tự động tạo"
-              className="cursor-not-allowed py-5 px-4 border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
-              focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
-               text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
-            />
-          </div>
-        </div>
-
-        {/* Email + Role + phone*/}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <Label
-              htmlFor="email"
-              className="ml-2 text-slate-700 dark:text-slate-300 inline-flex items-center gap-1"
-            >
-              Email <span className="text-red-500 text-sm">*</span>
-            </Label>
-
-            <Input
-              id="email"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="example@email.com"
-              className="py-5 px-4 border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
-        focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
-        text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
-            />
-            {errors.email && (
-              <p className="ml-2 text-sm mt-1 text-red-600 dark:text-red-400">
-                {errors.email[0]}
-              </p>
-            )}
-          </div>
-
+          {/* Role */}
           <div className="space-y-2">
             <Label
               htmlFor="role"
@@ -197,6 +151,36 @@ function UserCreate() {
               </p>
             )}
           </div>
+        </div>
+
+        {/* Email + phone*/}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Email */}
+          <div className="space-y-2">
+            <Label
+              htmlFor="email"
+              className="ml-2 text-slate-700 dark:text-slate-300 inline-flex items-center gap-1"
+            >
+              Email
+            </Label>
+
+            <Input
+              id="email"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="example@email.com"
+              className="py-5 px-4 border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
+        focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
+        text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
+            />
+            {errors.email && (
+              <p className="ml-2 text-sm mt-1 text-red-600 dark:text-red-400">
+                {errors.email[0]}
+              </p>
+            )}
+          </div>
 
           {/* Phone */}
           <div className="space-y-2">
@@ -219,6 +203,56 @@ function UserCreate() {
             {errors.phone && (
               <p className="ml-2 text-sm mt-1 text-red-600 dark:text-red-400">
                 {errors.phone[0]}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Username + Password */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* User name */}
+          <div className="space-y-2">
+            <Label
+              htmlFor="username"
+              className="ml-2 text-slate-700 dark:text-slate-300 inline-flex items-center gap-1"
+            >
+              Username
+            </Label>
+            <Input
+              id="username"
+              name="username"
+              value={formData.username}
+              disabled
+              placeholder="Username sẽ được tự động tạo"
+              className="cursor-not-allowed py-5 px-4 border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
+        focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
+        text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
+            />
+          </div>
+
+          {/* Password */}
+          <div className="space-y-2">
+            <Label
+              htmlFor="password"
+              className="ml-2 text-slate-700 dark:text-slate-300 inline-flex items-center gap-1"
+            >
+              Password 
+            </Label>
+            <Input
+              id="password"
+              type="password"
+              name="password"
+              disabled
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Mật khẩu sẽ được tự động tạo"
+              className="py-5 px-4 border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
+        focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
+        text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
+            />
+            {errors.password && (
+              <p className="ml-2 text-sm mt-1 text-red-600 dark:text-red-400">
+                {errors.password[0]}
               </p>
             )}
           </div>
@@ -273,20 +307,7 @@ function UserCreate() {
           </RadioGroup>
         </div>
 
-        {/* Profile Image */}
-        <div className="space-y-2">
-          <Label htmlFor="profile_image">Ảnh đại diện (URL)</Label>
-          <Input
-            id="profile_image"
-            name="profile_image"
-            value={formData.profile_image}
-            onChange={handleChange}
-            placeholder="https://i.pravatar.cc/150?img=1"
-            className="py-5 px-4 border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
-              focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
-               text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
-          />
-        </div>
+        {/* Profile Image - update sau */}
       </form>
     </div>
   );
