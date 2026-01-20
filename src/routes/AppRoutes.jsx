@@ -22,46 +22,49 @@ import UserOverview from "@/components/users/UserOverview";
 import ConsultationList from "@/components/consultations/ConsultationList";
 
 import NotFound from "@/pages/NotFound"; // 404 page
-import { User } from "lucide-react";
+import Forbidden from "@/pages/auth/Forbidden"; // 404 page
+import { ROLES, USER_MANAGEMENT_ROLES } from "@/constants/roles";
 
 function AppRoutes() {
   return (
     <Routes>
-      {/* Public route */}
+      {/* Public */}
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/403" element={<Forbidden />} />
 
-      {/* Protected routes with layout */}
-      <Route
-        element={
-          <ProtectedRoute>
-            <AdminLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="/" element={<Dashboard />} />
+      {/* Authenticated */}
+      <Route element={<ProtectedRoute />}>
+        {/* Admin layout */}
+        <Route element={<AdminLayout />}>
+          <Route path="/" element={<Dashboard />} />
 
-        {/* Category */}
-        <Route path="/danh-muc" element={<CategoryList />} />
-        <Route path="/danh-muc/tao-moi" element={<CategoryCreate />} />
-        <Route path="/danh-muc/:id/chinh-sua" element={<CategoryEdit />} />
+          {/* Category */}
+          <Route path="/danh-muc" element={<CategoryList />} />
+          <Route path="/danh-muc/tao-moi" element={<CategoryCreate />} />
+          <Route path="/danh-muc/:id/chinh-sua" element={<CategoryEdit />} />
 
-        {/* Post */}
-        <Route path="/bai-viet" element={<PostList />} />
-        <Route path="/bai-viet/tao-moi" element={<PostCreate />} />
-        <Route path="/bai-viet/:id/chinh-sua" element={<PostEdit />} />
+          {/* Post */}
+          <Route path="/bai-viet" element={<PostList />} />
+          <Route path="/bai-viet/tao-moi" element={<PostCreate />} />
+          <Route path="/bai-viet/:id/chinh-sua" element={<PostEdit />} />
 
-        {/* Consultation */}
-        <Route path="/tu-van" element={<ConsultationList />} />
+          {/* Consultation */}
+          <Route path="/tu-van" element={<ConsultationList />} />
 
-        {/* Catch-all route for 404 */}
-        <Route path="*" element={<NotFound />} />
+          {/* User - chỉ admin & super admin */}
+          <Route
+            element={<ProtectedRoute allowedRoles={USER_MANAGEMENT_ROLES} />}
+          >
+            <Route path="/nguoi-dung" element={<UserList />} />
+            <Route path="/nguoi-dung/tao-moi" element={<UserCreate />} />
+            <Route path="/nguoi-dung/:id/chinh-sua" element={<UserEdit />} />
+            <Route path="/nguoi-dung/quan-li-vai-tro" element={<UserRole />} />
+            <Route path="/nguoi-dung/thong-ke" element={<UserOverview />} />
+          </Route>
 
-        {/* User */}
-        <Route path="/nguoi-dung" element={<UserList />} />
-        <Route path="/nguoi-dung/tao-moi" element={<UserCreate />} />
-        <Route path="/nguoi-dung/:id/chinh-sua" element={<UserEdit />} />
-        <Route path="/nguoi-dung/quan-li-vai-tro" element={<UserRole />} />
-        <Route path="/nguoi-dung/thong-ke" element={<UserOverview />} />
+          {/* 404 trong admin */}
+          <Route path="*" element={<NotFound />} />
+        </Route>
       </Route>
     </Routes>
   );

@@ -12,6 +12,7 @@ import { flushSync } from "react-dom";
 
 import toaicdevImg from "@/assets/images/toaicdev.png";
 import logo_icon from "@/assets/images/logo_icon.png";
+import { isAdminUser } from "@/utils/auth";
 
 const menuItems = [
   {
@@ -95,18 +96,28 @@ function Sidebar({ collapsed }) {
     return [`/${item.slug}/:id/chinh-sua`, `/${item.slug}/:id`];
   };
 
+  // Check admin/super_admin to display user management
+  const canManageUsers = isAdminUser();
+
+  const filteredMenuItems = menuItems.filter((item) => {
+    if (item.id === "users" && !canManageUsers) {
+      return false;
+    }
+    return true;
+  });
+
   // Determine the active menu/submenu based on the current URL
   useEffect(() => {
     const currentPath = location.pathname;
     let found = false;
 
-    for (const item of menuItems) {
+    for (const item of filteredMenuItems) {
       // 1) check submenu first (exact or prefix)
       if (item.submenu) {
         for (const sub of item.submenu) {
           const matchedSub = matchPath(
             { path: sub.path, end: true },
-            currentPath
+            currentPath,
           );
           if (matchedSub) {
             setActiveId(sub.id);
@@ -123,7 +134,7 @@ function Sidebar({ collapsed }) {
         const isRoot = item.path === "/";
         const matched = matchPath(
           { path: item.path, end: isRoot },
-          currentPath
+          currentPath,
         );
         if (matched) {
           setActiveId(item.id);
@@ -224,7 +235,7 @@ function Sidebar({ collapsed }) {
 
       {/* Menu */}
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-        {menuItems.map((item) => {
+        {filteredMenuItems.map((item) => {
           const isActive =
             activeId === item.id ||
             item.submenu?.some((sub) => sub.id === activeId);
@@ -318,7 +329,7 @@ function Sidebar({ collapsed }) {
         })}
       </nav>
 
-      {/* User */}
+      {/* Developer Info */}
       {!collapsed && (
         <div className="p-4 border-t border-slate-200/50 dark:border-slate-700/50">
           <div className="flex items-center space-x-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">

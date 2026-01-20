@@ -1,12 +1,21 @@
 import axiosInstance from "@/utils/axiosInstance";
 
+
 // ----------- PUBLIC ROUTES (index, show, stats) -----------
-// MOCKUP -> FIX sau khi code backend
+// get /me để lấy thông tin cơ bản cho profile và update
+
+
+// ----------- ADMIN ROUTES (create, update, delete, bulk) -----------
 
 // Get all users
-export async function fetchUsers(page = 1, sort = "created_at", order = "desc", search = "") {
+export async function fetchUsers(
+  page = 1,
+  sort = "created_at",
+  order = "desc",
+  search = "",
+) {
   try {
-    const response = await axiosInstance.get("/users", {
+    const response = await axiosInstance.get("/admin/users", {
       params: { page, sort, order, search },
     });
 
@@ -23,10 +32,10 @@ export async function fetchUsers(page = 1, sort = "created_at", order = "desc", 
   }
 }
 
-// Get single user
+// Get single user - chưa
 export async function fetchUser(id) {
   try {
-    const response = await axiosInstance.get(`/users/${id}`);
+    const response = await axiosInstance.get(`/admin/users/${id}`);
     return response.data.data;
   } catch (error) {
     console.error("Error fetching user:", error);
@@ -34,7 +43,7 @@ export async function fetchUser(id) {
   }
 }
 
-// Get user stats
+// Get user stats - chưa
 export async function fetchUserStats() {
   try {
     const response = await axiosInstance.get("/users/stats");
@@ -46,7 +55,7 @@ export async function fetchUserStats() {
       inactive: data.inactive || 0,
       this_month: data.this_month || 0,
     };
-  // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars
   } catch (error) {
     return {
       total: 0,
@@ -57,9 +66,7 @@ export async function fetchUserStats() {
   }
 }
 
-// ----------- ADMIN ROUTES (create, update, delete, bulk) -----------
-
-// Create user
+// Create user - đang dùng
 export async function createUser(payload) {
   try {
     const response = await axiosInstance.post("/admin/users", payload);
@@ -70,7 +77,7 @@ export async function createUser(payload) {
   }
 }
 
-// Update user
+// Update user - chưa
 export async function updateUser(id, payload) {
   try {
     const response = await axiosInstance.put(`/admin/users/${id}`, payload);
@@ -81,7 +88,7 @@ export async function updateUser(id, payload) {
   }
 }
 
-// Delete single user
+// Delete single user - chưa
 export async function deleteUser(id) {
   try {
     const response = await axiosInstance.delete(`/admin/users/${id}`);
@@ -92,13 +99,30 @@ export async function deleteUser(id) {
   }
 }
 
-// Bulk delete users
+// Bulk delete users - chưa
 export async function bulkDeleteUsers(ids) {
   try {
-    const response = await axiosInstance.post("/admin/users/bulk-destroy", { ids });
+    const response = await axiosInstance.post("/admin/users/bulk-destroy", {
+      ids,
+    });
     return response.data;
   } catch (error) {
     console.error("Error bulk deleting users:", error);
     throw error;
   }
 }
+
+// Reset password - đang dùng
+export async function resetUserPassword(id) {
+  try {
+    const response = await axiosInstance.post(
+      `/admin/users/${id}/reset-password`,
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    throw error;
+  }
+}
+
+// gán role cho user

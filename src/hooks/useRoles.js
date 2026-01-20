@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { mockRoles } from "@/data/mockRoles"; // mock data
+import { fetchRoles } from "@/lib/api/roles";
 
 export function useRoles() {
   const [roles, setRoles] = useState([]);
@@ -19,7 +19,7 @@ export function useRoles() {
     }
 
     try {
-      let data = [...mockRoles];
+      let data = [...fetchRoles];
 
       // search theo name hoặc label
       if (search) {

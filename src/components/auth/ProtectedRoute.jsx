@@ -1,13 +1,21 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
+import { getCurrentRole } from "@/utils/auth";
 
-export default function ProtectedRoute({ children }) {
+export default function ProtectedRoute({ allowedRoles }) {
   const token = localStorage.getItem("authToken");
+  const role = getCurrentRole();
 
+  // Chưa đăng nhập
   if (!token) {
-    // Nếu không có token → chuyển hướng đến trang login
     return <Navigate to="/login" replace />;
   }
 
-  // Nếu có token → cho phép vào
-  return children;
+  // Có token nhưng không đủ quyền
+
+  if (allowedRoles && !allowedRoles.includes(role)) {
+    return <Navigate to="/403" replace />;
+  }
+
+  // OK -> render route con
+  return <Outlet />;
 }

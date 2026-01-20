@@ -1,32 +1,43 @@
 import axiosInstance from "@/utils/axiosInstance";
 
-// ----------- PUBLIC ROUTES (index, show, stats) -----------
-// MOCKUP -> FIX sau khi code backend
+// ----------- ADMIN ROUTES (index, show) -----------
 
-// Get all roles
-export async function fetchRoles(page = 1, sort = "updated_at", order = "desc", search = "") {
+// Roles có thể gán cho tài khoản (trừ super_admin, guest) - đang dùng
+export async function fetchAvailableRoles() {
   try {
-    const response = await axiosInstance.get("/roles", {
+    const response = await axiosInstance.get("/admin/roles/available");
+    return response.data.data || [];
+  } catch (error) {
+    console.error("Error fetching available roles:", error);
+    return [];
+  }
+}
+
+// Get all roles - đang (dùng cho table list)
+export async function fetchRoles(
+  page = 1,
+  sort = "updated_at",
+  order = "desc",
+  search = "",
+) {
+  try {
+    const response = await axiosInstance.get("/admin/roles", {
       params: { page, sort, order, search },
     });
-
     return {
       data: response.data.data,
       meta: response.data.meta,
     };
   } catch (error) {
     console.error("Error fetching roles:", error);
-    return {
-      data: [],
-      meta: null,
-    };
+    return { data: [], meta: null };
   }
 }
 
-// Get single role
+// Get single role - none
 export async function fetchRole(id) {
   try {
-    const response = await axiosInstance.get(`/roles/${id}`);
+    const response = await axiosInstance.get(`/admin/roles/${id}`);
     return response.data.data;
   } catch (error) {
     console.error("Error fetching role:", error);
@@ -34,28 +45,9 @@ export async function fetchRole(id) {
   }
 }
 
-// Get role stats
-export async function fetchRoleStats() {
-  try {
-    const response = await axiosInstance.get("/roles/stats");
-    const { data } = response.data;
+// gán role cho user
 
-    return {
-      total: data.total || 0,
-      this_month: data.this_month || 0,
-      last_month: data.last_month || 0,
-    };
-  // eslint-disable-next-line no-unused-vars
-  } catch (error) {
-    return {
-      total: 0,
-      this_month: 0,
-      last_month: 0,
-    };
-  }
-}
-
-// ----------- ADMIN ROUTES (create, update, delete, bulk) -----------
+// ----------- (create, update, delete, bulk) -----------
 
 // Create role
 export async function createRole(payload) {
@@ -90,10 +82,12 @@ export async function deleteRole(id) {
   }
 }
 
-// Bulk delete roles
+// Delete multiple roles
 export async function bulkDeleteRoles(ids) {
   try {
-    const response = await axiosInstance.post("/admin/roles/bulk-destroy", { ids });
+    const response = await axiosInstance.post("/admin/roles/bulk-destroy", {
+      ids,
+    });
     return response.data;
   } catch (error) {
     console.error("Error bulk deleting roles:", error);
