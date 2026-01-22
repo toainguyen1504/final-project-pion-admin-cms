@@ -8,7 +8,7 @@ export async function fetchPosts(
   page = 1,
   sort = "publish_at",
   order = "desc",
-  search = ""
+  search = "",
 ) {
   try {
     const response = await axiosInstance.get("/posts", {
@@ -43,10 +43,14 @@ export async function getPostById(id) {
   }
 }
 
+// ----------- ADMIN ROUTES (create, update, delete, bulk) -----------
+// ===========================
+// CREATE POST
+// ===========================
 // Tính thống kê cho stats dashboard - stats
 export async function fetchPostStats() {
   try {
-    const response = await axiosInstance.get("/posts/stats");
+    const response = await axiosInstance.get("/admin/posts/stats");
 
     const { data } = response.data;
 
@@ -66,10 +70,6 @@ export async function fetchPostStats() {
   }
 }
 
-// ----------- ADMIN ROUTES (create, update, delete, bulk) -----------
-// ===========================
-// CREATE POST
-// ===========================
 export async function createPost(payload) {
   try {
     const response = await axiosInstance.post("/admin/posts", {
@@ -166,7 +166,9 @@ export async function deletePost(id) {
 // ===========================
 export async function bulkDeletePosts(ids) {
   try {
-    const response = await axiosInstance.post("/admin/posts/bulk-destroy", { ids });
+    const response = await axiosInstance.post("/admin/posts/bulk-destroy", {
+      ids,
+    });
 
     return {
       success: response.data.success,

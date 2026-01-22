@@ -122,7 +122,7 @@ export default function MediaLibrary({
     }
   };
 
-  // 🧩 Modal JSX
+  // Modal JSX
   const modal = (
     <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40">
       <div className="bg-white rounded-xl shadow-xl w-[90%] max-w-6xl h-[85vh] flex flex-col overflow-hidden">

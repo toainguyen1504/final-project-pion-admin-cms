@@ -8,7 +8,7 @@ export async function fetchCategories(
   page = 1,
   sort = "updated_at",
   order = "desc",
-  search = ""
+  search = "",
 ) {
   try {
     const response = await axiosInstance.get("/categories", {
@@ -28,10 +28,23 @@ export async function fetchCategories(
   }
 }
 
+// Get single category
+export async function fetchCategory(id) {
+  try {
+    const response = await axiosInstance.get(`/categories/${id}`);
+    return response.data.data;
+  } catch (error) {
+    console.error("Error fetching category:", error);
+    return null;
+  }
+}
+
+// ----------- ADMIN ROUTES (create, update, delete, bulk) -----------
+
 // Tính thống kê cho stats dashboard
 export async function fetchCategoryStats() {
   try {
-    const response = await axiosInstance.get("/categories/stats");
+    const response = await axiosInstance.get("/admin/categories/stats");
     const { data } = response.data;
 
     return {
@@ -50,18 +63,6 @@ export async function fetchCategoryStats() {
   }
 }
 
-// Get single category
-export async function fetchCategory(id) {
-  try {
-    const response = await axiosInstance.get(`/categories/${id}`);
-    return response.data.data;
-  } catch (error) {
-    console.error("Error fetching category:", error);
-    return null;
-  }
-}
-
-// ----------- ADMIN ROUTES (create, update, delete, bulk) -----------
 // Create Category
 export async function createCategory(payload) {
   try {
@@ -77,7 +78,10 @@ export async function createCategory(payload) {
 // Update Category
 export async function updateCategory(id, payload) {
   try {
-    const response = await axiosInstance.put(`/admin/categories/${id}`, payload);
+    const response = await axiosInstance.put(
+      `/admin/categories/${id}`,
+      payload,
+    );
     return response.data;
   } catch (error) {
     console.error("Error updating category:", error);
@@ -99,9 +103,12 @@ export async function deleteCategory(id) {
 // Delete multiple categories
 export async function bulkDeleteCategories(ids) {
   try {
-    const response = await axiosInstance.post("/admin/categories/bulk-destroy", {
-      ids,
-    });
+    const response = await axiosInstance.post(
+      "/admin/categories/bulk-destroy",
+      {
+        ids,
+      },
+    );
     return response.data;
   } catch (error) {
     console.error("Error bulk deleting categories:", error);
