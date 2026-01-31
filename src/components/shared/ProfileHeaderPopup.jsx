@@ -8,7 +8,7 @@ function ProfileHeaderPopup({ user }) {
   const handleLogout = async () => {
     try {
       // Call API logout
-      await axiosInstance.post("admin/logout");
+      await axiosInstance.post("/logout");
       toast.success("Successfully signed out!");
     } catch (error) {
       console.error("Logout error:", error);

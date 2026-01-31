@@ -1,6 +1,12 @@
 import axiosInstance from "@/utils/axiosInstance";
 
 // ----------- PUBLIC ROUTES (index, show, stats) -----------
+
+// ----------- ADMIN ROUTES (create, update, delete, bulk) -----------
+// ===========================
+// CREATE POST
+// ===========================
+// Tính thống kê cho stats dashboard - stats
 // ===========================
 // GET ALL POSTS (with pagination) - index
 // ===========================
@@ -11,7 +17,7 @@ export async function fetchPosts(
   search = "",
 ) {
   try {
-    const response = await axiosInstance.get("/posts", {
+    const response = await axiosInstance.get("/admin/posts", {
       params: { page, sort, order, search },
     });
 
@@ -33,7 +39,7 @@ export async function fetchPosts(
 // ===========================
 export async function getPostById(id) {
   try {
-    const response = await axiosInstance.get(`/posts/${id}`);
+    const response = await axiosInstance.get(`/admin/posts/${id}`);
     // console.log("GET SINGLE POST (for Edit Page)", response.data.data);
     return response.data.data;
     // eslint-disable-next-line no-unused-vars
@@ -43,11 +49,6 @@ export async function getPostById(id) {
   }
 }
 
-// ----------- ADMIN ROUTES (create, update, delete, bulk) -----------
-// ===========================
-// CREATE POST
-// ===========================
-// Tính thống kê cho stats dashboard - stats
 export async function fetchPostStats() {
   try {
     const response = await axiosInstance.get("/admin/posts/stats");
