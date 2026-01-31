@@ -117,7 +117,7 @@ function PostCreate() {
       if (!textContent) newErrors.push("Vui lòng nhập nội dung bài viết.");
       if (textContent.length < 50)
         newErrors.push(
-          `Nội dung bài viết phải có ít nhất 50 ký tự (hiện tại là ${textContent.length}).`
+          `Nội dung bài viết phải có ít nhất 50 ký tự (hiện tại là ${textContent.length}).`,
         );
     }
     if (!selectedCategories.length)
@@ -131,7 +131,7 @@ function PostCreate() {
       title,
       sapo_text: "",
       slug: slugify(
-        seoData.seoSlug?.trim() || seoData.seoTitle?.trim() || title.trim()
+        seoData.seoSlug?.trim() || seoData.seoTitle?.trim() || title.trim(),
       ),
       seo_title: seoData.seoTitle,
       seo_description: seoData.seoDescription,
@@ -145,16 +145,22 @@ function PostCreate() {
     };
 
     try {
-      await createPost(payload);
-      toast.success("Tạo bài viết thành công!");
-      setTitle("");
-      setSelectedCategories([]);
-      editor.commands.clearContent();
-      setFeaturedMedia(null);
-      setErrors([]);
+      const result = await createPost(payload);
 
-      // Chuyển về danh sách post
-      navigate("/bai-viet");
+      if (result.success) {
+        toast.success(result.message || "Tạo bài viết thành công!");
+        setTitle("");
+        setSelectedCategories([]);
+        editor.commands.clearContent();
+        setFeaturedMedia(null);
+        setErrors([]);
+
+        navigate("/bai-viet");
+      } else {
+        toast.error(
+          result.message || "Tạo bài viết thất bại! Vui lòng thử lại.",
+        );
+      }
     } catch (error) {
       console.error("Lỗi khi tạo bài viết:", error);
       toast.error("Tạo bài viết thất bại! Vui lòng thử lại.");
@@ -163,10 +169,10 @@ function PostCreate() {
 
   const hasTitleError = errors.some((e) => e.toLowerCase().includes("title"));
   const hasContentError = errors.some((e) =>
-    e.toLowerCase().includes("content")
+    e.toLowerCase().includes("content"),
   );
   const hasCategoryError = errors.some((e) =>
-    e.toLowerCase().includes("category")
+    e.toLowerCase().includes("category"),
   );
 
   return (

@@ -11,7 +11,6 @@ export default function ProtectedRoute({ allowedRoles }) {
   }
 
   // Có token nhưng không đủ quyền
-
   if (allowedRoles && !allowedRoles.includes(role)) {
     return <Navigate to="/403" replace />;
   }

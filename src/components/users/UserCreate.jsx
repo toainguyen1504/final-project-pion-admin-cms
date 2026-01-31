@@ -136,7 +136,7 @@ function UserCreate() {
           </h2>
           <p className="text-slate-500 mt-1">
             Trang tạo mới người dùng để thêm thông tin và quản lý tài khoản. Chỉ
-            cần nhấp Họ và Tên, hệ thống sẽ tự động tạo tài khoản.
+            cần nhập Họ và Tên, hệ thống sẽ tự động tạo tài khoản.
           </p>
         </div>
       </div>

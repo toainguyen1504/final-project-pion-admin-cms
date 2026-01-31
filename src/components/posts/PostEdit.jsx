@@ -110,7 +110,7 @@ function PostEdit() {
         if (data.featured_media_id) {
           try {
             const res = await axiosInstance.get(
-              `/media/${data.featured_media_id}`
+              `/media/${data.featured_media_id}`,
             );
             setFeaturedMedia(res.data || featuredMedia); // giữ giá trị cũ nếu có
           } catch (mediaErr) {
@@ -177,7 +177,7 @@ function PostEdit() {
       if (!textContent) newErrors.push("Vui lòng nhập nội dung bài viết.");
       if (textContent.length < 50)
         newErrors.push(
-          `Nội dung bài viết phải có ít nhất 50 ký tự (hiện tại là ${textContent.length}).`
+          `Nội dung bài viết phải có ít nhất 50 ký tự (hiện tại là ${textContent.length}).`,
         );
     }
     if (!selectedCategories.length)
@@ -203,11 +203,15 @@ function PostEdit() {
     };
 
     try {
-      await updatePost(id, payload);
-      toast.success("Cập nhật bài viết thành công!");
-      navigate("/bai-viet");
+      const result = await updatePost(id, payload);
+      if (result.success) {
+        toast.success(result.message || "Cập nhật bài viết thành công!");
+        navigate("/bai-viet");
+      } else {
+        toast.error(result.message || "Cập nhật thất bại! Vui lòng thử lại.");
+      }
     } catch (error) {
-      console.error("Có lỗi cập nhật bài viết", error);
+      console.error("Có lỗi cập nhật bài viết:", error);
       toast.error("Cập nhật thất bại! Vui lòng thử lại.");
     }
   };
@@ -222,7 +226,7 @@ function PostEdit() {
 
   const hasTitleError = errors.some((e) => e.toLowerCase().includes("title"));
   const hasContentError = errors.some((e) =>
-    e.toLowerCase().includes("content")
+    e.toLowerCase().includes("content"),
   );
 
   return (
@@ -375,7 +379,7 @@ function PostEdit() {
           isCategoryPopupOpen={isCategoryPopupOpen}
           setIsCategoryPopupOpen={setIsCategoryPopupOpen}
           categoryError={errors.some((e) =>
-            e.toLowerCase().includes("category")
+            e.toLowerCase().includes("category"),
           )}
         />
       </div>

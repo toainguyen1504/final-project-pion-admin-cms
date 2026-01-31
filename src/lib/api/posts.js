@@ -71,6 +71,9 @@ export async function fetchPostStats() {
   }
 }
 
+// ===========================
+// CREATE POST
+// ===========================
 export async function createPost(payload) {
   try {
     const response = await axiosInstance.post("/admin/posts", {
@@ -89,9 +92,9 @@ export async function createPost(payload) {
     });
 
     return {
-      success: response.data.success,
-      message: response.data.message || "Post created successfully",
-      data: response.data.data,
+      success: response.data?.success === true,
+      message: response.data?.message || "Post created successfully!",
+      data: response.data?.data || null,
     };
   } catch (error) {
     console.error("Error creating post:", error);
@@ -100,6 +103,7 @@ export async function createPost(payload) {
       message:
         error.response?.data?.message ||
         "Failed to create post. Please check your input.",
+      data: null,
     };
   }
 }
@@ -125,9 +129,9 @@ export async function updatePost(id, payload) {
     });
 
     return {
-      success: response.data.success,
-      message: response.data.message || "Post updated successfully",
-      data: response.data.data,
+      success: response.data?.success === true,
+      message: response.data?.message || "Post updated successfully!",
+      data: response.data?.data || null,
     };
   } catch (error) {
     console.error("Error updating post:", error);
@@ -136,6 +140,7 @@ export async function updatePost(id, payload) {
       message:
         error.response?.data?.message ||
         "Failed to update post. Please try again.",
+      data: null,
     };
   }
 }
