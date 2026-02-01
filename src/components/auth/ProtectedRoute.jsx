@@ -2,7 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { getCurrentRole } from "@/utils/auth";
 
 export default function ProtectedRoute({ allowedRoles }) {
-  const token = localStorage.getItem("authToken");
+  const token = localStorage.getItem("authTokenCms");
   const role = getCurrentRole();
 
   // Chưa đăng nhập

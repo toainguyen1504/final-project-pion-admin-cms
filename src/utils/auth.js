@@ -7,7 +7,7 @@ export function canAccessAdminCMS() {
 
 export function getCurrentUser() {
   try {
-    return JSON.parse(localStorage.getItem("user"));
+    return JSON.parse(localStorage.getItem("userCms"));
   } catch {
     return null;
   }
