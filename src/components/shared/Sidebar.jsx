@@ -63,9 +63,9 @@ const menuItems = [
         path: "/chuong-trinh-hoc",
       },
       {
-        id: "create-program",
-        label: "Tạo mới chương trình học",
-        path: "/chuong-trinh-hoc/tao-moi",
+        id: "exams",
+        label: "Quản lý kì thi",
+        path: "/chuong-trinh-hoc/ki-thi",
       },
     ],
   },
