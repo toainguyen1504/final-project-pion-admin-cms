@@ -5,6 +5,7 @@ import {
   MessagesSquare,
   Users,
   ChevronDown,
+  GraduationCap,
 } from "lucide-react";
 import { useLocation, useNavigate, matchPath } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -47,6 +48,24 @@ const menuItems = [
         id: "create-post",
         label: "Tạo mới bài viết",
         path: "/bai-viet/tao-moi",
+      },
+    ],
+  },
+  {
+    id: "learning-programs",
+    icon: GraduationCap,
+    label: "Chương trình học",
+    slug: "chuong-trinh-hoc",
+    submenu: [
+      {
+        id: "programs",
+        label: "Tất cả chương trình học",
+        path: "/chuong-trinh-hoc",
+      },
+      {
+        id: "create-program",
+        label: "Tạo mới chương trình học",
+        path: "/chuong-trinh-hoc/tao-moi",
       },
     ],
   },

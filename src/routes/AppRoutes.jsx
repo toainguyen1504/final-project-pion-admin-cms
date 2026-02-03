@@ -13,6 +13,10 @@ import PostList from "@/components/posts/PostList";
 import PostCreate from "@/components/posts/PostCreate";
 import PostEdit from "@/components/posts/PostEdit";
 
+// Learning Program
+import ProgramListPage from "@/components/learning/ProgramListPage";
+
+// User Management
 import UserList from "@/components/users/UserList";
 import UserCreate from "@/components/users/UserCreate";
 import UserEdit from "@/components/users/UserEdit";
@@ -49,8 +53,8 @@ function AppRoutes() {
           <Route path="/bai-viet/tao-moi" element={<PostCreate />} />
           <Route path="/bai-viet/:id/chinh-sua" element={<PostEdit />} />
 
-          {/* Consultation */}
-          <Route path="/tu-van" element={<ConsultationList />} />
+          {/* Manage Learning - chỉ teacher, admin và super admin*/}
+          <Route path="/chuong-trinh-hoc" element={<ProgramListPage />} />
 
           {/* User - chỉ admin & super admin */}
           <Route
@@ -62,6 +66,9 @@ function AppRoutes() {
             <Route path="/nguoi-dung/quan-li-vai-tro" element={<UserRole />} />
             <Route path="/nguoi-dung/thong-ke" element={<UserOverview />} />
           </Route>
+
+          {/* Consultation */}
+          <Route path="/tu-van" element={<ConsultationList />} />
 
           {/* 404 trong admin */}
           <Route path="*" element={<NotFound />} />
