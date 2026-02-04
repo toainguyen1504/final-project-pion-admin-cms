@@ -3,97 +3,96 @@ import axiosInstance from "@/utils/axiosInstance";
 // ----------- ADMIN ROUTES (index, create, update, delete, bulk) -----------
 // ----------- chỉ có admin, super_admin và teacher có quyền -----------
 
-// Get all programs
-export async function fetchPrograms(
+// Get all courses
+export async function fetchCourses(
   page = 1,
   sort = "created_at",
   order = "desc",
   search = "",
 ) {
   try {
-    const response = await axiosInstance.get("/admin/programs", {
+    const response = await axiosInstance.get("/admin/courses", {
       params: { page, sort, order, search },
     });
-
     return {
       data: response.data.data,
       meta: response.data.meta,
       success: true,
     };
   } catch (error) {
-    console.error("Error fetching programs:", error);
+    console.error("Error fetching courses:", error);
     return { data: [], meta: null, success: false };
   }
 }
 
-// Get single program
-export async function fetchProgram(id) {
+// Get single course
+export async function fetchCourse(id) {
   try {
-    const response = await axiosInstance.get(`/admin/programs/${id}`);
+    const response = await axiosInstance.get(`/admin/courses/${id}`);
     return response.data.data;
   } catch (error) {
-    console.error("Error fetching program:", error);
+    console.error("Error fetching course:", error);
     return null;
   }
 }
 
-// Create program
-export async function createProgram(payload) {
+// Create course
+export async function createCourse(payload) {
   try {
-    const response = await axiosInstance.post("/admin/programs", payload);
+    const response = await axiosInstance.post("/admin/courses", payload);
     return {
       success: response.data.success,
       message: response.data.message,
       data: response.data.data,
     };
   } catch (error) {
-    console.error("Error creating program:", error);
+    console.error("Error creating course:", error);
     return {
       success: false,
-      message: error.response?.data?.message || "Failed to create program.",
+      message: error.response?.data?.message || "Failed to create course.",
     };
   }
 }
 
-// Update program
-export async function updateProgram(id, payload) {
+// Update course
+export async function updateCourse(id, payload) {
   try {
-    const response = await axiosInstance.put(`/admin/programs/${id}`, payload);
+    const response = await axiosInstance.put(`/admin/courses/${id}`, payload);
     return response.data;
   } catch (error) {
-    console.error("Error updating program:", error);
+    console.error("Error updating course:", error);
     throw error;
   }
 }
 
-// Delete single program
-export async function deleteProgram(id) {
+// Delete single course
+export async function deleteCourse(id) {
   try {
-    const response = await axiosInstance.delete(`/admin/programs/${id}`);
+    const response = await axiosInstance.delete(`/admin/courses/${id}`);
     return response.data;
   } catch (error) {
-    console.error("Error deleting program:", error);
+    console.error("Error deleting course:", error);
     throw error;
   }
 }
 
-// Bulk delete programs
-export async function bulkDeletePrograms(ids) {
+// Bulk delete courses
+export async function bulkDeleteCourses(ids) {
   try {
-    const response = await axiosInstance.post("/admin/programs/bulk-destroy", {
+    const response = await axiosInstance.post("/admin/courses/bulk-destroy", {
       ids,
     });
     return response.data;
   } catch (error) {
-    console.error("Error bulk deleting programs:", error);
+    console.error("Error bulk deleting courses:", error);
     throw error;
   }
 }
 
 // Stats (nếu cần cho dashboard)
-export async function fetchProgramStats() {
+export async function fetchCourseStats() {
   try {
-    const response = await axiosInstance.get("/admin/programs/stats");
+    const response = await axiosInstance.get("/admin/courses/stats");
     const { data } = response.data;
     return {
       total: data.total || 0,

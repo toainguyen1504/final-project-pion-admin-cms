@@ -3,11 +3,12 @@ import { format } from "date-fns";
 import {
   Pencil,
   Trash2,
+  FolderKanban,
   CheckCircle2,
   XCircle,
-  FolderKanban,
+  Plus,
 } from "lucide-react";
-
+import { Link } from "react-router-dom";
 import { TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -19,11 +20,15 @@ import {
   EmptyMedia,
   EmptyContent,
 } from "@/components/ui/empty";
-import { useNavigate } from "react-router-dom";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 import TablePagination from "@/components/shared/table/TablePagination";
 
-export default function CategoryTableBody({
+export default function ProgramTableBody({
   data,
   visibleColumns,
   selectedIds,
@@ -33,15 +38,16 @@ export default function CategoryTableBody({
   setPage,
   search,
   setDeleteMode,
-  setSelectedCategory,
+  setSelectedProgram,
   setDeleteDialogOpen,
+  onEditProgram,
 }) {
+  //   const navigate = useNavigate();
+
   const getVisibleColSpan = () => {
     const visibleCount = Object.values(visibleColumns).filter(Boolean).length;
-    return visibleCount + 2; // +1 checkbox, +1 actions column
+    return visibleCount + 2;
   };
-
-  const navigate = useNavigate();
 
   return (
     <TableBody>
@@ -53,80 +59,116 @@ export default function CategoryTableBody({
                 <EmptyMedia variant="icon">
                   <FolderKanban className="w-6 h-6" />
                 </EmptyMedia>
-                <EmptyTitle>Không tìm thấy danh mục</EmptyTitle>
-
+                <EmptyTitle>Không tìm thấy chương trình học</EmptyTitle>
                 <EmptyDescription>
                   {search && search.trim() !== ""
-                    ? "Không có danh mục nào khớp với tìm kiếm của bạn. Hãy thử từ khóa khác."
-                    : "Bạn chưa thêm danh mục nào. Hãy bắt đầu bằng cách tạo một danh mục mới."}
+                    ? "Không có chương trình nào khớp với tìm kiếm của bạn. Hãy thử từ khóa khác."
+                    : "Bạn chưa thêm chương trình học nào. Hãy bắt đầu bằng cách tạo một chương trình mới."}
                 </EmptyDescription>
               </EmptyHeader>
-              <EmptyContent>{/* optional buttons */}</EmptyContent>
+              <EmptyContent />
             </Empty>
           </TableCell>
         </TableRow>
       ) : (
-        data.map((category) => (
+        data.map((program) => (
           <TableRow
-            key={category.id}
-            className="border-b border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700
-            transition-colors duration-300"
+            key={program.id}
+            className="border-b border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-300"
           >
-            {/* checkbox */}
+            {/* Checkbox */}
             <TableCell className="px-4 py-3 w-4">
               <div className="flex items-center justify-center">
                 <Checkbox
-                  checked={selectedIds.includes(category.id)}
-                  onCheckedChange={() => handleSelectRow(category.id)}
+                  checked={selectedIds.includes(program.id)}
+                  onCheckedChange={() => handleSelectRow(program.id)}
                 />
               </div>
             </TableCell>
 
-            {visibleColumns.name && (
-              <TableCell className="min-w-3xs px-4 py-3 whitespace-nowrap font-medium text-slate-800 dark:text-slate-200">
-                {category.name}
+            {/* Title */}
+            {visibleColumns.title && (
+              <TableCell className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">
+                {program.title ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link
+                        to={`/chuong-trinh-hoc/${program.id}`}
+                        className="text-indigo-600 dark:text-indigo-400 transition-colors underline-offset-2 hover:underline"
+                      >
+                        {program.title}
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Nhấn để xem chi tiết chương trình học và danh sách khóa
+                      học
+                    </TooltipContent>
+                  </Tooltip>
+                ) : (
+                  "—"
+                )}
               </TableCell>
             )}
 
             {visibleColumns.slug && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {category.slug}
+                {program.slug || "—"}
               </TableCell>
             )}
 
-            {visibleColumns.type && (
+            {visibleColumns.description && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {category.type}
+                {program.description || "—"}
               </TableCell>
             )}
 
-            {visibleColumns.featured && (
+            {visibleColumns.status && (
               <TableCell className="px-4 py-3">
-                {category.is_featured ? (
+                {program.status === "active" ? (
                   <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
                     <CheckCircle2 className="w-4 h-4" />
-                    <span className="text-xs font-medium">Có</span>
+                    <span className="text-xs font-medium">Đang hoạt động</span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
                     <XCircle className="w-4 h-4" />
-                    <span className="text-xs font-medium">Không</span>
+                    <span className="text-xs font-medium">Không hoạt động</span>
                   </div>
                 )}
               </TableCell>
             )}
 
-            {visibleColumns.updated_at && (
+            {visibleColumns.user_id && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {format(new Date(category.updated_at), "dd/MM/yyyy HH:mm")}
+                {program.user?.display_name || `ID ${program.user_id}` || "—"}
+              </TableCell>
+            )}
+
+            {visibleColumns.created_at && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {program.created_at
+                  ? format(new Date(program.created_at), "dd/MM/yyyy HH:mm")
+                  : "—"}
               </TableCell>
             )}
 
             {/* Actions */}
             <TableCell className="w-auto px-4 py-3 whitespace-nowrap">
               <div className="flex items-center gap-2">
+                {/* Nút thêm khóa học */}
                 <Button
-                  onClick={() => navigate(`/danh-muc/${category.id}/chinh-sua`)}
+                  asChild
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center gap-1 !text-green-600 dark:!text-green-500 hover:!bg-green-100 dark:!hover:bg-green-200 transition-colors cursor-pointer"
+                >
+                  <Link to={`/chuong-trinh-hoc/${program.id}/tao-moi-khoa-hoc`}>
+                    <Plus className="w-3 h-3" /> Khóa học
+                  </Link>
+                </Button>
+
+                <Button
+                  onClick={() => onEditProgram(program)} // gọi callback chỉnh sửa
                   variant="ghost"
                   size="sm"
                   className="flex items-center gap-1 !text-indigo-600 dark:!text-indigo-500 hover:!bg-indigo-100 dark:!hover:bg-indigo-100 transition-colors cursor-pointer"
@@ -135,11 +177,10 @@ export default function CategoryTableBody({
                   Sửa
                 </Button>
 
-                {/* tạm thời disable nút delete -> sau này phân quyền sau (đang disable ở modal) */}
                 <Button
                   onClick={() => {
                     setDeleteMode("single");
-                    setSelectedCategory(category);
+                    setSelectedProgram(program);
                     setDeleteDialogOpen(true);
                   }}
                   variant="ghost"
@@ -159,8 +200,7 @@ export default function CategoryTableBody({
       <TableRow>
         <TableCell
           colSpan={getVisibleColSpan()}
-          className="px-4 py-3 text-slate-700 dark:text-slate-300 select-none
-          border-t border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
+          className="px-4 py-3 text-slate-700 dark:text-slate-300 select-none border-t border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800"
         >
           <div className="flex justify-end">
             <TablePagination

@@ -7,7 +7,7 @@ import {
   CheckCircle2,
   XCircle,
 } from "lucide-react";
-
+import { Link } from "react-router-dom";
 import { TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -20,9 +20,8 @@ import {
   EmptyContent,
 } from "@/components/ui/empty";
 import TablePagination from "@/components/shared/table/TablePagination";
-// import { useNavigate } from "react-router-dom";
 
-export default function ProgramTableBody({
+export default function CourseTableBody({
   data,
   visibleColumns,
   selectedIds,
@@ -32,12 +31,10 @@ export default function ProgramTableBody({
   setPage,
   search,
   setDeleteMode,
-  setSelectedProgram,
+  setSelectedCourse,
   setDeleteDialogOpen,
-  onEditProgram,
+  onEditCourse,
 }) {
-  //   const navigate = useNavigate();
-
   const getVisibleColSpan = () => {
     const visibleCount = Object.values(visibleColumns).filter(Boolean).length;
     return visibleCount + 2;
@@ -53,11 +50,11 @@ export default function ProgramTableBody({
                 <EmptyMedia variant="icon">
                   <FolderKanban className="w-6 h-6" />
                 </EmptyMedia>
-                <EmptyTitle>Không tìm thấy chương trình học</EmptyTitle>
+                <EmptyTitle>Không tìm thấy khóa học</EmptyTitle>
                 <EmptyDescription>
                   {search && search.trim() !== ""
-                    ? "Không có chương trình nào khớp với tìm kiếm của bạn. Hãy thử từ khóa khác."
-                    : "Bạn chưa thêm chương trình học nào. Hãy bắt đầu bằng cách tạo một chương trình mới."}
+                    ? "Không có khóa học nào khớp với tìm kiếm của bạn. Hãy thử từ khóa khác."
+                    : "Bạn chưa thêm khóa học nào. Hãy bắt đầu bằng cách tạo một khóa học mới."}
                 </EmptyDescription>
               </EmptyHeader>
               <EmptyContent />
@@ -65,65 +62,129 @@ export default function ProgramTableBody({
           </TableCell>
         </TableRow>
       ) : (
-        data.map((program) => (
+        data.map((course) => (
           <TableRow
-            key={program.id}
+            key={course.id}
             className="border-b border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-300"
           >
             {/* Checkbox */}
             <TableCell className="px-4 py-3 w-4">
               <div className="flex items-center justify-center">
                 <Checkbox
-                  checked={selectedIds.includes(program.id)}
-                  onCheckedChange={() => handleSelectRow(program.id)}
+                  checked={selectedIds.includes(course.id)}
+                  onCheckedChange={() => handleSelectRow(course.id)}
                 />
               </div>
             </TableCell>
 
+            {/* Title */}
             {visibleColumns.title && (
               <TableCell className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">
-                {program.title || "—"}
+                {course.title ? (
+                  <Link
+                    to={`/khoa-hoc/${course.slug}`}
+                    className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors underline-offset-2 hover:underline"
+                  >
+                    {course.title}
+                  </Link>
+                ) : (
+                  "—"
+                )}
               </TableCell>
             )}
 
             {visibleColumns.slug && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {program.slug || "—"}
+                {course.slug || "—"}
               </TableCell>
             )}
 
-            {visibleColumns.description && (
+            {visibleColumns.language && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {program.description || "—"}
+                {course.language || "—"}
+              </TableCell>
+            )}
+
+            {visibleColumns.price && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {course.is_free ? "Miễn phí" : `${course.price} đ`}
+              </TableCell>
+            )}
+
+            {visibleColumns.discount_price && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {course.discount_price ? `${course.discount_price} đ` : "—"}
+              </TableCell>
+            )}
+
+            {visibleColumns.level && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {course.level}
               </TableCell>
             )}
 
             {visibleColumns.status && (
               <TableCell className="px-4 py-3">
-                {program.status === "active" ? (
+                {course.status === "published" ? (
                   <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
                     <CheckCircle2 className="w-4 h-4" />
-                    <span className="text-xs font-medium">Đang hoạt động</span>
+                    <span className="text-xs font-medium">Đã xuất bản</span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
                     <XCircle className="w-4 h-4" />
-                    <span className="text-xs font-medium">Không hoạt động</span>
+                    <span className="text-xs font-medium">{course.status}</span>
                   </div>
                 )}
               </TableCell>
             )}
 
+            {/* {visibleColumns.is_free && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {course.is_free ? "Miễn phí" : "Có phí"}
+              </TableCell>
+            )} */}
+
+            {visibleColumns.duration && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {course.duration ? `${course.duration} phút` : "—"}
+              </TableCell>
+            )}
+
+            {visibleColumns.participants && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {course.participants}
+              </TableCell>
+            )}
+
+            {visibleColumns.total_lessons && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {course.total_lessons}
+              </TableCell>
+            )}
+
+            {visibleColumns.program_id && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {course.program?.title || `ID ${course.program_id}` || "—"}
+              </TableCell>
+            )}
+
+            {visibleColumns.category_id && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {course.category?.name || `ID ${course.category_id}` || "—"}
+              </TableCell>
+            )}
+
             {visibleColumns.user_id && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {program.user?.display_name || `ID ${program.user_id}` || "—"}
+                {course.user?.display_name || `ID ${course.user_id}` || "—"}
               </TableCell>
             )}
 
             {visibleColumns.created_at && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {program.created_at
-                  ? format(new Date(program.created_at), "dd/MM/yyyy HH:mm")
+                {course.created_at
+                  ? format(new Date(course.created_at), "dd/MM/yyyy HH:mm")
                   : "—"}
               </TableCell>
             )}
@@ -132,7 +193,7 @@ export default function ProgramTableBody({
             <TableCell className="w-auto px-4 py-3 whitespace-nowrap">
               <div className="flex items-center gap-2">
                 <Button
-                  onClick={() => onEditProgram(program)} // gọi callback
+                  onClick={() => onEditCourse(course)}
                   variant="ghost"
                   size="sm"
                   className="flex items-center gap-1 !text-indigo-600 dark:!text-indigo-500 hover:!bg-indigo-100 dark:!hover:bg-indigo-100 transition-colors cursor-pointer"
@@ -144,7 +205,7 @@ export default function ProgramTableBody({
                 <Button
                   onClick={() => {
                     setDeleteMode("single");
-                    setSelectedProgram(program);
+                    setSelectedCourse(course);
                     setDeleteDialogOpen(true);
                   }}
                   variant="ghost"

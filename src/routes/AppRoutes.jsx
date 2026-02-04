@@ -14,7 +14,9 @@ import PostCreate from "@/components/posts/PostCreate";
 import PostEdit from "@/components/posts/PostEdit";
 
 // Learning Program
-import ProgramListPage from "@/components/learning/ProgramListPage";
+import ProgramListPage from "@/components/learning/programs/ProgramListPage";
+import ProgramDetailPage from "@/components/learning/programs/ProgramDetailPage";
+import CourseCreatePage from "@/components/learning/courses/CourseCreatePage";
 
 // User Management
 import UserList from "@/components/users/UserList";
@@ -55,6 +57,8 @@ function AppRoutes() {
 
           {/* Manage Learning - chỉ teacher, admin và super admin*/}
           <Route path="/chuong-trinh-hoc" element={<ProgramListPage />} />
+          <Route path="/chuong-trinh-hoc/:id" element={<ProgramDetailPage />} />
+          <Route path="/chuong-trinh-hoc/:id/tao-moi-khoa-hoc" element={<CourseCreatePage />} />
 
           {/* User - chỉ admin & super admin */}
           <Route

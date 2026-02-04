@@ -43,9 +43,7 @@ function CategoryCreate() {
         toast.success("Thêm danh mục thành công!");
         setTimeout(() => navigate("/danh-muc"), 1000);
       } else {
-        toast.error(
-          res.message || "Thêm danh mục thất bại! Vui lòng thử lại."
-        );
+        toast.error(res.message || "Thêm danh mục thất bại! Vui lòng thử lại.");
       }
     } catch (error) {
       if (error.response?.status === 422) {
@@ -100,7 +98,7 @@ function CategoryCreate() {
       <form
         id="category-form"
         onSubmit={handleSubmit}
-        className="space-y-6 mt-8"
+        className="space-y-6 mt-8 bg-white dark:bg-slate-800 p-8 rounded-xl"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Name */}
@@ -119,9 +117,6 @@ function CategoryCreate() {
               onChange={(e) => setName(e.target.value)}
               required
               placeholder="Tên danh mục (VD: Tin tức,...)"
-              className="py-5 px-4 border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
-              focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
-               text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
             />
             {errors.name && (
               <p className="ml-2 text-sm mt-1 text-red-600 dark:text-red-400">
@@ -144,10 +139,7 @@ function CategoryCreate() {
               value={slug}
               disabled
               placeholder="Tự động tạo Slug cho danh mục"
-              className="py-5 px-4 border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
-              focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
-               text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 
-               dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)] cursor-not-allowed"
+              className="cursor-not-allowed"
             />
           </div>
         </div>
