@@ -120,7 +120,7 @@ function ProgramTable({
     <div className="space-y-4">
       <div className="border border-slate-300 dark:border-slate-700 rounded-xl shadow-sm overflow-x-auto">
         <Table className="w-full text-sm">
-          <TableHeader className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+          <TableHeader>
             {/* Search Row */}
             <TableRow>
               <TableCell

@@ -76,7 +76,7 @@ export function FocusKeywordInput({
       !notSpamRepeat
     ) {
       return setError(
-        "Từ khóa không hợp lệ! Vui lòng nhập ít nhất 2 từ có ý nghĩa."
+        "Từ khóa không hợp lệ! Vui lòng nhập ít nhất 2 từ có ý nghĩa.",
       );
     }
 
@@ -181,7 +181,7 @@ export function FocusKeywordInput({
         {/* badge seo score */}
         <Badge
           className={`px-3 py-1 min-w-28 text-white dark:text-white rounded-full select-none ${getBadgeColor(
-            seoScore.totalScore
+            seoScore.totalScore,
           )}`}
         >
           SEO: {seoScore?.totalScore ?? 0}/100
@@ -196,9 +196,7 @@ export function FocusKeywordInput({
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleAddKeyword}
-          className="py-6 px-6 !text-base border border-slate-300 dark:border-slate-600 
-                     focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 
-                     caret-blue-600 rounded-xl"
+          className="py-4 px-6 !text-base"
         />
 
         {/* Keyword list */}

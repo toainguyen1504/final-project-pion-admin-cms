@@ -164,9 +164,6 @@ function UserCreate() {
                 value={formData.display_name}
                 onChange={handleChange}
                 placeholder="Nhập họ và tên"
-                className="py-5 px-4 border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
-          focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
-          text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
               />
               {errors.display_name && (
                 <p className="ml-2 text-sm mt-1 text-red-600 dark:text-red-400">
@@ -188,9 +185,7 @@ function UserCreate() {
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
-                className="w-full py-2 px-4 border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
-    focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
-    text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
+                className="form-select"
               >
                 <option value="">-- Chọn vai trò --</option>
                 {roles.map((r) => (
@@ -225,9 +220,6 @@ function UserCreate() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="example@email.com"
-                className="py-5 px-4 border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
-          focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
-          text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
               />
               {errors.email && (
                 <p className="ml-2 text-sm mt-1 text-red-600 dark:text-red-400">
@@ -250,9 +242,6 @@ function UserCreate() {
                 value={formData.phone}
                 onChange={handleChange}
                 placeholder="0123456789"
-                className="py-5 px-4 border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
-          focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
-          text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
               />
               {errors.phone && (
                 <p className="ml-2 text-sm mt-1 text-red-600 dark:text-red-400">

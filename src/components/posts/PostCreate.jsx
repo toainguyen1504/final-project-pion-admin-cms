@@ -245,7 +245,7 @@ function PostCreate() {
               onChange={(e) => setTitle(e.target.value)}
               required
               placeholder="Viết một tiêu đề bài viết rõ ràng và thu hút (tối đa 100 ký tự)"
-              className={`py-6 px-6 !text-base border rounded-xl caret-blue-600 focus:outline-none focus-visible:ring-1 focus-visible:ring-offset-0 ${
+              className={`py-3 px-6 !text-base border ${
                 hasTitleError
                   ? "border-2 border-red-500 focus-visible:ring-red-500"
                   : "border-slate-200 dark:border-slate-700 focus-visible:ring-blue-600"

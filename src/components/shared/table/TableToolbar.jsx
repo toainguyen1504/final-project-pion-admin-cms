@@ -53,7 +53,7 @@ export default function TableToolbar({
           "transition-all duration-300 ease-in-out",
           selectedCount > 0
             ? "opacity-100 translate-y-0 visible"
-            : "opacity-0 -translate-y-1 invisible"
+            : "opacity-0 -translate-y-1 invisible",
         )}
       >
         {/* tạm thời disable -> sau này phân quyền sau */}
@@ -75,14 +75,14 @@ export default function TableToolbar({
             {searchLoading ? (
               <Spinner className="w-4 h-4 animate-spin text-blue-500 absolute left-1 top-2.5" />
             ) : (
-              <Search className="w-4 h-4 text-slate-400 dark:text-slate-500 absolute left-1 top-2.5" />
+              <Search className="w-4 h-4  text-slate-400 dark:text-slate-500 absolute left-1 top-2.5" />
             )}
           </span>
           <Input
             value={searchValue}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder={searchPlaceholder}
-            className="pl-10 pr-4 pt-2 pb-2.5 border border-slate-300 dark:border-slate-600 
+            className="pl-10 pr-4 pt-2 pb-2.5 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800
                        focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 
                        caret-blue-600 rounded-xl"
           />
@@ -136,7 +136,7 @@ export default function TableToolbar({
                   className={clsx(
                     defaultColumns[key]
                       ? "opacity-50 cursor-not-allowed"
-                      : "cursor-pointer"
+                      : "cursor-pointer",
                   )}
                 />
                 <label
