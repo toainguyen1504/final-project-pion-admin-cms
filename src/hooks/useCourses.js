@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { fetchCourses } from "@/lib/api/courses";
 
-export function useCourses() {
+export function useCourses(programId = null) {
   const [courses, setCourses] = useState([]);
   const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,7 +18,7 @@ export function useCourses() {
       isFirstLoad.current = false;
     }
     try {
-      const result = await fetchCourses(page, sort, order, search);
+      const result = await fetchCourses(page, sort, order, search, programId);
       setCourses(result.data || []);
       setMeta(result.meta || null);
     } catch (error) {
@@ -32,7 +32,7 @@ export function useCourses() {
 
   useEffect(() => {
     fetchData();
-  }, [page, sort, order, search]);
+  }, [page, sort, order, search, programId]);
 
   return {
     courses,
