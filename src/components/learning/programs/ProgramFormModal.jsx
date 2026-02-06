@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { createProgram, updateProgram } from "@/lib/api/programs";
 import { getCurrentUser } from "@/utils/auth";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function ProgramFormModal({
   open,
@@ -109,10 +110,6 @@ export default function ProgramFormModal({
                 }
                 required
                 placeholder="VD: Tiếng Anh Mầm Non"
-                className="py-5 px-4 border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
-                  focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
-                  text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 
-                  dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
               />
             </div>
 
@@ -124,17 +121,13 @@ export default function ProgramFormModal({
               >
                 Mô tả
               </Label>
-              <Input
+              <Textarea
                 id="description"
                 value={formData.description}
                 onChange={(e) =>
                   setFormData({ ...formData, description: e.target.value })
                 }
                 placeholder="Mô tả ngắn về chương trình"
-                className="py-5 px-4 border border-slate-200 dark:border-slate-700 rounded-xl caret-blue-600
-                  focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 focus:outline-none
-                  text-slate-700 dark:text-slate-200 bg-background dark:bg-slate-950 
-                  dark:shadow-[0_4px_12px_rgba(255,255,255,0.1)]"
               />
             </div>
           </div>

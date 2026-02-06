@@ -162,7 +162,7 @@ export default function ProgramTableBody({
                   size="sm"
                   className="flex items-center gap-1 !text-green-600 dark:!text-green-500 hover:!bg-green-100 dark:!hover:bg-green-200 transition-colors cursor-pointer"
                 >
-                  <Link to={`/chuong-trinh-hoc/${program.id}/tao-moi-khoa-hoc`}>
+                  <Link to={`/chuong-trinh-hoc/${program.id}/khoa-hoc/tao-moi`}>
                     <Plus className="w-3 h-3" /> Khóa học
                   </Link>
                 </Button>

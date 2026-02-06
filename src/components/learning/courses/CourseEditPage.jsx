@@ -6,18 +6,20 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
-import { createCourse } from "@/lib/api/courses";
 import { fetchProgram } from "@/lib/api/programs";
 import { fetchCategories } from "@/lib/api/categories";
+import { fetchCourse, updateCourse } from "@/lib/api/courses";
 import { getCurrentUser } from "@/utils/auth";
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
 
-export default function CourseCreatePage() {
-  const { programId } = useParams();
+export default function CourseEditPage() {
+  const { programId, courseId } = useParams();
+
   const navigate = useNavigate();
 
   const [program, setProgram] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // form states
   const [title, setTitle] = useState("");
@@ -31,22 +33,34 @@ export default function CourseCreatePage() {
   const [status, setStatus] = useState("draft");
   const [categoryId, setCategoryId] = useState("");
 
-  const [loading, setLoading] = useState(false);
-
   useEffect(() => {
     const loadData = async () => {
       const prog = await fetchProgram(programId);
       setProgram(prog);
 
       const cats = await fetchCategories();
-      // lọc category có type = "course"
       const courseCategories = (cats.data || []).filter(
         (cat) => cat.type === "course",
       );
       setCategories(courseCategories);
+
+      // fetch course detail
+      const course = await fetchCourse(courseId);
+      if (course) {
+        setTitle(course.title || "");
+        setDescription(course.description || "");
+        setLanguage(course.language || "");
+        setThumbnail(course.thumbnail || "");
+        setPrice(course.price || 0);
+        setDiscountPrice(course.discount_price || "");
+        setIsFree(course.is_free || false);
+        setLevel(course.level || 0);
+        setStatus(course.status || "draft");
+        setCategoryId(course.category_id || "");
+      }
     };
     loadData();
-  }, [programId]);
+  }, [programId, courseId]);
 
   // Handle submit form
   const handleSubmit = async (e) => {
@@ -54,7 +68,7 @@ export default function CourseCreatePage() {
     setLoading(true);
     try {
       const currentUser = getCurrentUser();
-      await createCourse({
+      await updateCourse(courseId, {
         program_id: programId,
         title,
         description,
@@ -68,10 +82,12 @@ export default function CourseCreatePage() {
         category_id: categoryId || null,
         user_id: currentUser?.id,
       });
-      toast.success("Khóa học đã được tạo thành công!");
+      toast.success("Khóa học đã được cập nhật thành công!");
       navigate(`/chuong-trinh-hoc/${programId}`);
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Tạo khóa học thất bại!");
+      toast.error(
+        error?.response?.data?.message || "Cập nhật khóa học thất bại!",
+      );
     } finally {
       setLoading(false);
     }
@@ -86,17 +102,17 @@ export default function CourseCreatePage() {
         items={[
           { label: "Chương trình học", path: "/chuong-trinh-hoc" },
           { label: program.title, path: `/chuong-trinh-hoc/${program.id}` },
-          { label: "Thêm khóa học mới" },
+          { label: "Chỉnh sửa khóa học" },
         ]}
       />
 
       {/* Title + Desc */}
       <div className="space-y-2">
         <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">
-          Thêm khóa học mới
+          Chỉnh sửa khóa học
         </h1>
         <p className="text-slate-600 dark:text-slate-400">
-          Thêm khóa học mới cho chương trình học{" "}
+          Cập nhật thông tin cho khóa học thuộc chương trình{" "}
           <span className="font-semibold text-indigo-600 dark:text-indigo-400">
             {program.title}
           </span>
@@ -285,7 +301,7 @@ export default function CourseCreatePage() {
           className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
         text-white w-full cursor-pointer select-none transition-all duration-300 mt-2"
         >
-          {loading ? "Đang xử lý..." : "Tạo Khóa Học"}
+          {loading ? "Đang xử lý..." : "Cập nhật Khóa Học"}
         </Button>
       </form>
     </div>

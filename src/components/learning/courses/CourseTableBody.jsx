@@ -6,6 +6,7 @@ import {
   FolderKanban,
   CheckCircle2,
   XCircle,
+  Plus,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { TableBody, TableRow, TableCell } from "@/components/ui/table";
@@ -19,6 +20,12 @@ import {
   EmptyMedia,
   EmptyContent,
 } from "@/components/ui/empty";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
+
 import TablePagination from "@/components/shared/table/TablePagination";
 
 export default function CourseTableBody({
@@ -33,7 +40,6 @@ export default function CourseTableBody({
   setDeleteMode,
   setSelectedCourse,
   setDeleteDialogOpen,
-  onEditCourse,
 }) {
   const getVisibleColSpan = () => {
     const visibleCount = Object.values(visibleColumns).filter(Boolean).length;
@@ -81,12 +87,19 @@ export default function CourseTableBody({
             {visibleColumns.title && (
               <TableCell className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">
                 {course.title ? (
-                  <Link
-                    to={`/khoa-hoc/${course.slug}`}
-                    className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors underline-offset-2 hover:underline"
-                  >
-                    {course.title}
-                  </Link>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Link
+                        to={`/chuong-trinh-hoc/${course.program_id}/khoa-hoc/${course.id}`}
+                        className="text-indigo-600 dark:text-indigo-400 transition-colors underline-offset-2 hover:underline"
+                      >
+                        {course.title}
+                      </Link>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Nhấn để xem chi tiết khóa học và danh sách bài học (Unit)
+                    </TooltipContent>
+                  </Tooltip>
                 ) : (
                   "—"
                 )}
@@ -192,14 +205,32 @@ export default function CourseTableBody({
             {/* Actions */}
             <TableCell className="w-auto px-4 py-3 whitespace-nowrap">
               <div className="flex items-center gap-2">
+                {/* Nút thêm bài học */}
                 <Button
-                  onClick={() => onEditCourse(course)}
+                  asChild
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center gap-1 !text-green-600 dark:!text-green-500 hover:!bg-green-100 dark:!hover:bg-green-200 transition-colors cursor-pointer"
+                >
+                  <Link
+                    to={`/chuong-trinh-hoc/${course.program_id}/khoa-hoc/${course.id}/tao-moi-bai-hoc`}
+                  >
+                    <Plus className="w-3 h-3" /> Bài học
+                  </Link>
+                </Button>
+
+                <Button
+                  asChild
                   variant="ghost"
                   size="sm"
                   className="flex items-center gap-1 !text-indigo-600 dark:!text-indigo-500 hover:!bg-indigo-100 dark:!hover:bg-indigo-100 transition-colors cursor-pointer"
                 >
-                  <Pencil className="w-4 h-4" />
-                  Sửa
+                  <Link
+                    to={`/chuong-trinh-hoc/${course.program_id}/khoa-hoc/${course.id}/chinh-sua`}
+                  >
+                    <Pencil className="w-4 h-4" />
+                    Sửa
+                  </Link>
                 </Button>
 
                 <Button

@@ -90,9 +90,7 @@ export default function LoginPage() {
                 placeholder="you@example.com hoặc username"
                 autoComplete="username"
                 required
-                className="border !pt-5 !pb-6 !text-base border-slate-300 dark:border-slate-600 
-      focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 
-      caret-blue-600 rounded-xl"
+                className="!py-3 !text-base"
               />
             </div>
 
@@ -109,14 +107,12 @@ export default function LoginPage() {
                 placeholder="••••••••"
                 autoComplete="current-password"
                 required
-                className="!pt-5 !pb-6 !text-base border border-slate-300 dark:border-slate-600 
-                focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 
-                caret-blue-600 rounded-xl"
+                className="!py-3 !text-base"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-[40px] text-gray-500 hover:text-gray-700 cursor-pointer"
+                className="absolute right-4 top-[42px] text-gray-500 hover:text-gray-700 cursor-pointer"
               >
                 {showPassword ? (
                   <Eye className="w-5 h-5" />

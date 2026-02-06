@@ -17,6 +17,8 @@ import PostEdit from "@/components/posts/PostEdit";
 import ProgramListPage from "@/components/learning/programs/ProgramListPage";
 import ProgramDetailPage from "@/components/learning/programs/ProgramDetailPage";
 import CourseCreatePage from "@/components/learning/courses/CourseCreatePage";
+import CourseEditPage from "@/components/learning/courses/CourseEditPage";
+import CourseDetailPage from "@/components/learning/courses/CourseDetailPage";
 
 // User Management
 import UserList from "@/components/users/UserList";
@@ -57,8 +59,23 @@ function AppRoutes() {
 
           {/* Manage Learning - chỉ teacher, admin và super admin*/}
           <Route path="/chuong-trinh-hoc" element={<ProgramListPage />} />
-          <Route path="/chuong-trinh-hoc/:id" element={<ProgramDetailPage />} />
-          <Route path="/chuong-trinh-hoc/:id/tao-moi-khoa-hoc" element={<CourseCreatePage />} />
+          <Route
+            path="/chuong-trinh-hoc/:programId"
+            element={<ProgramDetailPage />}
+          />
+
+          <Route
+            path="/chuong-trinh-hoc/:programId/khoa-hoc/tao-moi"
+            element={<CourseCreatePage />}
+          />
+          <Route
+            path="/chuong-trinh-hoc/:programId/khoa-hoc/:courseId"
+            element={<CourseDetailPage />}
+          />
+          <Route
+            path="/chuong-trinh-hoc/:programId/khoa-hoc/:courseId/chinh-sua"
+            element={<CourseEditPage />}
+          />
 
           {/* User - chỉ admin & super admin */}
           <Route
