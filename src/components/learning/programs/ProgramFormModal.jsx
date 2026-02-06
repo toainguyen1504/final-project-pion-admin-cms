@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { createProgram, updateProgram } from "@/lib/api/programs";
+import { createProgram, updateProgram } from "@/lib/api/learning/programs";
 import { getCurrentUser } from "@/utils/auth";
 import { Textarea } from "@/components/ui/textarea";
 

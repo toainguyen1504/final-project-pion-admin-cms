@@ -8,10 +8,10 @@ import SortableHeaderCell from "@/components/shared/table/SortableHeaderCell";
 import DeleteConfirmDialog from "@/components/shared/DeleteConfirmDialog";
 import TableToolbar from "@/components/shared/table/TableToolbar";
 
-import { deleteCourse, bulkDeleteCourses } from "@/lib/api/learning/courses";
-import CourseTableBody from "./CourseTableBody";
+import { deleteLesson, bulkDeleteLessons } from "@/lib/api/learning/lessons";
+import LessonTableBody from "./LessonTableBody";
 
-function CourseTable({
+function LessonTable({
   data,
   meta,
   page,
@@ -22,8 +22,7 @@ function CourseTable({
   setOrder,
   search,
   setSearch,
-  refreshCourses,
-  onEditCourse,
+  refreshLessons,
 }) {
   const totalPages = meta?.last_page || 1;
 
@@ -33,18 +32,12 @@ function CourseTable({
   const defaultColumns = {
     title: true,
     slug: false,
-    language: false,
-    price: true,
-    discount_price: false,
-    level: true,
-    status: true,
-    duration: false,
-    participants: false,
-    total_lessons: false,
-    // is_free: true,
-    program_id: false,
-    category_id: false,
-    user_id: false,
+    intro: false,
+    duration: true,
+    video_url: true,
+    order: true,
+    is_preview: true,
+    is_quiz: true,
     created_at: true,
   };
 
@@ -54,7 +47,7 @@ function CourseTable({
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteMode, setDeleteMode] = useState("bulk");
-  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [selectedLesson, setSelectedLesson] = useState(null);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
 
@@ -75,16 +68,16 @@ function CourseTable({
     setLoadingDelete(true);
     try {
       if (deleteMode === "bulk") {
-        await bulkDeleteCourses(selectedIds);
-        toast.success(`${selectedIds.length} khóa học đã xoá.`);
+        await bulkDeleteLessons(selectedIds);
+        toast.success(`${selectedIds.length} bài học đã xoá.`);
         setSelectedIds([]);
       } else if (deleteMode === "single") {
-        await deleteCourse(selectedCourse.id);
-        toast.success(`Đã xoá khóa học "${selectedCourse.title}".`);
-        setSelectedIds((prev) => prev.filter((id) => id !== selectedCourse.id));
-        setSelectedCourse(null);
+        await deleteLesson(selectedLesson.id);
+        toast.success(`Đã xoá bài học "${selectedLesson.title}".`);
+        setSelectedIds((prev) => prev.filter((id) => id !== selectedLesson.id));
+        setSelectedLesson(null);
       }
-      await refreshCourses();
+      await refreshLessons();
     } catch (error) {
       toast.error(error?.response?.data?.message || "Xoá thất bại!");
     } finally {
@@ -137,7 +130,7 @@ function CourseTable({
                 <TableToolbar
                   searchValue={typingValue}
                   onSearchChange={setTypingValue}
-                  searchPlaceholder="Tìm kiếm khóa học..."
+                  searchPlaceholder="Tìm kiếm bài học..."
                   searchLoading={searchLoading}
                   selectedCount={selectedIds.length}
                   visibleColumns={visibleColumns}
@@ -147,18 +140,12 @@ function CourseTable({
                   columnsConfig={[
                     { key: "title", label: "Tiêu đề" },
                     { key: "slug", label: "Slug" },
-                    { key: "language", label: "Ngôn ngữ" },
-                    { key: "price", label: "Giá" },
-                    { key: "discount_price", label: "Giá giảm" },
-                    { key: "level", label: "Cấp độ" },
-                    { key: "status", label: "Trạng thái" },
-                    { key: "duration", label: "Thời lượng" },
-                    { key: "participants", label: "Học viên" },
-                    { key: "total_lessons", label: "Bài học" },
-                    // { key: "is_free", label: "Miễn phí" },
-                    { key: "program_id", label: "Chương trình" },
-                    { key: "category_id", label: "Danh mục" },
-                    { key: "user_id", label: "Người tạo" },
+                    { key: "intro", label: "Giới thiệu" },
+                    { key: "duration", label: "Thời lượng (phút)" },
+                    { key: "video_url", label: "Video" },
+                    { key: "order", label: "Thứ tự" },
+                    { key: "is_preview", label: "Xem trước" },
+                    { key: "is_quiz", label: "Bài kiểm tra" },
                     { key: "created_at", label: "Ngày tạo" },
                   ]}
                   popoverOpen={popoverOpen}
@@ -202,31 +189,9 @@ function CourseTable({
                 <TableCell className="px-4 py-3 font-semibold">Slug</TableCell>
               )}
 
-              {visibleColumns.language && (
+              {visibleColumns.intro && (
                 <TableCell className="px-4 py-3 font-semibold">
-                  Ngôn ngữ
-                </TableCell>
-              )}
-
-              {visibleColumns.price && (
-                <TableCell className="px-4 py-3 font-semibold">Giá</TableCell>
-              )}
-
-              {visibleColumns.discount_price && (
-                <TableCell className="px-4 py-3 font-semibold">
-                  Giá giảm
-                </TableCell>
-              )}
-
-              {visibleColumns.level && (
-                <TableCell className="px-4 py-3 font-semibold">
-                  Cấp độ
-                </TableCell>
-              )}
-
-              {visibleColumns.status && (
-                <TableCell className="px-4 py-3 font-semibold">
-                  Trạng thái
+                  Giới thiệu
                 </TableCell>
               )}
 
@@ -236,39 +201,25 @@ function CourseTable({
                 </TableCell>
               )}
 
-              {visibleColumns.participants && (
+              {visibleColumns.video_url && (
+                <TableCell className="px-4 py-3 font-semibold">Video</TableCell>
+              )}
+
+              {visibleColumns.order && (
                 <TableCell className="px-4 py-3 font-semibold">
-                  Học viên
+                  Thứ tự
                 </TableCell>
               )}
 
-              {visibleColumns.total_lessons && (
+              {visibleColumns.is_preview && (
                 <TableCell className="px-4 py-3 font-semibold">
-                  Bài học
+                  Xem trước
                 </TableCell>
               )}
 
-              {/* {visibleColumns.is_free && (
+              {visibleColumns.is_quiz && (
                 <TableCell className="px-4 py-3 font-semibold">
-                  Miễn phí
-                </TableCell>
-              )} */}
-
-              {visibleColumns.program_id && (
-                <TableCell className="px-4 py-3 font-semibold">
-                  Chương trình
-                </TableCell>
-              )}
-
-              {visibleColumns.category_id && (
-                <TableCell className="px-4 py-3 font-semibold">
-                  Danh mục
-                </TableCell>
-              )}
-
-              {visibleColumns.user_id && (
-                <TableCell className="px-4 py-3 font-semibold">
-                  Người tạo
+                  Bài kiểm tra
                 </TableCell>
               )}
 
@@ -285,12 +236,11 @@ function CourseTable({
                 </TableCell>
               )}
 
-              {/* Actions column */}
               <TableCell className="px-4 py-3 font-semibold"></TableCell>
             </TableRow>
           </TableHeader>
 
-          <CourseTableBody
+          <LessonTableBody
             data={data}
             visibleColumns={visibleColumns}
             selectedIds={selectedIds}
@@ -300,9 +250,8 @@ function CourseTable({
             setPage={setPage}
             search={search}
             setDeleteMode={setDeleteMode}
-            setSelectedCourse={setSelectedCourse}
+            setSelectedLesson={setSelectedLesson}
             setDeleteDialogOpen={setDeleteDialogOpen}
-            onEditCourse={onEditCourse}
           />
         </Table>
       </div>
@@ -313,8 +262,8 @@ function CourseTable({
         title="Xác nhận xoá"
         description={
           deleteMode === "bulk"
-            ? `Bạn có chắc muốn xoá ${selectedIds.length} khóa học đã chọn?`
-            : `Bạn có chắc muốn xoá "${selectedCourse?.title}"?`
+            ? `Bạn có chắc muốn xoá ${selectedIds.length} bài học đã chọn?`
+            : `Bạn có chắc muốn xoá "${selectedLesson?.title}"?`
         }
         onConfirm={handleConfirmDelete}
         loading={loadingDelete}
@@ -323,4 +272,4 @@ function CourseTable({
   );
 }
 
-export default CourseTable;
+export default LessonTable;

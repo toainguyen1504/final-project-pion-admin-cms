@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { Plus } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import { usePrograms } from "@/hooks/usePrograms";
+import { usePrograms } from "@/hooks/learning/usePrograms";
 import ProgramTable from "./ProgramTable";
 import ProgramFormModal from "./ProgramFormModal";
 

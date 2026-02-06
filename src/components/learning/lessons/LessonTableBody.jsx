@@ -6,7 +6,6 @@ import {
   FolderKanban,
   CheckCircle2,
   XCircle,
-  Plus,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { TableBody, TableRow, TableCell } from "@/components/ui/table";
@@ -28,7 +27,7 @@ import {
 
 import TablePagination from "@/components/shared/table/TablePagination";
 
-export default function CourseTableBody({
+export default function LessonTableBody({
   data,
   visibleColumns,
   selectedIds,
@@ -38,7 +37,7 @@ export default function CourseTableBody({
   setPage,
   search,
   setDeleteMode,
-  setSelectedCourse,
+  setSelectedLesson,
   setDeleteDialogOpen,
 }) {
   const getVisibleColSpan = () => {
@@ -56,11 +55,11 @@ export default function CourseTableBody({
                 <EmptyMedia variant="icon">
                   <FolderKanban className="w-6 h-6" />
                 </EmptyMedia>
-                <EmptyTitle>Không tìm thấy khóa học</EmptyTitle>
+                <EmptyTitle>Không tìm thấy bài học</EmptyTitle>
                 <EmptyDescription>
                   {search && search.trim() !== ""
-                    ? "Không có khóa học nào khớp với tìm kiếm của bạn. Hãy thử từ khóa khác."
-                    : "Bạn chưa thêm khóa học nào. Hãy bắt đầu bằng cách tạo một khóa học mới."}
+                    ? "Không có bài học nào khớp với tìm kiếm của bạn. Hãy thử từ khóa khác."
+                    : "Bạn chưa thêm bài học nào. Hãy bắt đầu bằng cách tạo một bài học mới."}
                 </EmptyDescription>
               </EmptyHeader>
               <EmptyContent />
@@ -68,17 +67,17 @@ export default function CourseTableBody({
           </TableCell>
         </TableRow>
       ) : (
-        data.map((course) => (
+        data.map((lesson) => (
           <TableRow
-            key={course.id}
+            key={lesson.id}
             className="border-b border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-300"
           >
             {/* Checkbox */}
             <TableCell className="px-4 py-3 w-4">
               <div className="flex items-center justify-center">
                 <Checkbox
-                  checked={selectedIds.includes(course.id)}
-                  onCheckedChange={() => handleSelectRow(course.id)}
+                  checked={selectedIds.includes(lesson.id)}
+                  onCheckedChange={() => handleSelectRow(lesson.id)}
                 />
               </div>
             </TableCell>
@@ -86,18 +85,18 @@ export default function CourseTableBody({
             {/* Title */}
             {visibleColumns.title && (
               <TableCell className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">
-                {course.title ? (
+                {lesson.title ? (
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link
-                        to={`/chuong-trinh-hoc/${course.program_id}/khoa-hoc/${course.id}`}
+                        to={`/bai-hoc/${lesson.id}`}
                         className="text-indigo-600 dark:text-indigo-400 transition-colors underline-offset-2 hover:underline"
                       >
-                        {course.title}
+                        {lesson.title}
                       </Link>
                     </TooltipTrigger>
                     <TooltipContent>
-                      Nhấn để xem chi tiết khóa học và danh sách bài học (Unit)
+                      Nhấn để xem chi tiết bài học
                     </TooltipContent>
                   </Tooltip>
                 ) : (
@@ -108,96 +107,80 @@ export default function CourseTableBody({
 
             {visibleColumns.slug && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {course.slug || "—"}
+                {lesson.slug || "—"}
               </TableCell>
             )}
 
-            {visibleColumns.language && (
+            {visibleColumns.intro && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {course.language || "—"}
+                {lesson.intro || "—"}
               </TableCell>
             )}
 
-            {visibleColumns.price && (
+            {visibleColumns.duration && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {course.is_free ? "Miễn phí" : `${course.price} đ`}
+                {lesson.duration ? `${lesson.duration} phút` : "—"}
               </TableCell>
             )}
 
-            {visibleColumns.discount_price && (
+            {visibleColumns.video_url && (
+              <TableCell className="px-4 py-3 text-indigo-600 dark:text-indigo-400">
+                {lesson.video_url ? (
+                  <a
+                    href={lesson.video_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-indigo-500"
+                  >
+                    Video
+                  </a>
+                ) : (
+                  "—"
+                )}
+              </TableCell>
+            )}
+
+            {visibleColumns.order && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {course.discount_price ? `${course.discount_price} đ` : "—"}
+                {lesson.order || "—"}
               </TableCell>
             )}
 
-            {visibleColumns.level && (
-              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {course.level}
-              </TableCell>
-            )}
-
-            {visibleColumns.status && (
+            {visibleColumns.is_preview && (
               <TableCell className="px-4 py-3">
-                {course.status === "published" ? (
+                {lesson.is_preview ? (
                   <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
                     <CheckCircle2 className="w-4 h-4" />
-                    <span className="text-xs font-medium">Đã xuất bản</span>
+                    <span className="text-xs font-medium">Có xem trước</span>
                   </div>
                 ) : (
                   <div className="flex items-center gap-1 text-slate-500 dark:text-slate-400">
                     <XCircle className="w-4 h-4" />
-                    <span className="text-xs font-medium">{course.status}</span>
+                    <span className="text-xs font-medium">Không</span>
                   </div>
                 )}
               </TableCell>
             )}
 
-            {/* {visibleColumns.is_free && (
-              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {course.is_free ? "Miễn phí" : "Có phí"}
-              </TableCell>
-            )} */}
-
-            {visibleColumns.duration && (
-              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {course.duration ? `${course.duration} phút` : "—"}
-              </TableCell>
-            )}
-
-            {visibleColumns.participants && (
-              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {course.participants}
-              </TableCell>
-            )}
-
-            {visibleColumns.total_lessons && (
-              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {course.total_lessons}
-              </TableCell>
-            )}
-
-            {visibleColumns.program_id && (
-              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {course.program?.title || `ID ${course.program_id}` || "—"}
-              </TableCell>
-            )}
-
-            {visibleColumns.category_id && (
-              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {course.category?.name || `ID ${course.category_id}` || "—"}
-              </TableCell>
-            )}
-
-            {visibleColumns.user_id && (
-              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {course.user?.display_name || `ID ${course.user_id}` || "—"}
+            {visibleColumns.is_quiz && (
+              <TableCell className="px-4 py-3">
+                {lesson.is_quiz ? (
+                  <div className="flex items-center gap-1 text-indigo-600 dark:text-indigo-400">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span className="text-xs font-medium">Bài kiểm tra</span>
+                  </div>
+                ) : (
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                    —
+                  </span>
+                )}
               </TableCell>
             )}
 
             {visibleColumns.created_at && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {course.created_at
-                  ? format(new Date(course.created_at), "dd/MM/yyyy HH:mm")
+                {lesson.created_at
+                  ? format(new Date(lesson.created_at), "dd/MM/yyyy HH:mm")
                   : "—"}
               </TableCell>
             )}
@@ -205,20 +188,6 @@ export default function CourseTableBody({
             {/* Actions */}
             <TableCell className="w-auto px-4 py-3 whitespace-nowrap">
               <div className="flex items-center gap-2">
-                {/* Nút thêm bài học */}
-                <Button
-                  asChild
-                  variant="ghost"
-                  size="sm"
-                  className="flex items-center gap-1 !text-green-600 dark:!text-green-500 hover:!bg-green-100 dark:!hover:bg-green-200 transition-colors cursor-pointer"
-                >
-                  <Link
-                    to={`/chuong-trinh-hoc/${course.program_id}/khoa-hoc/${course.id}/bai-hoc/tao-moi`}
-                  >
-                    <Plus className="w-3 h-3" /> Bài học
-                  </Link>
-                </Button>
-
                 <Button
                   asChild
                   variant="ghost"
@@ -226,7 +195,7 @@ export default function CourseTableBody({
                   className="flex items-center gap-1 !text-indigo-600 dark:!text-indigo-500 hover:!bg-indigo-100 dark:!hover:bg-indigo-100 transition-colors cursor-pointer"
                 >
                   <Link
-                    to={`/chuong-trinh-hoc/${course.program_id}/khoa-hoc/${course.id}/chinh-sua`}
+                    to={`/chuong-trinh-hoc/${lesson.course?.program_id}/khoa-hoc/${lesson.course_id}/bai-hoc/${lesson.id}/chinh-sua`}
                   >
                     <Pencil className="w-4 h-4" />
                     Sửa
@@ -236,7 +205,7 @@ export default function CourseTableBody({
                 <Button
                   onClick={() => {
                     setDeleteMode("single");
-                    setSelectedCourse(course);
+                    setSelectedLesson(lesson);
                     setDeleteDialogOpen(true);
                   }}
                   variant="ghost"

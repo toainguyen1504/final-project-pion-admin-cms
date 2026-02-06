@@ -5,29 +5,29 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Badge } from "@/components/ui/badge";
 
-import { fetchCourse } from "@/lib/api/courses";
+import { fetchCourse } from "@/lib/api/learning/courses";
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
-// import LessonTable from "@/components/learning/lessons/LessonTable";
-// import { useLessons } from "@/hooks/useLessons";
+import LessonTable from "@/components/learning/lessons/LessonTable";
+import { useLessons } from "@/hooks/learning/useLessons";
 
 export default function CourseDetailPage() {
   const { programId, courseId } = useParams();
   const [course, setCourse] = useState(null);
 
-  // const {
-  //   lessons,
-  //   meta,
-  //   loading,
-  //   page,
-  //   setPage,
-  //   sort,
-  //   order,
-  //   setSort,
-  //   setOrder,
-  //   search,
-  //   setSearch,
-  //   reloadLessons,
-  // } = useLessons(courseId); // truyền id để lọc theo course
+  const {
+    lessons,
+    meta,
+    loading,
+    page,
+    setPage,
+    sort,
+    order,
+    setSort,
+    setOrder,
+    search,
+    setSearch,
+    reloadLessons,
+  } = useLessons(courseId); // truyền id để lọc theo course
 
   useEffect(() => {
     const loadCourse = async () => {
@@ -94,7 +94,7 @@ export default function CourseDetailPage() {
           className="bg-indigo-600 text-white hover:bg-indigo-500 rounded-xl flex items-center gap-2"
         >
           <Link
-            to={`/chuong-trinh-hoc/${programId}/khoa-hoc/${course.id}/tao-moi-bai-hoc`}
+            to={`/chuong-trinh-hoc/${programId}/khoa-hoc/${course.id}/bai-hoc/tao-moi`}
           >
             <Plus className="w-4 h-4" />
             Thêm Bài Học Mới
@@ -102,7 +102,7 @@ export default function CourseDetailPage() {
         </Button>
       </div>
 
-      {/* {loading ? (
+      {loading ? (
         <div className="flex items-center justify-center gap-2 text-slate-500 dark:text-slate-300">
           <Spinner className="size-8 text-indigo-600 dark:text-indigo-500" />
           <span>Đang tải bài học...</span>
@@ -121,7 +121,7 @@ export default function CourseDetailPage() {
           setSearch={setSearch}
           refreshLessons={reloadLessons}
         />
-      )} */}
+      )}
     </div>
   );
 }

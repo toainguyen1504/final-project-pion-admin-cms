@@ -8,7 +8,7 @@ import SortableHeaderCell from "@/components/shared/table/SortableHeaderCell";
 import DeleteConfirmDialog from "@/components/shared/DeleteConfirmDialog";
 import TableToolbar from "@/components/shared/table/TableToolbar";
 
-import { deleteProgram, bulkDeletePrograms } from "@/lib/api/programs";
+import { deleteProgram, bulkDeletePrograms } from "@/lib/api/learning/programs";
 import ProgramTableBody from "./ProgramTableBody";
 
 function ProgramTable({

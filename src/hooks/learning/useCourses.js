@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
-import { fetchPrograms } from "@/lib/api/programs";
+import { fetchCourses } from "@/lib/api/learning/courses";
 
-export function usePrograms() {
-  const [programs, setPrograms] = useState([]);
+export function useCourses(programId = null) {
+  const [courses, setCourses] = useState([]);
   const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -17,14 +17,13 @@ export function usePrograms() {
       setLoading(true);
       isFirstLoad.current = false;
     }
-
     try {
-      const result = await fetchPrograms(page, sort, order, search);
-      setPrograms(result.data || []);
+      const result = await fetchCourses(page, sort, order, search, programId);
+      setCourses(result.data || []);
       setMeta(result.meta || null);
     } catch (error) {
-      console.error("Error loading programs:", error);
-      setPrograms([]);
+      console.error("Error loading courses:", error);
+      setCourses([]);
       setMeta(null);
     } finally {
       setLoading(false);
@@ -33,10 +32,10 @@ export function usePrograms() {
 
   useEffect(() => {
     fetchData();
-  }, [page, sort, order, search]);
+  }, [page, sort, order, search, programId]);
 
   return {
-    programs,
+    courses,
     meta,
     loading,
     page,
@@ -47,6 +46,6 @@ export function usePrograms() {
     setOrder,
     search,
     setSearch,
-    reloadPrograms: fetchData,
+    reloadCourses: fetchData,
   };
 }

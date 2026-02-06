@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef } from "react";
-import { fetchCourses } from "@/lib/api/courses";
+import { fetchLessons } from "@/lib/api/learning/lessons";
 
-export function useCourses(programId = null) {
-  const [courses, setCourses] = useState([]);
+export function useLessons(courseId) {
+  const [lessons, setLessons] = useState([]);
   const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -18,12 +18,12 @@ export function useCourses(programId = null) {
       isFirstLoad.current = false;
     }
     try {
-      const result = await fetchCourses(page, sort, order, search, programId);
-      setCourses(result.data || []);
+      const result = await fetchLessons(courseId, page, sort, order, search);
+      setLessons(result.data || []);
       setMeta(result.meta || null);
     } catch (error) {
-      console.error("Error loading courses:", error);
-      setCourses([]);
+      console.error("Error loading lessons:", error);
+      setLessons([]);
       setMeta(null);
     } finally {
       setLoading(false);
@@ -32,10 +32,10 @@ export function useCourses(programId = null) {
 
   useEffect(() => {
     fetchData();
-  }, [page, sort, order, search, programId]);
+  }, [courseId, page, sort, order, search]);
 
   return {
-    courses,
+    lessons,
     meta,
     loading,
     page,
@@ -46,6 +46,6 @@ export function useCourses(programId = null) {
     setOrder,
     search,
     setSearch,
-    reloadCourses: fetchData,
+    reloadLessons: fetchData,
   };
 }

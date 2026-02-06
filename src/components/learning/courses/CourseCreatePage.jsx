@@ -6,8 +6,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
-import { createCourse } from "@/lib/api/courses";
-import { fetchProgram } from "@/lib/api/programs";
+import { createCourse } from "@/lib/api/learning/courses";
+import { fetchProgram } from "@/lib/api/learning/programs";
 import { fetchCategories } from "@/lib/api/categories";
 import { getCurrentUser } from "@/utils/auth";
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
