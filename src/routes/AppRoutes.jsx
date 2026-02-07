@@ -23,6 +23,10 @@ import LessonCreatePage from "@/components/learning/lessons/LessonCreatePage";
 import LessonEditPage from "@/components/learning/lessons/LessonEditPage";
 import LessonDetailPage from "@/components/learning/lessons/LessonDetailPage";
 
+import FlashcardDetailPage from "@/components/learning/flashcards/FlashcardListPage";
+import FlashcardCreatePage from "@/components/learning/flashcards/FlashcardCreatePage";
+// import FlashcardEditPage from "@/components/learning/lessons/FlashcardEditPage";
+
 // User Management
 import UserList from "@/components/users/UserList";
 import UserCreate from "@/components/users/UserCreate";
@@ -35,6 +39,7 @@ import ConsultationList from "@/components/consultations/ConsultationList";
 import NotFound from "@/pages/NotFound"; // 404 page
 import Forbidden from "@/pages/auth/Forbidden"; // 404 page
 import { ADMIN_CMS_ROLES, USER_MANAGEMENT_ROLES } from "@/constants/roles";
+import FlashcardListPage from "@/components/learning/flashcards/FlashcardListPage";
 
 function AppRoutes() {
   return (
@@ -97,6 +102,11 @@ function AppRoutes() {
             path="/chuong-trinh-hoc/:programId"
             element={<ProgramDetailPage />}
           />
+
+          {/* Flashcard */}
+          <Route path="/flashcards" element={<FlashcardListPage />} />
+          <Route path="/flashcards/tao-moi" element={<FlashcardCreatePage />} />
+          {/* <Route path="/flashcards/:id" element={<FlashcardDetailPage />} /> */}
 
           {/* User - chỉ admin & super admin */}
           <Route
