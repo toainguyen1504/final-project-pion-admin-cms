@@ -63,10 +63,6 @@ function AppRoutes() {
           {/* Manage Learning - chỉ teacher, admin và super admin*/}
           {/* Program */}
           <Route path="/chuong-trinh-hoc" element={<ProgramListPage />} />
-          <Route
-            path="/chuong-trinh-hoc/:programId"
-            element={<ProgramDetailPage />}
-          />
 
           {/* Course */}
           <Route
@@ -94,6 +90,12 @@ function AppRoutes() {
           <Route
             path="/chuong-trinh-hoc/:programId/khoa-hoc/:courseId/bai-hoc/:lessonId/chinh-sua"
             element={<LessonEditPage />}
+          />
+
+          {/* Program detail */}
+          <Route
+            path="/chuong-trinh-hoc/:programId"
+            element={<ProgramDetailPage />}
           />
 
           {/* User - chỉ admin & super admin */}

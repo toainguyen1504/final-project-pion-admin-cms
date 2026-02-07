@@ -89,7 +89,7 @@ export default function LessonTableBody({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link
-                        to={`/bai-hoc/${lesson.id}`}
+                        to={`/chuong-trinh-hoc/${lesson.course?.program_id}/khoa-hoc/${lesson.course_id}/bai-hoc/${lesson.id}`}
                         className="text-indigo-600 dark:text-indigo-400 transition-colors underline-offset-2 hover:underline"
                       >
                         {lesson.title}

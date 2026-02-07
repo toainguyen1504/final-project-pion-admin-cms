@@ -32,12 +32,12 @@ function LessonTable({
   const defaultColumns = {
     title: true,
     slug: false,
-    intro: false,
-    duration: true,
+    intro: true,
+    duration: false,
     video_url: true,
-    order: true,
-    is_preview: true,
-    is_quiz: true,
+    order: false,
+    is_preview: false,
+    is_quiz: false,
     created_at: true,
   };
 
