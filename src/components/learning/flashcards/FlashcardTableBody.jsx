@@ -71,30 +71,23 @@ export default function FlashcardTableBody({
               </div>
             </TableCell>
 
-            {/* Front text */}
-            {visibleColumns.front_text && (
+            {/* Từ vựng */}
+            {visibleColumns.vocabulary && (
               <TableCell className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">
-                {flashcard.front_text || "—"}
+                {flashcard.vocabulary || "—"}
               </TableCell>
             )}
 
-            {/* Back text */}
-            {visibleColumns.back_text && (
-              <TableCell className="px-4 py-3 text-slate-600 dark:text-slate-400">
-                {flashcard.back_text || "—"}
-              </TableCell>
-            )}
-
-            {/* Phonetic */}
+            {/* Phiên âm */}
             {visibleColumns.phonetic && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
                 {flashcard.phonetic || "—"}
               </TableCell>
             )}
 
-            {/* Translation */}
+            {/*Nghĩa tiếng việt */}
             {visibleColumns.translation && (
-              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+              <TableCell className="px-4 py-3 text-slate-600 dark:text-slate-400">
                 {flashcard.translation || "—"}
               </TableCell>
             )}
@@ -127,6 +120,29 @@ export default function FlashcardTableBody({
               </TableCell>
             )}
 
+            {/* Lesson */}
+            {visibleColumns.lesson && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {flashcard.lesson?.title ||
+                  `Lesson ID ${flashcard.lesson_id}` ||
+                  "—"}
+              </TableCell>
+            )}
+
+            {/* Course */}
+            {visibleColumns.course && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {flashcard.lesson?.course?.title || "—"}
+              </TableCell>
+            )}
+
+            {/* Program */}
+            {visibleColumns.program && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {flashcard.lesson?.course?.program?.title || "—"}
+              </TableCell>
+            )}
+            
             {/* Created at */}
             {visibleColumns.created_at && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">

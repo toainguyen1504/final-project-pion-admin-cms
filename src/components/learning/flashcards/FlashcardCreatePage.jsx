@@ -35,8 +35,12 @@ function FlashcardCreatePage() {
   const [selectedCourse, setSelectedCourse] = useState("");
   const [selectedLesson, setSelectedLesson] = useState("");
 
-  const [front, setFront] = useState("");
-  const [back, setBack] = useState("");
+  const [vocabulary, setVocabulary] = useState(""); // vocab
+  const [phonetic, setPhonetic] = useState(""); // IPA
+  const [translation, setTranslation] = useState(""); // nghĩa tiếng việt
+  const [exampleSentence, setExampleSentence] = useState(""); // câu ví dụ
+  const [exampleTranslation, setExampleTranslation] = useState(""); // tùy chọn - dịch câu ví dụ
+
   const [bulkText, setBulkText] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -96,10 +100,14 @@ function FlashcardCreatePage() {
     setLoading(true);
     try {
       await createFlashcard({
-        front_text: front,
-        back_text: back,
+        vocabulary: vocabulary,
+        phonetic: phonetic,
+        translation: translation,
+        example_sentence: exampleSentence,
+        example_translation: exampleTranslation, // tùy chọn
         lesson_id: Number(selectedLesson),
       });
+
       toast.success("Flashcard đã được tạo thành công!");
       navigate("/flashcards");
     } catch (error) {
@@ -227,23 +235,59 @@ function FlashcardCreatePage() {
         <TabsContent value="single">
           <form onSubmit={handleCreateSingle} className="space-y-4 mt-4">
             <div className="space-y-2">
-              <Label htmlFor="front">Front</Label>
+              <Label htmlFor="vocabulary">Từ vựng (English)</Label>
               <Input
-                id="front"
-                value={front}
-                onChange={(e) => setFront(e.target.value)}
+                id="vocabulary"
+                value={vocabulary}
+                onChange={(e) => setVocabulary(e.target.value)}
+                placeholder="Ví dụ: parents"
                 required
               />
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="back">Back</Label>
+              <Label htmlFor="phonetic">Phiên âm</Label>
               <Input
-                id="back"
-                value={back}
-                onChange={(e) => setBack(e.target.value)}
+                id="phonetic"
+                value={phonetic}
+                onChange={(e) => setPhonetic(e.target.value)}
+                placeholder="Ví dụ: /ˈperənts/"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="translation">Nghĩa tiếng Việt</Label>
+              <Input
+                id="translation"
+                value={translation}
+                onChange={(e) => setTranslation(e.target.value)}
+                placeholder="Ví dụ: bố mẹ"
                 required
               />
             </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="example_sentence">Câu ví dụ</Label>
+              <Textarea
+                id="example_sentence"
+                value={exampleSentence}
+                onChange={(e) => setExampleSentence(e.target.value)}
+                placeholder="Ví dụ: My parents are cooking dinner."
+                rows={3}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="example_translation">Dịch câu ví dụ</Label>
+              <Textarea
+                id="example_translation"
+                value={exampleTranslation}
+                onChange={(e) => setExampleTranslation(e.target.value)}
+                placeholder="Ví dụ: Bố mẹ tôi đang nấu bữa tối."
+                rows={3}
+              />
+            </div>
+
             <Button
               type="submit"
               disabled={loading}
@@ -253,7 +297,6 @@ function FlashcardCreatePage() {
             </Button>
           </form>
         </TabsContent>
-
         {/* Bulk flashcards */}
         <TabsContent value="bulk">
           <form onSubmit={handleBulkCreate} className="space-y-4 mt-4">
@@ -263,12 +306,21 @@ function FlashcardCreatePage() {
                 id="bulkText"
                 value={bulkText}
                 onChange={(e) => setBulkText(e.target.value)}
-                placeholder={"Dog\tCon chó\nCat\tCon mèo"}
+                placeholder={
+                  "parents\t/ˈperənts/\tbố mẹ\tMy parents are cooking dinner.\tBố mẹ tôi đang nấu bữa tối"
+                }
                 rows={8}
                 required
               />
               <p className="text-sm text-slate-500">
-                Mỗi dòng là một flashcard. Front và Back cách nhau bằng tab.
+                Mỗi dòng là một flashcard. Các cột cách nhau bằng tab theo thứ
+                tự:
+                <br />
+                <span className="text-sm font-medium">
+                  Từ vựng → Phiên âm → Nghĩa tiếng Việt → Câu ví dụ → Dịch câu
+                  ví dụ (tuỳ chọn)
+                </span>
+                .
               </p>
             </div>
             <Button
