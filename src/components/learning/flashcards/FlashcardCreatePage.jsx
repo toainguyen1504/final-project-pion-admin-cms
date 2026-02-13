@@ -20,7 +20,7 @@ import {
   bulkCreateFlashcards,
 } from "@/lib/api/learning/flashcards";
 import { fetchPrograms } from "@/lib/api/learning/programs";
-import { fetchCourses } from "@/lib/api/learning/courses";
+import { fetchCoursesByProgram } from "@/lib/api/learning/courses";
 import { fetchLessons } from "@/lib/api/learning/lessons";
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
 
@@ -60,7 +60,7 @@ function FlashcardCreatePage() {
         setCourses([]);
         return;
       }
-      const result = await fetchCourses({ programId: Number(selectedProgram) });
+      const result = await fetchCoursesByProgram({ programId: Number(selectedProgram) });
       if (result.success) {
         setCourses(result.data);
       } else {

@@ -21,7 +21,7 @@ function FlashcardListPage() {
     search,
     setSearch,
     reloadFlashcards,
-  } = useFlashcards({}); // có thể truyền lessonId, courseId, programId nếu muốn lọc
+  } = useFlashcards({}); // có thể truyền lessonId, courseId, programId để lọc
 
   return (
     <div className="px-4 pt-4 pb-10 space-y-3">

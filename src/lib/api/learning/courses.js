@@ -25,6 +25,31 @@ export async function fetchCourses(
   }
 }
 
+// Get all courses by program id
+export async function fetchCoursesByProgram({
+  page = 1,
+  sort = "created_at",
+  order = "desc",
+  search = "",
+  programId = null,
+}) {
+  try {
+    const params = { page, sort, order, search };
+    if (programId) {
+      params.program_id = Number(programId);
+    }
+    const response = await axiosInstance.get("/admin/courses", { params });
+    return {
+      data: response.data.data,
+      meta: response.data.meta,
+      success: true,
+    };
+  } catch (error) {
+    console.error("Error fetching courses:", error);
+    return { data: [], meta: null, success: false };
+  }
+}
+
 // Get single course
 export async function fetchCourse(id) {
   try {
@@ -99,7 +124,7 @@ export async function fetchCourseStats() {
       this_month: data.this_month || 0,
       last_month: data.last_month || 0,
     };
-  // eslint-disable-next-line no-unused-vars
+    // eslint-disable-next-line no-unused-vars
   } catch (error) {
     return {
       total: 0,

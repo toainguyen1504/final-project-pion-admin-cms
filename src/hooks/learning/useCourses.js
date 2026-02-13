@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { fetchCourses } from "@/lib/api/learning/courses";
+import { fetchCoursesByProgram } from "@/lib/api/learning/courses";
 
 export function useCourses(programId = null) {
   const [courses, setCourses] = useState([]);
@@ -18,7 +18,7 @@ export function useCourses(programId = null) {
       isFirstLoad.current = false;
     }
     try {
-      const result = await fetchCourses(page, sort, order, search, programId);
+      const result = await fetchCoursesByProgram(page, sort, order, search, programId);
       setCourses(result.data || []);
       setMeta(result.meta || null);
     } catch (error) {
