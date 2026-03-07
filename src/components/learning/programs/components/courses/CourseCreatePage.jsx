@@ -6,32 +6,33 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
+import { createCourse } from "@/lib/api/learning/courses";
 import { fetchProgram } from "@/lib/api/learning/programs";
 import { fetchCategories } from "@/lib/api/categories";
-import { fetchCourse, updateCourse } from "@/lib/api/learning/courses";
 import { getCurrentUser } from "@/utils/auth";
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
 
-export default function CourseEditPage() {
-  const { programId, courseId } = useParams();
-
+export default function CourseCreatePage() {
+  const { programId } = useParams();
   const navigate = useNavigate();
 
   const [program, setProgram] = useState(null);
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   // form states
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState(""); // required
+  const [description, setDescription] = useState(""); // nên có để hiển thị đẹp bên frontend client - nếu public thì nên có
+  const [benefits, setBenefits] = useState(""); // nên có để hiển thị đẹp bên frontend client - nếu public thì nên có
   const [language, setLanguage] = useState("");
-  const [thumbnail, setThumbnail] = useState("");
+  const [thumbnail, setThumbnail] = useState(""); // nên có để hiển thị đẹp bên frontend client - nếu public thì nên có
   const [price, setPrice] = useState(0);
   const [discountPrice, setDiscountPrice] = useState("");
   const [isFree, setIsFree] = useState(false);
   const [level, setLevel] = useState(0);
   const [status, setStatus] = useState("draft");
-  const [categoryId, setCategoryId] = useState("");
+  const [categoryId, setCategoryId] = useState(""); // required
+
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -39,28 +40,14 @@ export default function CourseEditPage() {
       setProgram(prog);
 
       const cats = await fetchCategories();
+      // lọc category có type = "course"
       const courseCategories = (cats.data || []).filter(
         (cat) => cat.type === "course",
       );
       setCategories(courseCategories);
-
-      // fetch course detail
-      const course = await fetchCourse(courseId);
-      if (course) {
-        setTitle(course.title || "");
-        setDescription(course.description || "");
-        setLanguage(course.language || "");
-        setThumbnail(course.thumbnail || "");
-        setPrice(course.price || 0);
-        setDiscountPrice(course.discount_price || "");
-        setIsFree(course.is_free || false);
-        setLevel(course.level || 0);
-        setStatus(course.status || "draft");
-        setCategoryId(course.category_id || "");
-      }
     };
     loadData();
-  }, [programId, courseId]);
+  }, [programId]);
 
   // Handle submit form
   const handleSubmit = async (e) => {
@@ -68,10 +55,11 @@ export default function CourseEditPage() {
     setLoading(true);
     try {
       const currentUser = getCurrentUser();
-      await updateCourse(courseId, {
+      await createCourse({
         program_id: programId,
         title,
         description,
+        benefits,
         language,
         thumbnail,
         price,
@@ -82,12 +70,10 @@ export default function CourseEditPage() {
         category_id: categoryId || null,
         user_id: currentUser?.id,
       });
-      toast.success("Khóa học đã được cập nhật thành công!");
+      toast.success("Khóa học đã được tạo thành công!");
       navigate(`/chuong-trinh-hoc/${programId}`);
     } catch (error) {
-      toast.error(
-        error?.response?.data?.message || "Cập nhật khóa học thất bại!",
-      );
+      toast.error(error?.response?.data?.message || "Tạo khóa học thất bại!");
     } finally {
       setLoading(false);
     }
@@ -102,17 +88,17 @@ export default function CourseEditPage() {
         items={[
           { label: "Chương trình học", path: "/chuong-trinh-hoc" },
           { label: program.title, path: `/chuong-trinh-hoc/${program.id}` },
-          { label: "Chỉnh sửa khóa học" },
+          { label: "Thêm khóa học mới" },
         ]}
       />
 
       {/* Title + Desc */}
       <div className="space-y-2">
         <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">
-          Chỉnh sửa khóa học
+          Thêm khóa học mới
         </h1>
         <p className="text-slate-600 dark:text-slate-400">
-          Cập nhật thông tin cho khóa học thuộc chương trình{" "}
+          Thêm khóa học mới cho chương trình học{" "}
           <span className="font-semibold text-indigo-600 dark:text-indigo-400">
             {program.title}
           </span>
@@ -192,13 +178,14 @@ export default function CourseEditPage() {
                 htmlFor="category_id"
                 className="ml-2 text-slate-700 dark:text-slate-300"
               >
-                Danh mục
+                Danh mục <span className="text-red-500 text-sm">*</span>
               </Label>
               <select
                 id="category_id"
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
                 className="form-select"
+                required
               >
                 <option value="">-- Chọn danh mục --</option>
                 {Array.isArray(categories) && categories.length > 0 ? (
@@ -225,6 +212,23 @@ export default function CourseEditPage() {
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Mô tả ngắn về khóa học"
             />
+          </div>
+
+          {/* Benefits */}
+          <div className="space-y-2">
+            <Label htmlFor="benefits" className="form-label">
+              Lợi ích (Benefits)
+            </Label>
+            <Textarea
+              id="benefits"
+              value={benefits}
+              onChange={(e) => setBenefits(e.target.value)}
+              placeholder="Mỗi lợi ích cách nhau bằng phím Tab hoặc xuống dòng"
+            />
+            <p className="text-xs text-slate-500">
+              Ví dụ: "Cải thiện kỹ năng nghe [Tab] Tăng vốn từ vựng [Tab] Phát
+              âm chuẩn hơn"
+            </p>
           </div>
 
           {/* Price + Discount + Free */}
@@ -301,7 +305,7 @@ export default function CourseEditPage() {
           className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
         text-white w-full cursor-pointer select-none transition-all duration-300 mt-2"
         >
-          {loading ? "Đang xử lý..." : "Cập nhật Khóa Học"}
+          {loading ? "Đang xử lý..." : "Tạo Khóa Học"}
         </Button>
       </form>
     </div>

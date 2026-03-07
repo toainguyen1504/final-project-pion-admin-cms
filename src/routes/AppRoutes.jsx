@@ -16,15 +16,22 @@ import PostEdit from "@/components/posts/PostEdit";
 // Learning Program
 import ProgramListPage from "@/components/learning/programs/ProgramListPage";
 import ProgramDetailPage from "@/components/learning/programs/ProgramDetailPage";
-import CourseCreatePage from "@/components/learning/courses/CourseCreatePage";
-import CourseEditPage from "@/components/learning/courses/CourseEditPage";
-import CourseDetailPage from "@/components/learning/courses/CourseDetailPage";
-import LessonCreatePage from "@/components/learning/lessons/LessonCreatePage";
-import LessonEditPage from "@/components/learning/lessons/LessonEditPage";
-import LessonDetailPage from "@/components/learning/lessons/LessonDetailPage";
 
-import FlashcardDetailPage from "@/components/learning/flashcards/FlashcardListPage";
+import CourseCreatePage from "@/components/learning/programs/components/courses/CourseCreatePage";
+import CourseEditPage from "@/components/learning/programs/components/courses/CourseEditPage";
+import CourseDetailPage from "@/components/learning/programs/components/courses/CourseDetailPage";
+
+import LessonCreatePage from "@/components/learning/programs/components/lessons/LessonCreatePage";
+import LessonEditPage from "@/components/learning/programs/components/lessons/LessonEditPage";
+import LessonDetailPage from "@/components/learning/programs/components/lessons/LessonDetailPage";
+
+// Learning global
+import CourseListPage from "@/components/learning/courses/CourseListPage";
+import LessonListPage from "@/components/learning/lessons/LessonListPage";
+
+import FlashcardListPage from "@/components/learning/flashcards/FlashcardListPage";
 import FlashcardCreatePage from "@/components/learning/flashcards/FlashcardCreatePage";
+// import FlashcardDetailPage from "@/components/learning/flashcards/FlashcardDetailPage";
 // import FlashcardEditPage from "@/components/learning/lessons/FlashcardEditPage";
 
 // User Management
@@ -39,7 +46,6 @@ import ConsultationList from "@/components/consultations/ConsultationList";
 import NotFound from "@/pages/NotFound"; // 404 page
 import Forbidden from "@/pages/auth/Forbidden"; // 404 page
 import { ADMIN_CMS_ROLES, USER_MANAGEMENT_ROLES } from "@/constants/roles";
-import FlashcardListPage from "@/components/learning/flashcards/FlashcardListPage";
 
 function AppRoutes() {
   return (
@@ -66,10 +72,10 @@ function AppRoutes() {
           <Route path="/bai-viet/:id/chinh-sua" element={<PostEdit />} />
 
           {/* Manage Learning - chỉ teacher, admin và super admin*/}
-          {/* Program */}
+          {/* PROGRAM */}
           <Route path="/chuong-trinh-hoc" element={<ProgramListPage />} />
 
-          {/* Course */}
+          {/* program -> Course */}
           <Route
             path="/chuong-trinh-hoc/:programId/khoa-hoc/tao-moi"
             element={<CourseCreatePage />}
@@ -83,7 +89,7 @@ function AppRoutes() {
             element={<CourseEditPage />}
           />
 
-          {/* Lesson */}
+          {/* program -> course -> Lesson */}
           <Route
             path="/chuong-trinh-hoc/:programId/khoa-hoc/:courseId/bai-hoc/tao-moi"
             element={<LessonCreatePage />}
@@ -102,6 +108,16 @@ function AppRoutes() {
             path="/chuong-trinh-hoc/:programId"
             element={<ProgramDetailPage />}
           />
+
+          {/* COURSES */}
+          <Route path="/khoa-hoc" element={<CourseListPage />} />
+          <Route path="/khoa-hoc/tao-moi" element={<CourseCreatePage />} />
+          <Route path="/khoa-hoc/:id/chinh-sua" element={<CourseEditPage />} />
+
+          {/* LESSONS */}
+          <Route path="/bai-hoc" element={<LessonListPage />} />
+          <Route path="/bai-hoc/tao-moi" element={<LessonCreatePage />} />
+          <Route path="/bai-hoc/:id/chinh-sua" element={<LessonEditPage />} />
 
           {/* Flashcard */}
           <Route path="/flashcards" element={<FlashcardListPage />} />

@@ -33,6 +33,8 @@ function CourseTable({
   const defaultColumns = {
     title: true,
     slug: false,
+    description: true,
+    benefits: false,
     language: false,
     price: true,
     discount_price: false,
@@ -147,6 +149,8 @@ function CourseTable({
                   columnsConfig={[
                     { key: "title", label: "Tiêu đề" },
                     { key: "slug", label: "Slug" },
+                    { key: "description", label: "Description" },
+                    { key: "benefits", label: "Benefits" },
                     { key: "language", label: "Ngôn ngữ" },
                     { key: "price", label: "Giá" },
                     { key: "discount_price", label: "Giá giảm" },
@@ -200,6 +204,18 @@ function CourseTable({
 
               {visibleColumns.slug && (
                 <TableCell className="px-4 py-3 font-semibold">Slug</TableCell>
+              )}
+
+              {visibleColumns.description && (
+                <TableCell className="px-4 py-3 font-semibold">
+                  Description
+                </TableCell>
+              )}
+
+              {visibleColumns.benefits && (
+                <TableCell className="px-4 py-3 font-semibold">
+                  Benefits
+                </TableCell>
               )}
 
               {visibleColumns.language && (

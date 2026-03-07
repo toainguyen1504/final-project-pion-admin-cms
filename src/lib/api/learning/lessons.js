@@ -3,6 +3,28 @@ import axiosInstance from "@/utils/axiosInstance";
 // ----------- ADMIN ROUTES (index, create, update, delete, bulk) -----------
 // ----------- chỉ có admin, super_admin và teacher có quyền -----------
 
+// Get all lessons (không filter theo courseId)
+export async function fetchAllLessons(
+  page = 1,
+  sort = "created_at",
+  order = "desc",
+  search = ""
+) {
+  try {
+    const response = await axiosInstance.get("/admin/lessons", {
+      params: { page, sort, order, search },
+    });
+    return {
+      data: response.data.data,
+      meta: response.data.meta,
+      success: true,
+    };
+  } catch (error) {
+    console.error("Error fetching all lessons:", error);
+    return { data: [], meta: null, success: false };
+  }
+}
+
 // Get all lessons by course id
 export async function fetchLessons(
   courseId,
@@ -29,7 +51,7 @@ export async function fetchLessons(
   }
 }
 
-// Get single lesson
+// Get single lesson - detail
 export async function fetchLesson(id) {
   try {
     const response = await axiosInstance.get(`/admin/lessons/${id}`);

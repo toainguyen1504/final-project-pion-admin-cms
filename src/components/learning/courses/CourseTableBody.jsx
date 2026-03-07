@@ -112,6 +112,18 @@ export default function CourseTableBody({
               </TableCell>
             )}
 
+            {visibleColumns.description && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {course.description || "—"}
+              </TableCell>
+            )}
+
+             {visibleColumns.benefits && (
+              <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
+                {course.benefits || "—"}
+              </TableCell>
+            )}
+
             {visibleColumns.language && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
                 {course.language || "—"}

@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 import SortableHeaderCell from "@/components/shared/table/SortableHeaderCell";
 import DeleteConfirmDialog from "@/components/shared/DeleteConfirmDialog";
+import LessonVideoDialog from "@/components/shared/LessonVideoDialog";
 import TableToolbar from "@/components/shared/table/TableToolbar";
 
 import { deleteLesson, bulkDeleteLessons } from "@/lib/api/learning/lessons";
@@ -51,6 +52,9 @@ function LessonTable({
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
 
+  const [openVideo, setOpenVideo] = useState(false); // for video modal
+  const [videoUrl, setVideoUrl] = useState(""); // for video modal
+
   const isTempInitializedRef = useRef(false);
   const allSelected = data.length > 0 && selectedIds.length === data.length;
 
@@ -64,6 +68,7 @@ function LessonTable({
     );
   };
 
+  // handle confirm delete
   const handleConfirmDelete = async () => {
     setLoadingDelete(true);
     try {
@@ -86,6 +91,16 @@ function LessonTable({
     }
   };
 
+  // handle open video
+  const handleOpenVideo = (url) => {
+    const embedUrl = url.includes("watch?v=")
+      ? url.replace("watch?v=", "embed/")
+      : url;
+    setVideoUrl(embedUrl);
+    setOpenVideo(true);
+  };
+
+  // handle apply columns setting
   const handleApplyColumns = () => {
     setVisibleColumns({ ...tempColumns });
     setPopoverOpen(false);
@@ -252,10 +267,12 @@ function LessonTable({
             setDeleteMode={setDeleteMode}
             setSelectedLesson={setSelectedLesson}
             setDeleteDialogOpen={setDeleteDialogOpen}
+            onOpenVideo={handleOpenVideo}
           />
         </Table>
       </div>
 
+      {/* Modal delete confirm */}
       <DeleteConfirmDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}
@@ -267,6 +284,13 @@ function LessonTable({
         }
         onConfirm={handleConfirmDelete}
         loading={loadingDelete}
+      />
+
+      {/* Modal video */}
+      <LessonVideoDialog
+        open={openVideo}
+        onOpenChange={setOpenVideo}
+        videoUrl={videoUrl}
       />
     </div>
   );

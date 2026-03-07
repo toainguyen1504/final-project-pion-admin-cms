@@ -11,6 +11,7 @@ import { fetchCourse } from "@/lib/api/learning/courses";
 import { fetchProgram } from "@/lib/api/learning/programs";
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
 import DeleteConfirmDialog from "@/components/shared/DeleteConfirmDialog";
+import LessonVideoDialog from "@/components/shared/LessonVideoDialog";
 
 export default function LessonDetailPage() {
   const { programId, courseId, lessonId } = useParams();
@@ -22,6 +23,9 @@ export default function LessonDetailPage() {
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  const [openVideo, setOpenVideo] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("");
 
   useEffect(() => {
     const loadData = async () => {
@@ -37,6 +41,7 @@ export default function LessonDetailPage() {
     loadData();
   }, [programId, courseId, lessonId]);
 
+  // handle delete
   const handleDelete = async () => {
     setDeleting(true);
     try {
@@ -49,6 +54,15 @@ export default function LessonDetailPage() {
       setDeleting(false);
       setDeleteDialogOpen(false);
     }
+  };
+
+  // handle open video
+  const handleOpenVideo = (url) => {
+    const embedUrl = url.includes("watch?v=")
+      ? url.replace("watch?v=", "embed/")
+      : url;
+    setVideoUrl(embedUrl);
+    setOpenVideo(true);
   };
 
   if (!program || !course || !lesson) {
@@ -113,14 +127,12 @@ export default function LessonDetailPage() {
 
         {lesson.video_url && (
           <div className="mt-4">
-            <a
-              href={lesson.video_url}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => handleOpenVideo(lesson.video_url)}
               className="text-indigo-600 dark:text-indigo-400 underline hover:text-indigo-500"
             >
               Xem video bài học
-            </a>
+            </button>
           </div>
         )}
 
@@ -162,6 +174,12 @@ export default function LessonDetailPage() {
         description="Bạn có chắc chắn muốn xoá bài học này? Hành động này không thể hoàn tác."
         onConfirm={handleDelete}
         loading={deleting}
+      />
+      {/* Lesson video Dialog */}
+      <LessonVideoDialog
+        open={openVideo}
+        onOpenChange={setOpenVideo}
+        videoUrl={videoUrl}
       />
     </div>
   );

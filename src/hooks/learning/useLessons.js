@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
-import { fetchLessons } from "@/lib/api/learning/lessons";
+import { fetchLessons, fetchAllLessons } from "@/lib/api/learning/lessons";
 
-export function useLessons(courseId) {
+export function useLessons(courseId = null) {
   const [lessons, setLessons] = useState([]);
   const [meta, setMeta] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,7 +18,12 @@ export function useLessons(courseId) {
       isFirstLoad.current = false;
     }
     try {
-      const result = await fetchLessons(courseId, page, sort, order, search);
+      let result;
+      if (courseId) {
+        result = await fetchLessons(courseId, page, sort, order, search);
+      } else {
+        result = await fetchAllLessons(page, sort, order, search);
+      }
       setLessons(result.data || []);
       setMeta(result.meta || null);
     } catch (error) {

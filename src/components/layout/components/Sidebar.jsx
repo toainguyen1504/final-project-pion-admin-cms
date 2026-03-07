@@ -52,15 +52,25 @@ const menuItems = [
     ],
   },
   {
-    id: "learning-programs",
+    id: "learning-management",
     icon: GraduationCap,
-    label: "Chương trình học",
-    slug: "chuong-trinh-hoc",
+    label: "Quản lý học tập",
+    slug: "quan-ly-hoc-tap",
     submenu: [
       {
         id: "programs",
         label: "Tất cả chương trình học",
         path: "/chuong-trinh-hoc",
+      },
+      {
+        id: "courses",
+        label: "Tất cả khóa học",
+        path: "/khoa-hoc",
+      },
+      {
+        id: "lessons",
+        label: "Tất cả bài học",
+        path: "/bai-hoc",
       },
       {
         id: "flashcards",

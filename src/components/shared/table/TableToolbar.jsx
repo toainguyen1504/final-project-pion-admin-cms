@@ -105,7 +105,8 @@ export default function TableToolbar({
             align="end"
             sideOffset={8}
             className="absolute z-50 w-64 p-4 space-y-3 bg-white dark:bg-slate-900 border 
-                       border-slate-200 dark:border-slate-700 rounded-xl shadow-xl translate-x-[-100%]"
+                       border-slate-200 dark:border-slate-700 rounded-xl shadow-xl translate-x-[-100%]
+                       flex flex-col max-h-[60vh]"
           >
             <div className="flex justify-between items-center mb-2">
               <span className="font-medium text-sm text-slate-700 dark:text-slate-200">
@@ -126,27 +127,29 @@ export default function TableToolbar({
             </div>
 
             {/* Dynamic column list */}
-            {columnsConfig.map(({ key, label }) => (
-              <div key={key} className="flex items-center gap-2">
-                <Checkbox
-                  id={`col-${key}`}
-                  checked={tempColumns[key]}
-                  onCheckedChange={() => onTempColumnToggle(key)}
-                  disabled={defaultColumns[key]}
-                  className={clsx(
-                    defaultColumns[key]
-                      ? "opacity-50 cursor-not-allowed"
-                      : "cursor-pointer",
-                  )}
-                />
-                <label
-                  htmlFor={`col-${key}`}
-                  className="text-sm text-slate-700 dark:text-slate-300"
-                >
-                  {label}
-                </label>
-              </div>
-            ))}
+            <div className="flex-1 overflow-y-auto space-y-2 pr-1">
+              {columnsConfig.map(({ key, label }) => (
+                <div key={key} className="flex items-center gap-2">
+                  <Checkbox
+                    id={`col-${key}`}
+                    checked={tempColumns[key]}
+                    onCheckedChange={() => onTempColumnToggle(key)}
+                    disabled={defaultColumns[key]}
+                    className={clsx(
+                      defaultColumns[key]
+                        ? "opacity-50 cursor-not-allowed"
+                        : "cursor-pointer",
+                    )}
+                  />
+                  <label
+                    htmlFor={`col-${key}`}
+                    className="text-sm text-slate-700 dark:text-slate-300"
+                  >
+                    {label}
+                  </label>
+                </div>
+              ))}
+            </div>
 
             <Button
               onClick={onApplyColumns}

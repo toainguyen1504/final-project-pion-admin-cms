@@ -1,4 +1,3 @@
-import React from "react";
 import { format } from "date-fns";
 import {
   Pencil,
@@ -39,6 +38,7 @@ export default function LessonTableBody({
   setDeleteMode,
   setSelectedLesson,
   setDeleteDialogOpen,
+  onOpenVideo,
 }) {
   const getVisibleColSpan = () => {
     const visibleCount = Object.values(visibleColumns).filter(Boolean).length;
@@ -70,7 +70,7 @@ export default function LessonTableBody({
         data.map((lesson) => (
           <TableRow
             key={lesson.id}
-            className="border-b border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-300"
+            className="border-b border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-300 overflow-x-scroll"
           >
             {/* Checkbox */}
             <TableCell className="px-4 py-3 w-4">
@@ -126,14 +126,12 @@ export default function LessonTableBody({
             {visibleColumns.video_url && (
               <TableCell className="px-4 py-3 text-indigo-600 dark:text-indigo-400">
                 {lesson.video_url ? (
-                  <a
-                    href={lesson.video_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={() => onOpenVideo(lesson.video_url)}
                     className="underline hover:text-indigo-500"
                   >
                     Video
-                  </a>
+                  </button>
                 ) : (
                   "—"
                 )}
