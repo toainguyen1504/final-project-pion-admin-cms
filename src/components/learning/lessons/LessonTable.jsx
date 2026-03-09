@@ -24,6 +24,15 @@ function LessonTable({
   search,
   setSearch,
   refreshLessons,
+
+  // filter props
+  programId,
+  setProgramId,
+  programOptions,
+  courseId,
+  setCourseId,
+  courseOptions,
+  onResetFilters,
 }) {
   const totalPages = meta?.last_page || 1;
 
@@ -172,6 +181,15 @@ function LessonTable({
                     setDeleteMode("bulk");
                     setDeleteDialogOpen(true);
                   }}
+                  // filter props
+                  filterType="lesson"
+                  programOptions={programOptions}
+                  programId={programId}
+                  setProgramId={setProgramId}
+                  courseOptions={courseOptions}
+                  courseId={courseId}
+                  setCourseId={setCourseId}
+                  onResetFilters={onResetFilters}
                 />
               </TableCell>
             </TableRow>

@@ -1,13 +1,95 @@
-// import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Plus } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import { useFlashcards } from "@/hooks/learning/useFlashcards";
-import FlashcardTable from "./FlashcardTable";
 import { Link } from "react-router-dom";
 
+import { useFlashcards } from "@/hooks/learning/useFlashcards";
+import { fetchPrograms } from "@/lib/api/learning/programs";
+import { fetchCoursesByProgram } from "@/lib/api/learning/courses";
+import { fetchLessons } from "@/lib/api/learning/lessons";
+import FlashcardTable from "./FlashcardTable";
+
 function FlashcardListPage() {
+  const [programId, setProgramId] = useState(
+    localStorage.getItem("programId") || "",
+  );
+  const [programOptions, setProgramOptions] = useState([]);
+
+  const [courseId, setCourseId] = useState(
+    localStorage.getItem("courseId") || "",
+  );
+  const [courseOptions, setCourseOptions] = useState([]);
+
+  const [lessonId, setLessonId] = useState(
+    localStorage.getItem("lessonId") || "",
+  );
+  const [lessonOptions, setLessonOptions] = useState([]);
+
+  // Load program options
+  useEffect(() => {
+    const loadPrograms = async () => {
+      const res = await fetchPrograms();
+      if (res.success) {
+        setProgramOptions(
+          res.data.map((p) => ({
+            value: String(p.id),
+            label: p.title,
+          })),
+        );
+      }
+    };
+    loadPrograms();
+  }, []);
+
+  // Load courses khi chọn program
+  useEffect(() => {
+    const loadCourses = async () => {
+      if (!programId) {
+        setCourseOptions([]);
+        setCourseId("");
+        return;
+      }
+      const res = await fetchCoursesByProgram({ programId });
+      if (res.success) {
+        setCourseOptions(
+          res.data.map((c) => ({
+            value: String(c.id),
+            label: c.title,
+          })),
+        );
+      }
+      setCourseId("");
+      setLessonOptions([]);
+      setLessonId("");
+    };
+    loadCourses();
+  }, [programId]);
+
+  // Load lessons khi chọn course
+  useEffect(() => {
+    const loadLessons = async () => {
+      if (!courseId) {
+        setLessonOptions([]);
+        setLessonId("");
+        return;
+      }
+      const res = await fetchLessons({ courseId });
+      if (res.success) {
+        setLessonOptions(
+          res.data.map((l) => ({
+            value: String(l.id),
+            label: l.title,
+          })),
+        );
+      }
+      setLessonId("");
+    };
+    loadLessons();
+  }, [courseId]);
+
+  // Hook flashcards với filter
   const {
     flashcards,
     meta,
@@ -21,7 +103,18 @@ function FlashcardListPage() {
     search,
     setSearch,
     reloadFlashcards,
-  } = useFlashcards({}); // có thể truyền lessonId, courseId, programId để lọc
+  } = useFlashcards({ programId, courseId, lessonId });
+
+  // Filter handlers
+  const onResetFilters = () => {
+    setProgramId("");
+    setCourseId("");
+    setLessonId("");
+    localStorage.removeItem("programId");
+    localStorage.removeItem("courseId");
+    localStorage.removeItem("lessonId");
+    reloadFlashcards();
+  };
 
   return (
     <div className="px-4 pt-4 pb-10 space-y-3">
@@ -71,6 +164,17 @@ function FlashcardListPage() {
           search={search}
           setSearch={setSearch}
           refreshFlashcards={reloadFlashcards}
+          // filter props
+          programId={programId}
+          setProgramId={setProgramId}
+          programOptions={programOptions}
+          courseId={courseId}
+          setCourseId={setCourseId}
+          courseOptions={courseOptions}
+          lessonId={lessonId}
+          setLessonId={setLessonId}
+          lessonOptions={lessonOptions}
+          onResetFilters={onResetFilters}
         />
       )}
     </div>

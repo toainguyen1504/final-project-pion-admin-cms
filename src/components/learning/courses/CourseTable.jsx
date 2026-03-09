@@ -24,6 +24,10 @@ function CourseTable({
   setSearch,
   refreshCourses,
   onEditCourse,
+  programId,
+  setProgramId,
+  programOptions, // options cho filter theo chương trình
+  onResetFilters,
 }) {
   const totalPages = meta?.last_page || 1;
 
@@ -36,9 +40,9 @@ function CourseTable({
     description: true,
     benefits: false,
     language: false,
-    price: true,
+    price: false,
     discount_price: false,
-    level: true,
+    level: false,
     status: true,
     duration: false,
     participants: false,
@@ -73,6 +77,7 @@ function CourseTable({
     );
   };
 
+  // Delete handlers
   const handleConfirmDelete = async () => {
     setLoadingDelete(true);
     try {
@@ -94,7 +99,9 @@ function CourseTable({
       setDeleteDialogOpen(false);
     }
   };
+  // End delete handlers
 
+  // Column visibility handlers
   const handleApplyColumns = () => {
     setVisibleColumns({ ...tempColumns });
     setPopoverOpen(false);
@@ -115,6 +122,7 @@ function CourseTable({
   const toolbarColSpan =
     Object.values(visibleColumns).filter(Boolean).length + 2;
 
+  // Search debounce
   useEffect(() => {
     if (typingValue === search) return;
     setSearchLoading(true);
@@ -174,6 +182,12 @@ function CourseTable({
                     setDeleteMode("bulk");
                     setDeleteDialogOpen(true);
                   }}
+                  // filter props
+                  filterType="course"
+                  programOptions={programOptions}
+                  programId={programId}
+                  setProgramId={setProgramId}
+                  onResetFilters={onResetFilters}
                 />
               </TableCell>
             </TableRow>

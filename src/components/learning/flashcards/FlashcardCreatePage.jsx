@@ -60,7 +60,9 @@ function FlashcardCreatePage() {
         setCourses([]);
         return;
       }
-      const result = await fetchCoursesByProgram({ programId: Number(selectedProgram) });
+      const result = await fetchCoursesByProgram({
+        programId: Number(selectedProgram),
+      });
       if (result.success) {
         setCourses(result.data);
       } else {
@@ -80,7 +82,7 @@ function FlashcardCreatePage() {
         setLessons([]);
         return;
       }
-      const result = await fetchLessons(Number(selectedCourse));
+      const result = await fetchLessons({ courseId: Number(selectedCourse) });
       if (result.success) {
         setLessons(result.data);
       } else {

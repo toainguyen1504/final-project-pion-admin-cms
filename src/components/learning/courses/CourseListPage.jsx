@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Plus } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
@@ -5,9 +6,32 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 import { useCourses } from "@/hooks/learning/useCourses";
+import { fetchPrograms } from "@/lib/api/learning/programs";
 import CourseTable from "./CourseTable";
 
 function CourseListPage() {
+  const [programId, setProgramId] = useState(
+    localStorage.getItem("programId") || "", // lấy localStorage để giữ filter khi reload - tối ưu filter - làm sau
+  );
+  const [programOptions, setProgramOptions] = useState([]);
+
+  // Load program options for filter
+  useEffect(() => {
+    const loadPrograms = async () => {
+      const res = await fetchPrograms();
+      if (res.success) {
+        setProgramOptions(
+          res.data.map((p) => ({
+            value: String(p.id),
+            label: p.title,
+          })),
+        );
+      }
+    };
+    loadPrograms();
+  }, []);
+
+  // Load courses with filters
   const {
     courses,
     meta,
@@ -21,7 +45,16 @@ function CourseListPage() {
     search,
     setSearch,
     reloadCourses,
-  } = useCourses({}); // có thể truyền programId để lọc
+  } = useCourses(programId); // truyền programId vào hook
+
+  // Filter handlers
+  const onResetFilters = () => {
+    console.log("Resetting filters");
+    setProgramId("");
+    localStorage.removeItem("programId");
+    reloadCourses();
+  };
+  // End filter handlers
 
   return (
     <div className="px-4 pt-4 pb-10 space-y-3">
@@ -71,6 +104,11 @@ function CourseListPage() {
           search={search}
           setSearch={setSearch}
           refreshCourses={reloadCourses}
+          // filter props
+          programId={programId}
+          setProgramId={setProgramId}
+          programOptions={programOptions}
+          onResetFilters={onResetFilters}
         />
       )}
     </div>

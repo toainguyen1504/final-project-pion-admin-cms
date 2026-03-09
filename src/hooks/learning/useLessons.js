@@ -20,7 +20,7 @@ export function useLessons(courseId = null) {
     try {
       let result;
       if (courseId) {
-        result = await fetchLessons(courseId, page, sort, order, search);
+        result = await fetchLessons({courseId, page, sort, order, search});
       } else {
         result = await fetchAllLessons(page, sort, order, search);
       }

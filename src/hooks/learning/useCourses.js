@@ -18,7 +18,8 @@ export function useCourses(programId = null) {
       isFirstLoad.current = false;
     }
     try {
-      const result = await fetchCoursesByProgram(page, sort, order, search, programId);
+      const result = await fetchCoursesByProgram({page, sort, order, search, programId});
+      
       setCourses(result.data || []);
       setMeta(result.meta || null);
     } catch (error) {

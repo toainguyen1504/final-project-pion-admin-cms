@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { Plus } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
@@ -5,9 +6,58 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 import { useLessons } from "@/hooks/learning/useLessons"; // hook quản lý danh sách bài học
+// import { useCourses } from "@/hooks/learning/useCourses"; // hook quản lý danh sách khóa học (để lấy options cho filter)
+import { fetchPrograms } from "@/lib/api/learning/programs";
+import { fetchCoursesByProgram } from "@/lib/api/learning/courses";
 import LessonTable from "./LessonTable"; // component bảng hiển thị bài học
 
 function LessonListPage() {
+  const [programId, setProgramId] = useState(
+    localStorage.getItem("programId") || "",
+  );
+  const [programOptions, setProgramOptions] = useState([]);
+
+  const [courseId, setCourseId] = useState(
+    localStorage.getItem("courseId") || "",
+  );
+  const [courseOptions, setCourseOptions] = useState([]);
+
+  // Load program options for filter
+  useEffect(() => {
+    const loadPrograms = async () => {
+      const res = await fetchPrograms();
+      if (res.success) {
+        setProgramOptions(
+          res.data.map((p) => ({
+            value: String(p.id),
+            label: p.title,
+          })),
+        );
+      }
+    };
+    loadPrograms();
+  }, []);
+
+  // Load course options when programId changes
+  useEffect(() => {
+    const loadCourses = async () => {
+      if (!programId) {
+        setCourseOptions([]);
+        return;
+      }
+      const res = await fetchCoursesByProgram({ programId });
+      if (res.success) {
+        setCourseOptions(
+          res.data.map((c) => ({
+            value: String(c.id),
+            label: c.title,
+          })),
+        );
+      }
+    };
+    loadCourses();
+  }, [programId]);
+
   const {
     lessons,
     meta,
@@ -21,7 +71,18 @@ function LessonListPage() {
     search,
     setSearch,
     reloadLessons,
-  } = useLessons(); // có thể truyền courseId để lọc
+  } = useLessons(courseId); // có thể truyền courseId để lọc
+
+  // Filter handlers
+  const onResetFilters = () => {
+    console.log("Resetting filters");
+    setProgramId("");
+    setCourseId("");
+    localStorage.removeItem("programId");
+    localStorage.removeItem("courseId");
+    reloadLessons(); // gọi lại hook để load tất cả bài học
+  };
+  // End filter handlers
 
   return (
     <div className="px-4 pt-4 pb-10 space-y-3">
@@ -71,6 +132,14 @@ function LessonListPage() {
           search={search}
           setSearch={setSearch}
           refreshLessons={reloadLessons}
+          // filter props
+          programId={programId}
+          setProgramId={setProgramId}
+          programOptions={programOptions}
+          courseId={courseId}
+          setCourseId={setCourseId}
+          courseOptions={courseOptions}
+          onResetFilters={onResetFilters}
         />
       )}
     </div>

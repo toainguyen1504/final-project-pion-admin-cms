@@ -44,7 +44,7 @@ import UserOverview from "@/components/users/UserOverview";
 import ConsultationList from "@/components/consultations/ConsultationList";
 
 import NotFound from "@/pages/NotFound"; // 404 page
-import Forbidden from "@/pages/auth/Forbidden"; // 404 page
+import Forbidden from "@/pages/auth/Forbidden"; // Forbidden page
 import { ADMIN_CMS_ROLES, USER_MANAGEMENT_ROLES } from "@/constants/roles";
 
 function AppRoutes() {

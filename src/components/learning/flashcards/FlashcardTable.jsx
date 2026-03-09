@@ -29,6 +29,18 @@ function FlashcardTable({
   search,
   setSearch,
   refreshFlashcards,
+
+  // filter props
+  programId,
+  setProgramId,
+  programOptions,
+  courseId,
+  setCourseId,
+  courseOptions,
+  lessonId,
+  setLessonId,
+  lessonOptions,
+  onResetFilters,
 }) {
   const totalPages = meta?.last_page || 1;
 
@@ -186,6 +198,18 @@ function FlashcardTable({
                     setDeleteMode("bulk");
                     setDeleteDialogOpen(true);
                   }}
+                  // filter props
+                  filterType="flashcard"
+                  programOptions={programOptions}
+                  programId={programId}
+                  setProgramId={setProgramId}
+                  courseOptions={courseOptions}
+                  courseId={courseId}
+                  setCourseId={setCourseId}
+                  lessonOptions={lessonOptions}
+                  lessonId={lessonId}
+                  setLessonId={setLessonId}
+                  onResetFilters={onResetFilters}
                 />
               </TableCell>
             </TableRow>

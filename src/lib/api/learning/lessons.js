@@ -8,7 +8,7 @@ export async function fetchAllLessons(
   page = 1,
   sort = "created_at",
   order = "desc",
-  search = ""
+  search = "",
 ) {
   try {
     const response = await axiosInstance.get("/admin/lessons", {
@@ -25,14 +25,14 @@ export async function fetchAllLessons(
   }
 }
 
-// Get all lessons by course id
-export async function fetchLessons(
+// Get all lessons by course id , dùng object param để dễ mở rộng filter sau này
+export async function fetchLessons({
   courseId,
   page = 1,
   sort = "created_at",
   order = "desc",
   search = "",
-) {
+}) {
   try {
     const response = await axiosInstance.get(
       `/admin/courses/${courseId}/lessons`,
@@ -50,6 +50,31 @@ export async function fetchLessons(
     return { data: [], meta: null, success: false };
   }
 }
+
+// export async function fetchLessons(
+//   courseId,
+//   page = 1,
+//   sort = "created_at",
+//   order = "desc",
+//   search = "",
+// ) {
+//   try {
+//     const response = await axiosInstance.get(
+//       `/admin/courses/${courseId}/lessons`,
+//       {
+//         params: { page, sort, order, search },
+//       },
+//     );
+//     return {
+//       data: response.data.data,
+//       meta: response.data.meta,
+//       success: true,
+//     };
+//   } catch (error) {
+//     console.error("Error fetching lessons:", error);
+//     return { data: [], meta: null, success: false };
+//   }
+// }
 
 // Get single lesson - detail
 export async function fetchLesson(id) {

@@ -1,5 +1,5 @@
 import React from "react";
-import { Search, Columns3Cog } from "lucide-react";
+import { Search, Columns3Cog, Funnel } from "lucide-react";
 import clsx from "clsx";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 
+import FilterSelect from "@/components/shared/FilterSelect";
 import { isAdminUser } from "@/utils/auth";
 
 export default function TableToolbar({
@@ -30,6 +31,19 @@ export default function TableToolbar({
   onDeleteSelected,
   isTempInitializedRef,
   columnsConfig = [], // Dynamic column list
+
+  // props cho filter
+  filterType = null, // "course" | "lesson" | "flashcard"
+  programOptions = [],
+  programId,
+  setProgramId,
+  courseOptions = [],
+  courseId,
+  setCourseId,
+  lessonOptions = [],
+  lessonId,
+  setLessonId,
+  onResetFilters, // callback
 }) {
   const isAdmin = isAdminUser();
 
@@ -87,6 +101,77 @@ export default function TableToolbar({
                        caret-blue-600 rounded-xl"
           />
         </div>
+
+        {/* Filter Settings */}
+        {(filterType === "course" && programOptions.length > 0) ||
+        (filterType === "lesson" &&
+          (programOptions.length > 0 || courseOptions.length > 0)) ||
+        (filterType === "flashcard" &&
+          (programOptions.length > 0 ||
+            courseOptions.length > 0 ||
+            lessonOptions.length > 0)) ? (
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className="p-1 rounded text-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 
+                         dark:text-slate-300 cursor-pointer ml-3"
+              >
+                <Funnel />
+              </button>
+            </PopoverTrigger>
+
+            <PopoverContent
+              side="bottom"
+              align="end"
+              sideOffset={8}
+              className="z-50 w-72 p-4 flex flex-col gap-4 bg-white dark:bg-slate-900 border 
+                       border-slate-200 dark:border-slate-700 rounded-xl shadow-xl max-h-[70vh]"
+            >
+              <div className="flex justify-between items-center">
+                <span className="font-medium text-sm text-slate-700 dark:text-slate-200">
+                  Bộ lọc
+                </span>
+                <button
+                  onClick={onResetFilters}
+                  className="text-red-500 dark:text-red-400 font-medium text-xs hover:underline"
+                >
+                  Reset
+                </button>
+              </div>
+
+              {/* Program filter */}
+              {programOptions.length > 0 && (
+                <FilterSelect
+                  options={programOptions}
+                  value={programId}
+                  onChange={setProgramId}
+                  placeholder="Chọn chương trình học"
+                />
+              )}
+
+              {/* Course filter */}
+              {filterType !== "course" && courseOptions.length > 0 && (
+                <FilterSelect
+                  options={courseOptions}
+                  value={courseId}
+                  onChange={setCourseId}
+                  placeholder="Chọn khóa học"
+                />
+              )}
+
+              {/* Lesson filter */}
+              {filterType === "flashcard" && lessonOptions.length > 0 && (
+                <FilterSelect
+                  options={lessonOptions}
+                  value={lessonId}
+                  onChange={setLessonId}
+                  placeholder="Chọn bài học"
+                />
+              )}
+            </PopoverContent>
+          </Popover>
+        ) : null}
 
         {/* Column Settings */}
         <Popover open={popoverOpen} onOpenChange={handlePopoverOpenChange}>
