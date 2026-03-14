@@ -89,7 +89,7 @@ export default function LessonTableBody({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link
-                        to={`/chuong-trinh-hoc/${lesson.course?.program_id}/khoa-hoc/${lesson.course_id}/bai-hoc/${lesson.id}`}
+                        to={`/bai-hoc/${lesson.id}`}
                         className="text-indigo-600 dark:text-indigo-400 transition-colors underline-offset-2 hover:underline"
                       >
                         {lesson.title}
@@ -192,9 +192,7 @@ export default function LessonTableBody({
                   size="sm"
                   className="flex items-center gap-1 !text-indigo-600 dark:!text-indigo-500 hover:!bg-indigo-100 dark:!hover:bg-indigo-100 transition-colors cursor-pointer"
                 >
-                  <Link
-                    to={`/chuong-trinh-hoc/${lesson.course?.program_id}/khoa-hoc/${lesson.course_id}/bai-hoc/${lesson.id}/chinh-sua`}
-                  >
+                  <Link to={`/bai-hoc/${lesson.id}/chinh-sua`}>
                     <Pencil className="w-4 h-4" />
                     Sửa
                   </Link>

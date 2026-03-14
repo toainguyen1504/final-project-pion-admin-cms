@@ -1,31 +1,31 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
 
 import { createLesson } from "@/lib/api/learning/lessons";
-import { fetchCourse } from "@/lib/api//learning/courses";
-import { fetchProgram } from "@/lib/api/learning/programs";
+import { fetchPrograms } from "@/lib/api/learning/programs";
+import { fetchCoursesByProgram } from "@/lib/api/learning/courses";
 import { getCurrentUser } from "@/utils/auth";
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
 
 export default function LessonCreatePage() {
-  const { programId, courseId } = useParams();
   const navigate = useNavigate();
 
-  const [program, setProgram] = useState(null);
-  const [course, setCourse] = useState(null);
+  const [programId, setProgramId] = useState("");
+  const [programs, setPrograms] = useState([]);
+  const [courseId, setCourseId] = useState("");
+  const [courses, setCourses] = useState([]);
 
   // form states
   const [title, setTitle] = useState("");
   const [intro, setIntro] = useState("");
   const [content, setContent] = useState("");
-  //   const [duration, setDuration] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
-//   const [order, setOrder] = useState(1);
   const [isPreview, setIsPreview] = useState(false);
   const [isQuiz, setIsQuiz] = useState(false);
 
@@ -33,13 +33,25 @@ export default function LessonCreatePage() {
 
   useEffect(() => {
     const loadData = async () => {
-      const prog = await fetchProgram(programId);
-      setProgram(prog);
-      const c = await fetchCourse(courseId);
-      setCourse(c);
+      const progRes = await fetchPrograms();
+      if (progRes.success) setPrograms(progRes.data);
     };
     loadData();
-  }, [programId, courseId]);
+  }, []);
+
+  // load courses khi chọn program
+  useEffect(() => {
+    const loadCourses = async () => {
+      if (!programId) {
+        setCourses([]);
+        setCourseId("");
+        return;
+      }
+      const res = await fetchCoursesByProgram({ programId });
+      if (res.success) setCourses(res.data);
+    };
+    loadCourses();
+  }, [programId]);
 
   // Handle submit form
   const handleSubmit = async (e) => {
@@ -60,7 +72,7 @@ export default function LessonCreatePage() {
         user_id: currentUser?.id,
       });
       toast.success("Bài học đã được tạo thành công!");
-      navigate(`/chuong-trinh-hoc/${program.id}/khoa-hoc/${course.id}`);
+      navigate("/bai-hoc");
     } catch (error) {
       toast.error(error?.response?.data?.message || "Tạo bài học thất bại!");
     } finally {
@@ -68,37 +80,41 @@ export default function LessonCreatePage() {
     }
   };
 
-  if (!program || !course) return <div>Đang tải...</div>;
+  // if (!program || !course) return <div>Đang tải...</div>;
 
   return (
-    <div className="px-4 py-6 max-w-2xl space-y-6">
+    <div className="px-4 py-6 space-y-6">
       {/* Breadcrumb */}
       <MultiBreadcrumb
-        items={[
-          { label: "Chương trình học", path: "/chuong-trinh-hoc" },
-          { label: program.title, path: `/chuong-trinh-hoc/${program.id}` },
-          {
-            label: `Khóa học: ${course.title}`,
-            path: `/chuong-trinh-hoc/${program.id}/khoa-hoc/${course.id}`,
-          },
-          { label: "Thêm bài học mới" },
-        ]}
+        items={[{ label: "Bài học", path: "/bai-hoc" }, { label: "Tạo mới" }]}
       />
 
-      {/* Title + Desc */}
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">
-          Thêm bài học mới
-        </h1>
-        <p className="text-slate-600 dark:text-slate-400">
-          Thêm bài học mới cho khóa học{" "}
-          <span className="font-semibold text-indigo-600 dark:text-indigo-400">
-            {course.title}
-          </span>
-        </p>
+      {/* Header + Button */}
+      <div className="flex items-center justify-between gap-20">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200">
+            Thêm bài học
+          </h2>
+          <p className="text-slate-500 mt-1">
+            Tạo bài học mới để thêm vào hệ thống. Vui lòng điền đầy đủ thông tin
+            để bài học hiển thị tốt trên trang học tập của người dùng.
+          </p>
+        </div>
+
+        <Button
+          type="submit"
+          form="course-form"
+          className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
+            text-white min-w-40 cursor-pointer select-none transition-all duration-300"
+          disabled={loading}
+        >
+          {loading && <Spinner className="w-4 h-4 mr-2 text-white" />}
+          Lưu Bài Học
+        </Button>
       </div>
 
       <form
+        id="course-form"
         onSubmit={handleSubmit}
         className="bg-white dark:bg-slate-800 p-8 rounded-xl space-y-6 mt-4"
       >
@@ -117,20 +133,57 @@ export default function LessonCreatePage() {
             />
           </div>
 
+          {/* Program + Course */}
+          <div className="flex gap-6">
+            <div className="flex-1 space-y-2">
+              <Label
+                htmlFor="program_id"
+                className="form-label after:content-['*'] after:text-red-500 after:ml-1"
+              >
+                Chương trình học
+              </Label>
+              <select
+                id="program_id"
+                value={programId}
+                onChange={(e) => setProgramId(e.target.value)}
+                className="form-select w-full"
+                required
+              >
+                <option value="">-- Chọn chương trình học --</option>
+                {programs.map((prog) => (
+                  <option key={prog.id} value={prog.id}>
+                    {prog.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex-1 space-y-2">
+              <Label
+                htmlFor="course_id"
+                className="form-label after:content-['*'] after:text-red-500 after:ml-1"
+              >
+                Khóa học
+              </Label>
+              <select
+                id="course_id"
+                value={courseId}
+                onChange={(e) => setCourseId(e.target.value)}
+                className="form-select w-full"
+                required
+              >
+                <option value="">-- Chọn khóa học --</option>
+                {courses.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.title}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
           {/* Duration + Video URL + Order */}
           <div className="flex items-center gap-6">
-            {/* <div className="w-40 space-y-2">
-              <Label htmlFor="duration" className="form-label">
-                Thời lượng (phút)
-              </Label>
-              <Input
-                id="duration"
-                type="number"
-                value={duration}
-                onChange={(e) => setDuration(e.target.value)}
-                placeholder="VD: auto"
-              />
-            </div> */}
             <div className="flex-1 space-y-2">
               <Label htmlFor="video_url" className="form-label">
                 Video URL <span className="text-red-500 text-sm">*</span>
@@ -210,16 +263,6 @@ export default function LessonCreatePage() {
             </div>
           </div>
         </div>
-
-        {/* Submit */}
-        <Button
-          type="submit"
-          disabled={loading}
-          className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
-        text-white w-full cursor-pointer select-none transition-all duration-300 mt-2"
-        >
-          {loading ? "Đang xử lý..." : "Tạo Bài Học"}
-        </Button>
       </form>
     </div>
   );

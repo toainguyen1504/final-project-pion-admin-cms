@@ -15,19 +15,16 @@ import PostEdit from "@/components/posts/PostEdit";
 
 // Learning Program
 import ProgramListPage from "@/components/learning/programs/ProgramListPage";
-import ProgramDetailPage from "@/components/learning/programs/ProgramDetailPage";
-
-import CourseCreatePage from "@/components/learning/programs/components/courses/CourseCreatePage";
-import CourseEditPage from "@/components/learning/programs/components/courses/CourseEditPage";
-import CourseDetailPage from "@/components/learning/programs/components/courses/CourseDetailPage";
-
-import LessonCreatePage from "@/components/learning/programs/components/lessons/LessonCreatePage";
-import LessonEditPage from "@/components/learning/programs/components/lessons/LessonEditPage";
-import LessonDetailPage from "@/components/learning/programs/components/lessons/LessonDetailPage";
+// import ProgramDetailPage from "@/components/learning/programs/ProgramDetailPage";
 
 // Learning global
 import CourseListPage from "@/components/learning/courses/CourseListPage";
+import CourseCreatePage from "@/components/learning/courses/CourseCreatePage";
+import CourseEditPage from "@/components/learning/courses/CourseEditPage";
+
 import LessonListPage from "@/components/learning/lessons/LessonListPage";
+import LessonCreatePage from "@/components/learning/lessons/LessonCreatePage";
+import LessonEditPage from "@/components/learning/lessons/LessonEditPage";
 
 import FlashcardListPage from "@/components/learning/flashcards/FlashcardListPage";
 import FlashcardCreatePage from "@/components/learning/flashcards/FlashcardCreatePage";
@@ -75,39 +72,11 @@ function AppRoutes() {
           {/* PROGRAM */}
           <Route path="/chuong-trinh-hoc" element={<ProgramListPage />} />
 
-          {/* program -> Course */}
-          <Route
-            path="/chuong-trinh-hoc/:programId/khoa-hoc/tao-moi"
-            element={<CourseCreatePage />}
-          />
-          <Route
-            path="/chuong-trinh-hoc/:programId/khoa-hoc/:courseId"
-            element={<CourseDetailPage />}
-          />
-          <Route
-            path="/chuong-trinh-hoc/:programId/khoa-hoc/:courseId/chinh-sua"
-            element={<CourseEditPage />}
-          />
-
-          {/* program -> course -> Lesson */}
-          <Route
-            path="/chuong-trinh-hoc/:programId/khoa-hoc/:courseId/bai-hoc/tao-moi"
-            element={<LessonCreatePage />}
-          />
-          <Route
-            path="/chuong-trinh-hoc/:programId/khoa-hoc/:courseId/bai-hoc/:lessonId"
-            element={<LessonDetailPage />}
-          />
-          <Route
-            path="/chuong-trinh-hoc/:programId/khoa-hoc/:courseId/bai-hoc/:lessonId/chinh-sua"
-            element={<LessonEditPage />}
-          />
-
           {/* Program detail */}
-          <Route
+          {/* <Route
             path="/chuong-trinh-hoc/:programId"
             element={<ProgramDetailPage />}
-          />
+          /> */}
 
           {/* COURSES */}
           <Route path="/khoa-hoc" element={<CourseListPage />} />

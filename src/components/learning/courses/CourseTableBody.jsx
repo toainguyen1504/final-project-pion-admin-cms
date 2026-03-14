@@ -90,14 +90,14 @@ export default function CourseTableBody({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Link
-                        to={`/chuong-trinh-hoc/${course.program_id}/khoa-hoc/${course.id}`}
+                        to={`/khoa-hoc/${course.id}`}
                         className="text-indigo-600 dark:text-indigo-400 transition-colors underline-offset-2 hover:underline"
                       >
                         {course.title}
                       </Link>
                     </TooltipTrigger>
                     <TooltipContent>
-                      Nhấn để xem chi tiết khóa học và danh sách bài học (Unit)
+                      Nhấn để xem chi tiết khóa học
                     </TooltipContent>
                   </Tooltip>
                 ) : (
@@ -118,7 +118,7 @@ export default function CourseTableBody({
               </TableCell>
             )}
 
-             {visibleColumns.benefits && (
+            {visibleColumns.benefits && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
                 {course.benefits || "—"}
               </TableCell>
@@ -217,19 +217,6 @@ export default function CourseTableBody({
             {/* Actions */}
             <TableCell className="w-auto px-4 py-3 whitespace-nowrap">
               <div className="flex items-center gap-2">
-                {/* Nút thêm bài học */}
-                <Button
-                  asChild
-                  variant="ghost"
-                  size="sm"
-                  className="flex items-center gap-1 !text-green-600 dark:!text-green-500 hover:!bg-green-100 dark:!hover:bg-green-200 transition-colors cursor-pointer"
-                >
-                  <Link
-                    to={`/chuong-trinh-hoc/${course.program_id}/khoa-hoc/${course.id}/bai-hoc/tao-moi`}
-                  >
-                    <Plus className="w-3 h-3" /> Bài học
-                  </Link>
-                </Button>
 
                 <Button
                   asChild
@@ -237,9 +224,7 @@ export default function CourseTableBody({
                   size="sm"
                   className="flex items-center gap-1 !text-indigo-600 dark:!text-indigo-500 hover:!bg-indigo-100 dark:!hover:bg-indigo-100 transition-colors cursor-pointer"
                 >
-                  <Link
-                    to={`/chuong-trinh-hoc/${course.program_id}/khoa-hoc/${course.id}/chinh-sua`}
-                  >
+                  <Link to={`/khoa-hoc/${course.id}/chinh-sua`}>
                     <Pencil className="w-4 h-4" />
                     Sửa
                   </Link>

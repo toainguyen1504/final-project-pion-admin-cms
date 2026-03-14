@@ -54,7 +54,8 @@ export async function fetchCoursesByProgram({
 export async function fetchCourse(id) {
   try {
     const response = await axiosInstance.get(`/admin/courses/${id}`);
-    return response.data.data;
+    // console.log("Create course response:", response.data);
+    return response.data;
   } catch (error) {
     console.error("Error fetching course:", error);
     return null;
@@ -65,6 +66,9 @@ export async function fetchCourse(id) {
 export async function createCourse(payload) {
   try {
     const response = await axiosInstance.post("/admin/courses", payload);
+
+    console.log("Create course response:", response.data);
+
     return {
       success: response.data.success,
       message: response.data.message,

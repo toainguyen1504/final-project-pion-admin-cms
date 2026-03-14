@@ -6,7 +6,6 @@ import {
   FolderKanban,
   CheckCircle2,
   XCircle,
-  Plus,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { TableBody, TableRow, TableCell } from "@/components/ui/table";
@@ -155,18 +154,6 @@ export default function ProgramTableBody({
             {/* Actions */}
             <TableCell className="w-auto px-4 py-3 whitespace-nowrap">
               <div className="flex items-center gap-2">
-                {/* Nút thêm khóa học */}
-                <Button
-                  asChild
-                  variant="ghost"
-                  size="sm"
-                  className="flex items-center gap-1 !text-green-600 dark:!text-green-500 hover:!bg-green-100 dark:!hover:bg-green-200 transition-colors cursor-pointer"
-                >
-                  <Link to={`/chuong-trinh-hoc/${program.id}/khoa-hoc/tao-moi`}>
-                    <Plus className="w-3 h-3" /> Khóa học
-                  </Link>
-                </Button>
-
                 <Button
                   onClick={() => onEditProgram(program)} // gọi callback chỉnh sửa
                   variant="ghost"

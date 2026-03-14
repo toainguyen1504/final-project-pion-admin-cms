@@ -77,11 +77,6 @@ const menuItems = [
         label: "Tất cả flashcards",
         path: "/flashcards",
       },
-      {
-        id: "exams",
-        label: "Quản lý kì thi",
-        path: "/chuong-trinh-hoc/ki-thi",
-      },
     ],
   },
   {

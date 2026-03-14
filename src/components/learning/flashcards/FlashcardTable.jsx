@@ -58,7 +58,7 @@ function FlashcardTable({
     order: false,
     lesson: true,
     course: true,
-    program: true,
+    program: false,
     created_at: true,
   };
 

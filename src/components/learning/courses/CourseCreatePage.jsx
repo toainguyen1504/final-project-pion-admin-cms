@@ -1,22 +1,24 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { Spinner } from "@/components/ui/spinner";
 
 import { createCourse } from "@/lib/api/learning/courses";
-import { fetchProgram } from "@/lib/api/learning/programs";
+import { fetchPrograms } from "@/lib/api/learning/programs";
 import { fetchCategories } from "@/lib/api/categories";
 import { getCurrentUser } from "@/utils/auth";
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
 
 export default function CourseCreatePage() {
-  const { programId } = useParams();
   const navigate = useNavigate();
 
-  const [program, setProgram] = useState(null);
+  const [programId, setProgramId] = useState("");
+  const [programs, setPrograms] = useState([]);
   const [categories, setCategories] = useState([]);
 
   // form states
@@ -36,8 +38,8 @@ export default function CourseCreatePage() {
 
   useEffect(() => {
     const loadData = async () => {
-      const prog = await fetchProgram(programId);
-      setProgram(prog);
+      const progRes = await fetchPrograms();
+      if (progRes.success) setPrograms(progRes.data);
 
       const cats = await fetchCategories();
       // lọc category có type = "course"
@@ -71,7 +73,7 @@ export default function CourseCreatePage() {
         user_id: currentUser?.id,
       });
       toast.success("Khóa học đã được tạo thành công!");
-      navigate(`/chuong-trinh-hoc/${programId}`);
+      navigate("/khoa-hoc"); // quay về trang list sau khi tạo xong
     } catch (error) {
       toast.error(error?.response?.data?.message || "Tạo khóa học thất bại!");
     } finally {
@@ -79,41 +81,53 @@ export default function CourseCreatePage() {
     }
   };
 
-  if (!program) return <div>Đang tải...</div>;
+  // if (!program) return <div>Đang tải...</div>;
 
   return (
-    <div className="px-4 py-6 max-w-2xl space-y-6">
+    <div className="px-4 py-6 space-y-6">
       {/* Breadcrumb */}
       <MultiBreadcrumb
-        items={[
-          { label: "Chương trình học", path: "/chuong-trinh-hoc" },
-          { label: program.title, path: `/chuong-trinh-hoc/${program.id}` },
-          { label: "Thêm khóa học mới" },
-        ]}
+        items={[{ label: "Khóa học", path: "/khoa-hoc" }, { label: "Tạo mới" }]}
       />
 
-      {/* Title + Desc */}
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-200">
-          Thêm khóa học mới
-        </h1>
-        <p className="text-slate-600 dark:text-slate-400">
-          Thêm khóa học mới cho chương trình học{" "}
-          <span className="font-semibold text-indigo-600 dark:text-indigo-400">
-            {program.title}
-          </span>
-        </p>
+      {/* Header + Button */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200">
+            Thêm Khóa học
+          </h2>
+          <p className="text-slate-500 mt-1">
+            Tạo khóa học mới để thêm vào hệ thống. Vui lòng điền đầy đủ thông
+            tin để khóa học hiển thị tốt trên trang học tập của người dùng.
+          </p>
+        </div>
+
+        <Button
+          type="submit"
+          form="course-form"
+          className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
+            text-white min-w-40 cursor-pointer select-none transition-all duration-300"
+          disabled={loading}
+        >
+          {loading && <Spinner className="w-4 h-4 mr-2 text-white" />}
+          Lưu Khóa Học
+        </Button>
       </div>
 
+      {/* Course Form */}
       <form
+        id="course-form"
         onSubmit={handleSubmit}
         className="bg-white dark:bg-slate-800 p-8 rounded-xl space-y-6 mt-4"
       >
         <div className="grid grid-cols-1 gap-6">
           {/* Title */}
           <div className="space-y-2">
-            <Label htmlFor="title" className="form-label">
-              Tiêu đề <span className="text-red-500 text-sm">*</span>
+            <Label
+              htmlFor="title"
+              className="form-label after:content-['*'] after:text-red-500 after:ml-1"
+            >
+              Tiêu đề
             </Label>
             <Input
               id="title"
@@ -124,51 +138,33 @@ export default function CourseCreatePage() {
             />
           </div>
 
-          {/* Status + Level + Category */}
-          <div className="flex items-center gap-6">
-            {/* Level */}
-            <div className="w-40 space-y-2">
+          {/* Program + Category + Level + Status */}
+          <div className="flex gap-6">
+            {/* Program */}
+            <div className="flex-1 space-y-2">
               <Label
-                htmlFor="level"
-                className="ml-2 text-slate-700 dark:text-slate-300"
+                htmlFor="program_id"
+                className="form-label after:content-['*'] after:text-red-500 after:ml-1"
               >
-                Cấp độ
+                Chương trình học
               </Label>
               <select
-                id="level"
-                value={level}
-                onChange={(e) => setLevel(e.target.value)}
-                className="form-select"
+                id="program_id"
+                value={programId}
+                onChange={(e) => setProgramId(e.target.value)}
+                className="form-select w-full"
+                required
               >
-                {[...Array(10).keys()].map((lv) => (
-                  <option key={lv} value={lv}>
-                    Level {lv}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Status */}
-            <div className="w-40 space-y-2">
-              <Label
-                htmlFor="status"
-                className="ml-2 text-slate-700 dark:text-slate-300"
-              >
-                Trạng thái
-              </Label>
-              <select
-                id="status"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="form-select"
-              >
-                <option value="draft">Nháp</option>
-                <option value="pending">Chờ duyệt</option>
-                <option value="published">Xuất bản</option>
-                <option value="inactive">Tạm dừng</option>
-                <option value="archived">
-                  Đã lưu trữ (không còn khả dụng)
-                </option>
+                <option value="">-- Chọn chương trình học --</option>
+                {Array.isArray(programs) && programs.length > 0 ? (
+                  programs.map((prog) => (
+                    <option key={prog.id} value={prog.id}>
+                      {prog.title}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Chưa có chương trình nào</option>
+                )}
               </select>
             </div>
 
@@ -176,15 +172,15 @@ export default function CourseCreatePage() {
             <div className="flex-1 space-y-2">
               <Label
                 htmlFor="category_id"
-                className="ml-2 text-slate-700 dark:text-slate-300"
+                className="form-label after:content-['*'] after:text-red-500 after:ml-1"
               >
-                Danh mục <span className="text-red-500 text-sm">*</span>
+                Danh mục
               </Label>
               <select
                 id="category_id"
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
-                className="form-select"
+                className="form-select w-full"
                 required
               >
                 <option value="">-- Chọn danh mục --</option>
@@ -197,6 +193,44 @@ export default function CourseCreatePage() {
                 ) : (
                   <option disabled>Chưa có danh mục nào cho khóa học</option>
                 )}
+              </select>
+            </div>
+
+            {/* Level */}
+            <div className="flex-1 space-y-2">
+              <Label htmlFor="level" className="form-label">
+                Cấp độ
+              </Label>
+              <select
+                id="level"
+                value={level}
+                onChange={(e) => setLevel(e.target.value)}
+                className="form-select w-full"
+              >
+                {[...Array(10).keys()].map((lv) => (
+                  <option key={lv} value={lv}>
+                    Level {lv}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Status */}
+            <div className="flex-1 space-y-2">
+              <Label htmlFor="status" className="form-label">
+                Trạng thái
+              </Label>
+              <select
+                id="status"
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className="form-select w-full"
+              >
+                <option value="draft">Nháp</option>
+                <option value="pending">Chờ duyệt</option>
+                <option value="published">Xuất bản</option>
+                <option value="inactive">Tạm dừng</option>
+                <option value="archived">Đã lưu trữ</option>
               </select>
             </div>
           </div>
@@ -297,16 +331,6 @@ export default function CourseCreatePage() {
             </div>
           </div>
         </div>
-
-        {/* Submit */}
-        <Button
-          type="submit"
-          disabled={loading}
-          className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
-        text-white w-full cursor-pointer select-none transition-all duration-300 mt-2"
-        >
-          {loading ? "Đang xử lý..." : "Tạo Khóa Học"}
-        </Button>
       </form>
     </div>
   );

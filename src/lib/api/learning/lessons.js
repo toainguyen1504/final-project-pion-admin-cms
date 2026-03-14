@@ -51,35 +51,11 @@ export async function fetchLessons({
   }
 }
 
-// export async function fetchLessons(
-//   courseId,
-//   page = 1,
-//   sort = "created_at",
-//   order = "desc",
-//   search = "",
-// ) {
-//   try {
-//     const response = await axiosInstance.get(
-//       `/admin/courses/${courseId}/lessons`,
-//       {
-//         params: { page, sort, order, search },
-//       },
-//     );
-//     return {
-//       data: response.data.data,
-//       meta: response.data.meta,
-//       success: true,
-//     };
-//   } catch (error) {
-//     console.error("Error fetching lessons:", error);
-//     return { data: [], meta: null, success: false };
-//   }
-// }
-
 // Get single lesson - detail
 export async function fetchLesson(id) {
   try {
     const response = await axiosInstance.get(`/admin/lessons/${id}`);
+    // console.log("Fetched lesson:", response.data.data);
     return response.data.data;
   } catch (error) {
     console.error("Error fetching lesson:", error);
