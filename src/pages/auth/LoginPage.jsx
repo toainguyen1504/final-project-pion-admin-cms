@@ -7,11 +7,12 @@ import { Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 
 import axiosInstance from "@/utils/axiosInstance";
+import { ADMIN_CMS_ROLES } from "@/constants/roles";
 import logo from "@/assets/images/logo_icon_gradient.png";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
+  const [login, setLogin] = useState(""); // username or email field
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -23,8 +24,8 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await axiosInstance.post("/login", {
-        email,
+      const response = await axiosInstance.post("/cms/login", {
+        login,
         password,
       });
 
@@ -32,8 +33,8 @@ export default function LoginPage() {
       const { token, user } = response.data;
 
       // Lưu token vào localStorage -> optimize: nên nâng cấp bảo mật (làm sau)
-      localStorage.setItem("authToken", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("authTokenCms", token);
+      localStorage.setItem("userCms", JSON.stringify(user));
 
       toast.success("Đăng nhập thành công!");
 
@@ -43,7 +44,10 @@ export default function LoginPage() {
       }, 1000);
     } catch (err) {
       if (err.response?.status === 401) {
-        setError("Sai email hoặc mật khẩu.");
+        setError("Sai email/username hoặc mật khẩu.");
+      } else if (err.response?.status === 403) {
+        setError("Tài khoản không có quyền truy cập hệ thống quản trị.");
+        toast.error("Bạn không được phép truy cập vào Admin CMS.");
       } else {
         toast.error("Có lỗi xảy ra. Vui lòng thử lại sau.");
         setError("Có lỗi xảy ra. Vui lòng thử lại sau.");
@@ -73,22 +77,20 @@ export default function LoginPage() {
 
           {/* Form */}
           <form onSubmit={handleLogin} className="space-y-6">
-            {/* Email */}
+            {/* Login (email or username) */}
             <div className="space-y-3">
-              <Label className="!text-base" htmlFor="email">
-                Email
+              <Label className="!text-base" htmlFor="login">
+                Email hoặc Username
               </Label>
               <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                autoComplete="email"
+                id="login"
+                type="text"
+                value={login}
+                onChange={(e) => setLogin(e.target.value)}
+                placeholder="you@example.com hoặc username"
+                autoComplete="username"
                 required
-                className="border !pt-5 !pb-6 !text-base border-slate-300 dark:border-slate-600 
-                focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 
-                caret-blue-600 rounded-xl"
+                className="!py-3 !text-base"
               />
             </div>
 
@@ -105,14 +107,12 @@ export default function LoginPage() {
                 placeholder="••••••••"
                 autoComplete="current-password"
                 required
-                className="!pt-5 !pb-6 !text-base border border-slate-300 dark:border-slate-600 
-                focus-visible:ring-blue-600 focus-visible:ring-1 focus-visible:ring-offset-0 
-                caret-blue-600 rounded-xl"
+                className="!py-3 !text-base"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-[40px] text-gray-500 hover:text-gray-700 cursor-pointer"
+                className="absolute right-4 top-[42px] text-gray-500 hover:text-gray-700 cursor-pointer"
               >
                 {showPassword ? (
                   <Eye className="w-5 h-5" />
@@ -124,7 +124,7 @@ export default function LoginPage() {
 
             {/* Lỗi đăng nhập */}
             {error && (
-              <p className="text-red-600 text-center font-medium">{error}</p>
+              <p className="text-red-600 text-center font-normal">{error}</p>
             )}
 
             {/* Submit */}

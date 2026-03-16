@@ -132,7 +132,7 @@ export default function CategoryTableBody({
                   className="flex items-center gap-1 !text-indigo-600 dark:!text-indigo-500 hover:!bg-indigo-100 dark:!hover:bg-indigo-100 transition-colors cursor-pointer"
                 >
                   <Pencil className="w-4 h-4" />
-                  Chỉnh sửa
+                  Sửa
                 </Button>
 
                 {/* tạm thời disable nút delete -> sau này phân quyền sau (đang disable ở modal) */}

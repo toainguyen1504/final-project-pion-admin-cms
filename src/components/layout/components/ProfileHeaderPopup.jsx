@@ -8,15 +8,15 @@ function ProfileHeaderPopup({ user }) {
   const handleLogout = async () => {
     try {
       // Call API logout
-      await axiosInstance.post("admin/logout");
+      await axiosInstance.post("/logout");
       toast.success("Successfully signed out!");
     } catch (error) {
       console.error("Logout error:", error);
       toast.error("Unable to sign out. Please try again later.");
     } finally {
       // Always clear localStorage
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("user");
+      localStorage.removeItem("authTokenCms");
+      localStorage.removeItem("userCms");
 
       // Redirect to login page
       setTimeout(() => {

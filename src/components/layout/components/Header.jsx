@@ -47,7 +47,7 @@ function Header({ onToggleSidebar }) {
 
   // Đọc user từ localStorage khi mount
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem("userCms");
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);

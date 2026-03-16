@@ -302,7 +302,7 @@ export default function PostTableBody({
                   className="flex items-center gap-1 !text-indigo-600 dark:!text-indigo-500 hover:!bg-indigo-100 dark:!hover:bg-indigo-100 transition-colors cursor-pointer"
                 >
                   <Pencil className="w-4 h-4" />
-                  Chỉnh Sửa
+                  Sửa
                 </Button>
                 <Button
                   onClick={() => {

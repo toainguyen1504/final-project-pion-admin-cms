@@ -165,7 +165,7 @@ export function PostSidebar({
           Danh Mục *
         </h3>
         <div className="relative w-full max-w-sm">
-          <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400 dark:text-slate-500" />
+          <Search className="absolute left-3 top-3 w-4 h-4 text-slate-400 dark:text-slate-500" />
 
           <Input
             value={searchTerm}

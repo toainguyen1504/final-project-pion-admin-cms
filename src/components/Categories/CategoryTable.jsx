@@ -79,7 +79,7 @@ function CategoryTable({
   // Tick single delete
   const handleSelectRow = (id) => {
     setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   };
 
@@ -99,12 +99,12 @@ function CategoryTable({
 
         await deleteCategory(selectedCategory.id);
         toast.success(
-          `Category "${selectedCategory.name}" deleted successfully!`
+          `Category "${selectedCategory.name}" deleted successfully!`,
         );
 
         // FIX: remove from selectedIds to hidden delete selected button
         setSelectedIds((prev) =>
-          prev.filter((id) => id !== selectedCategory.id)
+          prev.filter((id) => id !== selectedCategory.id),
         );
 
         setSelectedCategory(null);
@@ -162,7 +162,7 @@ function CategoryTable({
     <div className="space-y-4">
       <div className="border border-slate-300 dark:border-slate-700 rounded-xl shadow-sm overflow-x-auto">
         <Table className="w-full text-sm">
-          <TableHeader className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+          <TableHeader>
             {/* Search Row */}
             <TableRow>
               <TableCell
@@ -205,7 +205,7 @@ function CategoryTable({
              dark:hover:bg-slate-700 transition-colors duration-300"
             >
               <TableCell className="px-4 py-3 font-semibold">
-                <div className="flex items-center justify-center">  
+                <div className="flex items-center justify-center">
                   <Checkbox
                     checked={allSelected}
                     onCheckedChange={(checked) => handleSelectAll(checked)}
@@ -231,7 +231,9 @@ function CategoryTable({
               )}
 
               {visibleColumns.type && (
-                <TableCell className="px-4 py-3 font-semibold">Loại Danh Mục</TableCell>
+                <TableCell className="px-4 py-3 font-semibold">
+                  Loại Danh Mục
+                </TableCell>
               )}
 
               {visibleColumns.featured && (

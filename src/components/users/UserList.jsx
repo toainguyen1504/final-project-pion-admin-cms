@@ -1,21 +1,88 @@
-import { Helmet } from 'react-helmet-async';
+import { Helmet } from "react-helmet-async";
+import { Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
+
+import UserTable from "@/components/users/UserTable";
+import { useUsers } from "@/hooks";
+
+// Optimize for User Management Page - refactor code
+// 1. UI: Check lại UI/UX của trang danh sách người dùng - ok
+// 2. UI: Cần tạo Page để thêm mới người dùng (/nguoi-dung/tao-moi)
+// 3. UI: Cần tạo Page để chỉnh sửa người dùng (/nguoi-dung/:id/chinh-sua)
+// 4. Logic: Kết nối API từ Backend để lấy danh sách người dùng, tạo mới, chỉnh sửa, xóa vai trò (làm sau khi backend sẵn sàng)
+// 5. UI: Thống kê người dùng (nguoi-dung/thong-ke) - Gồm: Tổng số người dùng theo role, Số lượng người dùng mới theo tuần/tháng, Tỷ lệ hoạt động (active/inactive)...
+// 6. Logic: Kết nối API thống kê người dùng từ Backend (sau khi backend sẵn sàng)
 
 function UserList() {
+  const {
+    users,
+    meta,
+    loading,
+    page,
+    setPage,
+    sort,
+    order,
+    setSort,
+    setOrder,
+    search,
+    setSearch,
+    reloadUsers,
+  } = useUsers();
+
+  const navigate = useNavigate();
+
   return (
-    <div className="p-4">
+    <div className="px-4 pt-4 pb-10 space-y-3">
       <Helmet>
-        <title>All User | Pion CMS</title>
+        <title>Tất Cả Người Dùng | Pion CMS</title>
         <meta
           name="description"
-          content="List User for system management"
+          content="Danh sách người dùng cho hệ thống quản lý"
         />
         <link rel="icon" href="/assets/favicon/favicon-96x96.png" />
       </Helmet>
 
-      <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200">
-        All User
-      </h2>
-      <p className="text-slate-500 mt-2">This is the User List page</p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200">
+            Tất Cả Người Dùng
+          </h2>
+          <p className="text-slate-500 mt-0.5">
+            Xem, quản lý và cập nhật toàn bộ người dùng trong hệ thống.
+          </p>
+        </div>
+        <Button
+          onClick={() => navigate("/nguoi-dung/tao-moi")}
+          className="bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 
+          transition-colors duration-300 min-w-36 cursor-pointer rounded-xl"
+        >
+          <Plus className="w-4 h-4" />
+          Thêm Người Dùng Mới
+        </Button>
+      </div>
+
+      {loading ? (
+        <div className="flex items-center justify-center gap-2 text-slate-500 dark:text-slate-300">
+          <Spinner className="size-8 text-indigo-600 dark:text-indigo-500" />
+          <span>Đang tải người dùng...</span>
+        </div>
+      ) : (
+        <UserTable
+          data={users}
+          meta={meta}
+          page={page}
+          setPage={setPage}
+          sort={sort}
+          order={order}
+          setSort={setSort}
+          setOrder={setOrder}
+          search={search}
+          setSearch={setSearch}
+          refreshUsers={reloadUsers}
+        />
+      )}
     </div>
   );
 }

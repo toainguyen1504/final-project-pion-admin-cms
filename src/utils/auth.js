@@ -1,8 +1,30 @@
+import { USER_MANAGEMENT_ROLES, ADMIN_CMS_ROLES } from "@/constants/roles";
+
+export function canAccessAdminCMS() {
+  const role = getCurrentRole();
+  return ADMIN_CMS_ROLES.includes(role);
+}
+
 export function getCurrentUser() {
-  return JSON.parse(localStorage.getItem("user"));
+  try {
+    return JSON.parse(localStorage.getItem("userCms"));
+  } catch {
+    return null;
+  }
+}
+
+export function getCurrentRole() {
+  const user = getCurrentUser();
+  return user?.role?.name || null;
+}
+
+export function hasRole(allowedRoles = []) {
+  const role = getCurrentRole();
+  if (!role) return false;
+  return allowedRoles.includes(role);
 }
 
 export function isAdminUser() {
-  const user = getCurrentUser();
-  return user?.email === "admin@pion.vn"; // sau này sẽ phân quyền nâng cao hơn (theo role,...)
+  const role = getCurrentRole();
+  return USER_MANAGEMENT_ROLES.includes(role);
 }

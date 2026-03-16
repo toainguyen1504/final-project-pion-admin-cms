@@ -1,6 +1,12 @@
 import axiosInstance from "@/utils/axiosInstance";
 
 // ----------- PUBLIC ROUTES (index, show, stats) -----------
+
+// ----------- ADMIN ROUTES (create, update, delete, bulk) -----------
+// ===========================
+// CREATE POST
+// ===========================
+// Tính thống kê cho stats dashboard - stats
 // ===========================
 // GET ALL POSTS (with pagination) - index
 // ===========================
@@ -8,10 +14,10 @@ export async function fetchPosts(
   page = 1,
   sort = "publish_at",
   order = "desc",
-  search = ""
+  search = "",
 ) {
   try {
-    const response = await axiosInstance.get("/posts", {
+    const response = await axiosInstance.get("/admin/posts", {
       params: { page, sort, order, search },
     });
 
@@ -33,7 +39,7 @@ export async function fetchPosts(
 // ===========================
 export async function getPostById(id) {
   try {
-    const response = await axiosInstance.get(`/posts/${id}`);
+    const response = await axiosInstance.get(`/admin/posts/${id}`);
     // console.log("GET SINGLE POST (for Edit Page)", response.data.data);
     return response.data.data;
     // eslint-disable-next-line no-unused-vars
@@ -43,10 +49,9 @@ export async function getPostById(id) {
   }
 }
 
-// Tính thống kê cho stats dashboard - stats
 export async function fetchPostStats() {
   try {
-    const response = await axiosInstance.get("/posts/stats");
+    const response = await axiosInstance.get("/admin/posts/stats");
 
     const { data } = response.data;
 
@@ -66,7 +71,6 @@ export async function fetchPostStats() {
   }
 }
 
-// ----------- ADMIN ROUTES (create, update, delete, bulk) -----------
 // ===========================
 // CREATE POST
 // ===========================
@@ -88,9 +92,9 @@ export async function createPost(payload) {
     });
 
     return {
-      success: response.data.success,
-      message: response.data.message || "Post created successfully",
-      data: response.data.data,
+      success: response.data?.success === true,
+      message: response.data?.message || "Post created successfully!",
+      data: response.data?.data || null,
     };
   } catch (error) {
     console.error("Error creating post:", error);
@@ -99,6 +103,7 @@ export async function createPost(payload) {
       message:
         error.response?.data?.message ||
         "Failed to create post. Please check your input.",
+      data: null,
     };
   }
 }
@@ -124,9 +129,9 @@ export async function updatePost(id, payload) {
     });
 
     return {
-      success: response.data.success,
-      message: response.data.message || "Post updated successfully",
-      data: response.data.data,
+      success: response.data?.success === true,
+      message: response.data?.message || "Post updated successfully!",
+      data: response.data?.data || null,
     };
   } catch (error) {
     console.error("Error updating post:", error);
@@ -135,6 +140,7 @@ export async function updatePost(id, payload) {
       message:
         error.response?.data?.message ||
         "Failed to update post. Please try again.",
+      data: null,
     };
   }
 }
@@ -166,7 +172,9 @@ export async function deletePost(id) {
 // ===========================
 export async function bulkDeletePosts(ids) {
   try {
-    const response = await axiosInstance.post("/admin/posts/bulk-destroy", { ids });
+    const response = await axiosInstance.post("/admin/posts/bulk-destroy", {
+      ids,
+    });
 
     return {
       success: response.data.success,
