@@ -103,7 +103,7 @@ export default function LessonCreatePage() {
 
         <Button
           type="submit"
-          form="course-form"
+          form="lesson-form"
           className="bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
             text-white min-w-40 cursor-pointer select-none transition-all duration-300"
           disabled={loading}
@@ -114,7 +114,7 @@ export default function LessonCreatePage() {
       </div>
 
       <form
-        id="course-form"
+        id="lesson-form"
         onSubmit={handleSubmit}
         className="bg-white dark:bg-slate-800 p-8 rounded-xl space-y-6 mt-4"
       >

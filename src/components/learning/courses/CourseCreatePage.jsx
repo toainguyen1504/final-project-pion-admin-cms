@@ -21,7 +21,7 @@ export default function CourseCreatePage() {
   const [programs, setPrograms] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  // form states
+  // form states -> Form state nên gom lại
   const [title, setTitle] = useState(""); // required
   const [description, setDescription] = useState(""); // nên có để hiển thị đẹp bên frontend client - nếu public thì nên có
   const [benefits, setBenefits] = useState(""); // nên có để hiển thị đẹp bên frontend client - nếu public thì nên có
@@ -49,7 +49,7 @@ export default function CourseCreatePage() {
       setCategories(courseCategories);
     };
     loadData();
-  }, [programId]);
+  }, []);
 
   // Handle submit form
   const handleSubmit = async (e) => {
