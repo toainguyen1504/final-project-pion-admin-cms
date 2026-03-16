@@ -10,7 +10,7 @@ export default function ProtectedRoute({ allowedRoles }) {
     return <Navigate to="/login" replace />;
   }
 
-  // Có token nhưng không đủ quyền
+  // Có token nhưng role không hợp lệ
   if (allowedRoles && !allowedRoles.includes(role)) {
     return <Navigate to="/403" replace />;
   }
