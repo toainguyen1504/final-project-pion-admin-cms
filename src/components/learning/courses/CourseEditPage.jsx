@@ -13,8 +13,8 @@ import { fetchCourse, updateCourse } from "@/lib/api/learning/courses";
 import { fetchPrograms } from "@/lib/api/learning/programs";
 import { fetchCategories } from "@/lib/api/categories";
 import { getCurrentUser } from "@/utils/auth";
-
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
+import TextareaTab from "@/components/shared/TextareaTab";
 
 export default function CourseEditPage() {
   const navigate = useNavigate();
@@ -289,11 +289,16 @@ export default function CourseEditPage() {
             <Label htmlFor="benefits" className="form-label">
               Lợi ích
             </Label>
-            <Textarea
+            <TextareaTab
               id="benefits"
               value={benefits}
               onChange={(e) => setBenefits(e.target.value)}
+              placeholder="Mỗi lợi ích cách nhau bằng phím Tab hoặc xuống dòng"
             />
+            <p className="text-xs text-slate-500">
+              Ví dụ: "Cải thiện kỹ năng nghe [Tab] Tăng vốn từ vựng [Tab] Phát
+              âm chuẩn hơn"
+            </p>
           </div>
 
           {/* Price */}

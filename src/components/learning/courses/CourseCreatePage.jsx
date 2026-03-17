@@ -13,6 +13,7 @@ import { fetchPrograms } from "@/lib/api/learning/programs";
 import { fetchCategories } from "@/lib/api/categories";
 import { getCurrentUser } from "@/utils/auth";
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
+import TextareaTab from "@/components/shared/TextareaTab";
 
 export default function CourseCreatePage() {
   const navigate = useNavigate();
@@ -251,9 +252,9 @@ export default function CourseCreatePage() {
           {/* Benefits */}
           <div className="space-y-2">
             <Label htmlFor="benefits" className="form-label">
-              Lợi ích (Benefits)
+              Lợi ích
             </Label>
-            <Textarea
+            <TextareaTab
               id="benefits"
               value={benefits}
               onChange={(e) => setBenefits(e.target.value)}

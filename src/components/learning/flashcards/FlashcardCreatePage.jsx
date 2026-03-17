@@ -23,6 +23,7 @@ import { fetchPrograms } from "@/lib/api/learning/programs";
 import { fetchCoursesByProgram } from "@/lib/api/learning/courses";
 import { fetchLessons } from "@/lib/api/learning/lessons";
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
+import TextareaTab from "@/components/shared/TextareaTab";
 
 function FlashcardCreatePage() {
   const navigate = useNavigate();
@@ -299,12 +300,13 @@ function FlashcardCreatePage() {
             </Button>
           </form>
         </TabsContent>
+
         {/* Bulk flashcards */}
         <TabsContent value="bulk">
           <form onSubmit={handleBulkCreate} className="space-y-4 mt-4">
             <div className="space-y-2">
               <Label htmlFor="bulkText">Danh sách flashcards</Label>
-              <Textarea
+              <TextareaTab
                 id="bulkText"
                 value={bulkText}
                 onChange={(e) => setBulkText(e.target.value)}

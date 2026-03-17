@@ -28,6 +28,7 @@ export default function LessonEditPage() {
   const [videoUrl, setVideoUrl] = useState("");
   const [isPreview, setIsPreview] = useState(false);
   const [isQuiz, setIsQuiz] = useState(false);
+  const [order, setOrder] = useState("");
 
   const [loading, setLoading] = useState(false);
 
@@ -66,6 +67,7 @@ export default function LessonEditPage() {
         setVideoUrl(res.video_url || "");
         setIsPreview(res.is_preview || false);
         setIsQuiz(res.is_quiz || false);
+        setOrder(res.order || "");
 
         // fetch course để lấy program_id
         if (res.course_id) {
@@ -73,7 +75,7 @@ export default function LessonEditPage() {
           if (courseRes && courseRes.data) {
             setProgramId(courseRes.data.program_id || "");
           }
-        //   console.log("Fetched course for lesson:", courseRes);
+          //   console.log("Fetched course for lesson:", courseRes);
         }
       }
     };
@@ -83,7 +85,15 @@ export default function LessonEditPage() {
   // Handle submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // validate order trước
+    if (order && !Number.isInteger(Number(order))) {
+      toast.error("Thứ tự bài học phải là số nguyên.");
+      return;
+    }
+
     setLoading(true);
+
     try {
       await updateLesson(id, {
         course_id: courseId,
@@ -93,13 +103,16 @@ export default function LessonEditPage() {
         video_url: videoUrl,
         is_preview: isPreview,
         is_quiz: isQuiz,
+        order: order ? Number(order) : undefined,
       });
+
       toast.success("Bài học đã được cập nhật thành công!");
       navigate("/bai-hoc");
     } catch (error) {
-      toast.error(
-        error?.response?.data?.message || "Cập nhật bài học thất bại!",
-      );
+      const message =
+        error?.response?.data?.message || "Cập nhật bài học thất bại!";
+
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -246,6 +259,22 @@ export default function LessonEditPage() {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Nội dung chi tiết của bài học"
+          />
+        </div>
+
+        {/* Order */}
+        <div className="w-60 space-y-2">
+          <Label htmlFor="order" className="form-label">
+            Thứ tự
+          </Label>
+          <Input
+            id="order"
+            type="number"
+            step="1"
+            min="1"
+            value={order}
+            onChange={(e) => setOrder(e.target.value)}
+            placeholder="VD: 1 - Tự động nếu để trống"
           />
         </div>
 
