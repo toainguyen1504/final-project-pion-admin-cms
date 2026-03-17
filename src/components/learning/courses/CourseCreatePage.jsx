@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -12,28 +14,35 @@ import { createCourse } from "@/lib/api/learning/courses";
 import { fetchPrograms } from "@/lib/api/learning/programs";
 import { fetchCategories } from "@/lib/api/categories";
 import { getCurrentUser } from "@/utils/auth";
+
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
 import TextareaTab from "@/components/shared/TextareaTab";
+
+import useCourseForm from "@/hooks/learning/useCourseForm";
 
 export default function CourseCreatePage() {
   const navigate = useNavigate();
 
-  const [programId, setProgramId] = useState("");
   const [programs, setPrograms] = useState([]);
   const [categories, setCategories] = useState([]);
 
-  // form states -> Form state nên gom lại
-  const [title, setTitle] = useState(""); // required
-  const [description, setDescription] = useState(""); // nên có để hiển thị đẹp bên frontend client - nếu public thì nên có
-  const [benefits, setBenefits] = useState(""); // nên có để hiển thị đẹp bên frontend client - nếu public thì nên có
-  const [language, setLanguage] = useState("");
-  const [thumbnail, setThumbnail] = useState(""); // nên có để hiển thị đẹp bên frontend client - nếu public thì nên có
-  const [price, setPrice] = useState(0);
-  const [discountPrice, setDiscountPrice] = useState("");
-  const [isFree, setIsFree] = useState(false);
-  const [level, setLevel] = useState(0);
-  const [status, setStatus] = useState("draft");
-  const [categoryId, setCategoryId] = useState(""); // required
+  // dùng custom hook
+  const { form, updateField } = useCourseForm();
+
+  const {
+    program_id,
+    title,
+    description,
+    benefits,
+    language,
+    thumbnail,
+    price,
+    discount_price,
+    is_free,
+    level,
+    status,
+    category_id,
+  } = form;
 
   const [loading, setLoading] = useState(false);
 
@@ -43,7 +52,6 @@ export default function CourseCreatePage() {
       if (progRes.success) setPrograms(progRes.data);
 
       const cats = await fetchCategories();
-      // lọc category có type = "course"
       const courseCategories = (cats.data || []).filter(
         (cat) => cat.type === "course",
       );
@@ -56,25 +64,19 @@ export default function CourseCreatePage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       const currentUser = getCurrentUser();
+
       await createCourse({
-        program_id: programId,
-        title,
-        description,
-        benefits,
-        language,
-        thumbnail,
-        price,
-        discount_price: discountPrice || null,
-        is_free: isFree,
-        level,
-        status,
-        category_id: categoryId || null,
+        ...form,
+        discount_price: discount_price || null,
+        category_id: category_id || null,
         user_id: currentUser?.id,
       });
+
       toast.success("Khóa học đã được tạo thành công!");
-      navigate("/khoa-hoc"); // quay về trang list sau khi tạo xong
+      navigate("/khoa-hoc");
     } catch (error) {
       toast.error(error?.response?.data?.message || "Tạo khóa học thất bại!");
     } finally {
@@ -82,10 +84,16 @@ export default function CourseCreatePage() {
     }
   };
 
-  // if (!program) return <div>Đang tải...</div>;
-
   return (
     <div className="px-4 py-6 space-y-6">
+      <Helmet>
+        <title>Thêm khóa học | Pion CMS</title>
+        <meta
+          name="description"
+          content="Tạo mới khóa học trong hệ thống quản lý"
+        />
+      </Helmet>
+
       {/* Breadcrumb */}
       <MultiBreadcrumb
         items={[{ label: "Khóa học", path: "/khoa-hoc" }, { label: "Tạo mới" }]}
@@ -133,7 +141,7 @@ export default function CourseCreatePage() {
             <Input
               id="title"
               value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              onChange={(e) => updateField("title", e.target.value)}
               required
               placeholder="VD: Ferris Wheel 1"
             />
@@ -151,8 +159,8 @@ export default function CourseCreatePage() {
               </Label>
               <select
                 id="program_id"
-                value={programId}
-                onChange={(e) => setProgramId(e.target.value)}
+                value={program_id}
+                onChange={(e) => updateField("program_id", e.target.value)}
                 className="form-select w-full"
                 required
               >
@@ -179,8 +187,8 @@ export default function CourseCreatePage() {
               </Label>
               <select
                 id="category_id"
-                value={categoryId}
-                onChange={(e) => setCategoryId(e.target.value)}
+                value={category_id}
+                onChange={(e) => updateField("category_id", e.target.value)}
                 className="form-select w-full"
                 required
               >
@@ -205,7 +213,7 @@ export default function CourseCreatePage() {
               <select
                 id="level"
                 value={level}
-                onChange={(e) => setLevel(e.target.value)}
+                onChange={(e) => updateField("level", e.target.value)}
                 className="form-select w-full"
               >
                 {[...Array(10).keys()].map((lv) => (
@@ -224,7 +232,7 @@ export default function CourseCreatePage() {
               <select
                 id="status"
                 value={status}
-                onChange={(e) => setStatus(e.target.value)}
+                onChange={(e) => updateField("status", e.target.value)}
                 className="form-select w-full"
               >
                 <option value="draft">Nháp</option>
@@ -244,7 +252,7 @@ export default function CourseCreatePage() {
             <Textarea
               id="description"
               value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              onChange={(e) => updateField("description", e.target.value)}
               placeholder="Mô tả ngắn về khóa học"
             />
           </div>
@@ -257,17 +265,30 @@ export default function CourseCreatePage() {
             <TextareaTab
               id="benefits"
               value={benefits}
-              onChange={(e) => setBenefits(e.target.value)}
-              placeholder="Mỗi lợi ích cách nhau bằng phím Tab hoặc xuống dòng"
+              onChange={(e) => updateField("benefits", e.target.value)}
+              placeholder="Mỗi lợi ích cách nhau bằng phím Tab hoặc Xuống dòng"
             />
             <p className="text-xs text-slate-500">
-              Ví dụ: "Cải thiện kỹ năng nghe [Tab] Tăng vốn từ vựng [Tab] Phát
-              âm chuẩn hơn"
+              Ví dụ: Cải thiện kỹ năng nghe [Tab] Tăng vốn từ vựng [Tab] Phát âm
+              chuẩn hơn"
             </p>
           </div>
 
           {/* Price + Discount + Free */}
           <div className="flex items-center gap-6">
+            <div className="flex-1 space-y-2">
+              <Label htmlFor="language" className="form-label">
+                Ngôn ngữ
+              </Label>
+              <Input
+                id="language"
+                value={language}
+                onChange={(e) => updateField("language", e.target.value)}
+                placeholder="VD: Tiếng Anh"
+              />
+            </div>
+
+            {/* Price */}
             <div className="flex-1 space-y-2">
               <Label htmlFor="price" className="form-label">
                 Giá
@@ -276,11 +297,12 @@ export default function CourseCreatePage() {
                 id="price"
                 type="number"
                 value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                disabled={isFree}
+                onChange={(e) => updateField("price", e.target.value)}
+                disabled={is_free}
                 placeholder="VD: 500000"
               />
             </div>
+
             <div className="flex-1 space-y-2">
               <Label htmlFor="discount_price" className="form-label">
                 Giá khuyến mãi
@@ -288,16 +310,17 @@ export default function CourseCreatePage() {
               <Input
                 id="discount_price"
                 type="number"
-                value={discountPrice}
-                onChange={(e) => setDiscountPrice(e.target.value)}
+                value={discount_price}
+                onChange={(e) => updateField("discount_price", e.target.value)}
+                disabled={is_free}
                 placeholder="VD: 400000"
               />
             </div>
+
             <div className="flex items-center gap-2 ml-2 mt-7">
-              <input
-                type="checkbox"
-                checked={isFree}
-                onChange={(e) => setIsFree(e.target.checked)}
+              <Checkbox
+                checked={is_free}
+                onCheckedChange={(val) => updateField("is_free", val)}
               />
               <span className="text-slate-700 dark:text-slate-300">
                 Miễn phí
@@ -305,19 +328,8 @@ export default function CourseCreatePage() {
             </div>
           </div>
 
-          {/* Language + Thumbnail */}
+          {/* Thumbnail -> optimize sẽ dùng library media */}
           <div className="flex items-center gap-6">
-            <div className="w-40 space-y-2">
-              <Label htmlFor="language" className="form-label">
-                Ngôn ngữ
-              </Label>
-              <Input
-                id="language"
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                placeholder="VD: Tiếng Anh"
-              />
-            </div>
             <div className="flex-1 space-y-2">
               <Label htmlFor="thumbnail" className="form-label">
                 Ảnh thumbnail
@@ -326,7 +338,7 @@ export default function CourseCreatePage() {
                 id="thumbnail"
                 type="text"
                 value={thumbnail}
-                onChange={(e) => setThumbnail(e.target.value)}
+                onChange={(e) => updateField("thumbnail", e.target.value)}
                 placeholder="URL ảnh thumbnail"
               />
             </div>

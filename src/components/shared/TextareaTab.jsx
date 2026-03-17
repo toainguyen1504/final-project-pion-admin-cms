@@ -5,9 +5,10 @@ import { forwardRef } from "react";
  * Textarea hỗ trợ phím Tab để indent (không chuyển focus)
  */
 const TextareaTab = forwardRef(
-  ({ value = "", onChange, tabSize = 4, ...props }, ref) => {
+  ({ value = "", onChange, rows = 5, ...props }, ref) => {
     // đảm bảo luôn là string
     const safeValue = Array.isArray(value) ? value.join("\n") : String(value);
+    const safeRows = Math.max(3, rows);
 
     const handleKeyDown = (e) => {
       if (e.key === "Tab") {
@@ -37,6 +38,7 @@ const TextareaTab = forwardRef(
       <Textarea
         ref={ref}
         value={safeValue}
+        rows={safeRows}
         onChange={onChange}
         onKeyDown={handleKeyDown}
         {...props}
