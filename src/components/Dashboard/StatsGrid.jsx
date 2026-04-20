@@ -10,37 +10,14 @@ import {
 import { fetchCategoryStats } from "@/lib/api/categories";
 import { fetchPostStats } from "@/lib/api/posts";
 import { fetchUserStats } from "@/lib/api/users";
+import { fetchConsultationStats } from "@/lib/api/consultation";
 import { useLoadStats } from "@/hooks/useLoadStats";
-
-// Mock data Consultations và Users: const stats = [
-//   // {
-//   //   title: "Consultations",
-//   //   value: "328",
-//   //   change: "-2.3%",
-//   //   trend: "down",
-//   //   icon: MessagesSquare,
-//   //   color: "from-red-500 to-pink-600",
-//   //   bgColor: "from-red-50 to-pink-100",
-//   //   darkBgColor: "dark:from-red-900 dark:to-pink-900",
-//   //   textColor: "text-red-600 dark:text-red-400",
-//   // },
-//   // {
-//   //   title: "Active Users",
-//   //   value: "8,549",
-//   //   change: "+3.2%",
-//   //   trend: "up",
-//   //   icon: Users,
-//   //   color: "from-blue-500 to-teal-600",
-//   //   bgColor: "from-blue-50 to-teal-100",
-//   //   darkBgColor: "dark:from-blue-900 dark:to-teal-900",
-//   //   textColor: "text-blue-600 dark:text-blue-400",
-//   // },
-// ];
 
 function StatsGrid() {
   const categoryStat = useLoadStats(fetchCategoryStats, "Tổng Danh Mục");
   const postStat = useLoadStats(fetchPostStats, "Tổng Bài Viết");
   const userStat = useLoadStats(fetchUserStats, "Tổng Người Dùng");
+  const consultationStat = useLoadStats(fetchConsultationStats, "Tổng Tư Vấn");
 
   const stats = [
     {
@@ -58,6 +35,14 @@ function StatsGrid() {
       bgColor: "from-indigo-50 to-purple-100",
       darkBgColor: "dark:from-indigo-900 dark:to-purple-900",
       textColor: "text-indigo-600 dark:text-indigo-400",
+    },
+    {
+      ...consultationStat,
+      icon: MessagesSquare,
+      color: "from-rose-500 to-pink-600",
+      bgColor: "from-rose-50 to-pink-100",
+      darkBgColor: "dark:from-rose-900 dark:to-pink-900",
+      textColor: "text-rose-600 dark:text-rose-400",
     },
     {
       ...userStat,
