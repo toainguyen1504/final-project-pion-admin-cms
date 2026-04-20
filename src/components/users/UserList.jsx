@@ -6,14 +6,7 @@ import { Button } from "@/components/ui/button";
 
 import UserTable from "@/components/users/UserTable";
 import { useUsers } from "@/hooks";
-
-// Optimize for User Management Page - refactor code
-// 1. UI: Check lại UI/UX của trang danh sách người dùng - ok
-// 2. UI: Cần tạo Page để thêm mới người dùng (/nguoi-dung/tao-moi)
-// 3. UI: Cần tạo Page để chỉnh sửa người dùng (/nguoi-dung/:id/chinh-sua)
-// 4. Logic: Kết nối API từ Backend để lấy danh sách người dùng, tạo mới, chỉnh sửa, xóa vai trò (làm sau khi backend sẵn sàng)
-// 5. UI: Thống kê người dùng (nguoi-dung/thong-ke) - Gồm: Tổng số người dùng theo role, Số lượng người dùng mới theo tuần/tháng, Tỷ lệ hoạt động (active/inactive)...
-// 6. Logic: Kết nối API thống kê người dùng từ Backend (sau khi backend sẵn sàng)
+import { getCurrentUser } from "@/utils/auth";
 
 function UserList() {
   const {
@@ -32,9 +25,10 @@ function UserList() {
   } = useUsers();
 
   const navigate = useNavigate();
+  const currentUser = getCurrentUser();
 
   return (
-    <div className="px-4 pt-4 pb-10 space-y-3">
+    <div className="space-y-3 px-4 pt-4 pb-10">
       <Helmet>
         <title>Tất Cả Người Dùng | Pion CMS</title>
         <meta
@@ -49,16 +43,16 @@ function UserList() {
           <h2 className="text-2xl font-bold text-slate-700 dark:text-slate-200">
             Tất Cả Người Dùng
           </h2>
-          <p className="text-slate-500 mt-0.5">
+          <p className="mt-0.5 text-slate-500">
             Xem, quản lý và cập nhật toàn bộ người dùng trong hệ thống.
           </p>
         </div>
+
         <Button
           onClick={() => navigate("/nguoi-dung/tao-moi")}
-          className="bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 
-          transition-colors duration-300 min-w-36 cursor-pointer rounded-xl"
+          className="min-w-36 cursor-pointer rounded-xl bg-indigo-600 text-white transition-colors duration-300 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="h-4 w-4" />
           Thêm Người Dùng Mới
         </Button>
       </div>
@@ -81,6 +75,7 @@ function UserList() {
           search={search}
           setSearch={setSearch}
           refreshUsers={reloadUsers}
+          currentUser={currentUser}
         />
       )}
     </div>

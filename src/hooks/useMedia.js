@@ -11,22 +11,22 @@ export function useMedia() {
       ? import.meta.env.VITE_BASE_MEDIA_URL_LOCAL
       : import.meta.env.VITE_BASE_MEDIA_URL_PRODUCTION;
 
-  // 🧩 Lấy toàn bộ media
+  // Lấy toàn bộ media
   const loadMedia = async () => {
     try {
       setLoading(true);
       const data = await fetchMedia();
-      // console.log("✅ Media fetched from API:", data);
+      // console.log("Media fetched from API:", data);
       setMediaList(data);
     // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      // console.error("❌ Error loading media:", error);
+      // console.error("Error loading media:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  // 🧩 Upload media rồi reload lại danh sách
+  // Upload media rồi reload lại danh sách
   const handleUpload = async (files) => {
     try {
       setLoading(true);

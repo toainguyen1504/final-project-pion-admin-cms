@@ -85,7 +85,9 @@ export default function CourseEditPage() {
 
       await updateCourse(id, {
         ...form,
-        discount_price: discount_price || null,
+        benefits: Array.isArray(benefits) ? benefits.join("\n") : benefits,
+        price: Number(price),
+        discount_price: Number(discount_price) || null,
         category_id: category_id || null,
         user_id: currentUser?.id,
       });

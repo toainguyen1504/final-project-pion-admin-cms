@@ -1,65 +1,71 @@
-import { useEffect, useState, useRef } from "react";
-// import { fetchUsers } from "@/lib/api/users"; // FIX sau khi code backend xong
-import { mockUsers } from "@/data/mockUsers"; // mock data
+import { useCallback, useEffect, useState } from "react";
+import { fetchUsers } from "@/lib/api/users";
+
+function normalizeUser(user) {
+  return {
+    ...user,
+    display_name: user.display_name || user.name || "",
+    profile_image: user.profile_image || user.avatar || null,
+    createdAt: user.createdAt || user.created_at || null,
+    role: user.role || null,
+  };
+}
+
+function mapSortField(sort) {
+  const sortMap = {
+    display_name: "display_name",
+    createdAt: "created_at",
+    created_at: "created_at",
+    email: "email",
+    phone: "phone",
+  };
+
+  return sortMap[sort] || "created_at";
+}
 
 export function useUsers() {
   const [users, setUsers] = useState([]);
   const [meta, setMeta] = useState(null);
-  const [loading, setLoading] = useState(true); // load page
+  const [loading, setLoading] = useState(true);
+
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState("createdAt");
   const [order, setOrder] = useState("desc");
   const [search, setSearch] = useState("");
 
-  const isFirstLoad = useRef(true);
-
-  const fetchData = async () => {
-    if (isFirstLoad.current) {
-      setLoading(true);
-      isFirstLoad.current = false;
-    }
-    
+  const loadUsers = useCallback(async () => {
     try {
-      // giả lập filter, sort, search trên mockUsers
-      let data = [...mockUsers];
+      setLoading(true);
 
-      // search theo display_name hoặc email
-      if (search) {
-        data = data.filter(
-          (u) =>
-            u.display_name.toLowerCase().includes(search.toLowerCase()) ||
-            u.email.toLowerCase().includes(search.toLowerCase())
-        );
-      }
-      // sort theo field
+      const response = await fetchUsers(
+        page,
+        mapSortField(sort),
+        order,
+        search,
+      );
 
-      data.sort((a, b) => {
-        const valA = a[sort];
-        const valB = b[sort];
-        if (order === "asc") return valA > valB ? 1 : -1;
-        return valA < valB ? 1 : -1;
-      });
+      const normalizedUsers = Array.isArray(response.data)
+        ? response.data.map(normalizeUser)
+        : [];
 
-      // phân trang giả lập (10 item mỗi trang)
-      const perPage = 6;
-      const start = (page - 1) * perPage;
-      const paginated = data.slice(start, start + perPage);
-      setUsers(paginated);
-      setMeta({
-        current_page: page,
-        last_page: Math.ceil(data.length / perPage),
-        total: data.length,
-      });
+      setUsers(normalizedUsers);
+      setMeta(response.meta);
     } catch (error) {
       console.error("Error loading users:", error);
+      setUsers([]);
+      setMeta(null);
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, sort, order, search]);
 
   useEffect(() => {
-    fetchData();
-  }, [page, sort, order, search]);
+    loadUsers();
+  }, [loadUsers]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [search]);
 
   return {
     users,
@@ -73,6 +79,6 @@ export function useUsers() {
     setOrder,
     search,
     setSearch,
-    reloadUsers: fetchData,
+    reloadUsers: loadUsers,
   };
 }

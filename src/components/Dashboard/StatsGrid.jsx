@@ -9,6 +9,7 @@ import {
 
 import { fetchCategoryStats } from "@/lib/api/categories";
 import { fetchPostStats } from "@/lib/api/posts";
+import { fetchUserStats } from "@/lib/api/users";
 import { useLoadStats } from "@/hooks/useLoadStats";
 
 // Mock data Consultations và Users: const stats = [
@@ -39,6 +40,7 @@ import { useLoadStats } from "@/hooks/useLoadStats";
 function StatsGrid() {
   const categoryStat = useLoadStats(fetchCategoryStats, "Tổng Danh Mục");
   const postStat = useLoadStats(fetchPostStats, "Tổng Bài Viết");
+  const userStat = useLoadStats(fetchUserStats, "Tổng Người Dùng");
 
   const stats = [
     {
@@ -56,6 +58,14 @@ function StatsGrid() {
       bgColor: "from-indigo-50 to-purple-100",
       darkBgColor: "dark:from-indigo-900 dark:to-purple-900",
       textColor: "text-indigo-600 dark:text-indigo-400",
+    },
+    {
+      ...userStat,
+      icon: Users,
+      color: "from-blue-500 to-cyan-600",
+      bgColor: "from-blue-50 to-cyan-100",
+      darkBgColor: "dark:from-blue-900 dark:to-cyan-900",
+      textColor: "text-blue-600 dark:text-blue-400",
     },
   ];
 

@@ -3,6 +3,11 @@ import useSeoBasicScore from "./useSeoBasicScore";
 import useSeoReadabilityScore from "./useSeoReadabilityScore";
 import useSeoAdditionalScore from "./useSeoAdditionalScore";
 
+// *** Một số điểm cần cải thiện ***
+// - Content length nên >=300 → ok, >=1000 → tốt (vì một số bài viết chuyên sâu thì 4000 từ vẫn ổn)
+// - Image >=3 là hơi chưa tốt, Blog ngắn vẫn ok với 1–2 hình
+// - Media = optional, thực tế 90% bài viết không cần video
+// -----> chỉ giống SEO scoring engine chuẩn SaaS (giống RankMath) 80%, cần optimize thêm
 export default function useSeoScore() {
   const { calculateBasicScore } = useSeoBasicScore();
   const { calculateReadabilityScore } = useSeoReadabilityScore();

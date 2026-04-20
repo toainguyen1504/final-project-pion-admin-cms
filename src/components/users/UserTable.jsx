@@ -1,17 +1,21 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { Table, TableHeader, TableRow, TableCell } from "@/components/ui/table";
-
 import { Checkbox } from "@/components/ui/checkbox";
 
 import SortableHeaderCell from "@/components/shared/table/SortableHeaderCell";
 import DeleteConfirmDialog from "@/components/shared/DeleteConfirmDialog";
-
-import { deleteUser, bulkDeleteUsers } from "@/lib/api/users";
-
 import TableToolbar from "@/components/shared/table/TableToolbar";
 import UserTableBody from "@/components/users/UserTableBody";
+import ResetPasswordResultDialog from "@/components/users/ResetPasswordResultDialog";
+
+import {
+  deleteUser,
+  bulkDeleteUsers,
+  resetUserPassword,
+} from "@/lib/api/users";
+import { ROLES } from "@/constants/roles";
 
 function UserTable({
   data,
@@ -25,20 +29,20 @@ function UserTable({
   search,
   setSearch,
   refreshUsers,
+  currentUser,
 }) {
   const totalPages = meta?.last_page || 1;
 
   const [selectedIds, setSelectedIds] = useState([]);
   const [typingValue, setTypingValue] = useState(search);
 
-  // default columns
   const defaultColumns = {
     profile_image: true,
     display_name: true,
-    username: false,
+    username: true,
     email: true,
     gender: false,
-    phone: true,
+    phone: false,
     role: true,
     createdAt: true,
   };
@@ -47,20 +51,42 @@ function UserTable({
   const [tempColumns, setTempColumns] = useState(defaultColumns);
   const [popoverOpen, setPopoverOpen] = useState(false);
 
-  // delete dialog state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteMode, setDeleteMode] = useState("bulk");
   const [selectedUser, setSelectedUser] = useState(null);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
 
+  const [resettingUserId, setResettingUserId] = useState(null);
+  const [resetResultOpen, setResetResultOpen] = useState(false);
+  const [resetResult, setResetResult] = useState(null);
+
   const isTempInitializedRef = useRef(false);
 
-  const allSelected = data.length > 0 && selectedIds.length === data.length;
+  const isProtectedUser = (user) => {
+    const isCurrentUser = currentUser?.id === user.id;
+    const isTargetSuperAdmin = user?.role?.name === ROLES.SUPER_ADMIN;
+    const isCurrentUserSuperAdmin =
+      currentUser?.role?.name === ROLES.SUPER_ADMIN;
+
+    if (isCurrentUser) return true;
+    if (isTargetSuperAdmin && !isCurrentUserSuperAdmin) return true;
+
+    return false;
+  };
+
+  const selectableRows = useMemo(
+    () => data.filter((item) => !isProtectedUser(item)),
+    [data, currentUser],
+  );
+
+  const allSelected =
+    selectableRows.length > 0 &&
+    selectableRows.every((item) => selectedIds.includes(item.id));
 
   const handleSelectAll = (checked) => {
     if (checked) {
-      setSelectedIds(data.map((item) => item.id));
+      setSelectedIds(selectableRows.map((item) => item.id));
     } else {
       setSelectedIds([]);
     }
@@ -68,36 +94,80 @@ function UserTable({
 
   const handleSelectRow = (id) => {
     setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
   };
 
   const handleConfirmDelete = async () => {
     setLoadingDelete(true);
+
     try {
       if (deleteMode === "bulk") {
         if (selectedIds.length === 0) return;
+
         await bulkDeleteUsers(selectedIds);
-        toast.success(`${selectedIds.length} users deleted successfully!`);
+        toast.success(`Đã xoá ${selectedIds.length} người dùng.`);
         setSelectedIds([]);
       } else if (deleteMode === "single") {
         if (!selectedUser) return;
+
         await deleteUser(selectedUser.id);
-        toast.success(
-          `User "${selectedUser.display_name}" deleted successfully!`
-        );
+        toast.success(`Đã xoá người dùng "${selectedUser.display_name}".`);
+
         setSelectedIds((prev) => prev.filter((id) => id !== selectedUser.id));
         setSelectedUser(null);
       }
+
       if (typeof refreshUsers === "function") {
         await refreshUsers();
       }
     } catch (error) {
       console.error(error);
-      toast.error(error?.response?.data?.message || "Delete failed!");
+      toast.error(error?.response?.data?.message || "Xoá người dùng thất bại.");
     } finally {
       setLoadingDelete(false);
       setDeleteDialogOpen(false);
+    }
+  };
+
+  const handleResetPassword = async (user) => {
+    try {
+      setResettingUserId(user.id);
+
+      const response = await resetUserPassword(user.id);
+      console.log("reset password response:", response);
+
+      const username =
+        response?.username ||
+        response?.data?.username ||
+        user.username ||
+        user.email ||
+        "";
+
+      const plainPassword =
+        response?.plain_password ||
+        response?.data?.plain_password ||
+        response?.new_password ||
+        response?.data?.new_password ||
+        "";
+
+      if (!plainPassword) {
+        toast.error("API chưa trả về mật khẩu mới.");
+        return;
+      }
+
+      setResetResult({
+        username,
+        plain_password: plainPassword,
+      });
+
+      setResetResultOpen(true);
+      toast.success(`Đã reset mật khẩu cho "${user.display_name}".`);
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message || "Reset mật khẩu thất bại.");
+    } finally {
+      setResettingUserId(null);
     }
   };
 
@@ -123,23 +193,32 @@ function UserTable({
 
   useEffect(() => {
     if (typingValue === search) return;
+
     setSearchLoading(true);
+
     const timeout = setTimeout(() => {
       setSearch(typingValue);
       setSearchLoading(false);
+      setSelectedIds([]);
     }, 600);
+
     return () => clearTimeout(timeout);
-  }, [typingValue]);
+  }, [typingValue, search, setSearch]);
+
+  useEffect(() => {
+    setSelectedIds((prev) =>
+      prev.filter((id) => data.some((item) => item.id === id)),
+    );
+  }, [data]);
 
   return (
     <div className="space-y-4">
-      <div className="border border-slate-300 dark:border-slate-700 rounded-xl shadow-sm overflow-x-auto">
+      <div className="overflow-x-auto rounded-xl border border-slate-300 shadow-sm dark:border-slate-700">
         <Table className="w-full text-sm">
           <TableHeader>
-            {/* Search Row */}
             <TableRow>
               <TableCell
-                className="px-4 py-3 border-b border-slate-300 dark:border-slate-700"
+                className="border-b border-slate-300 px-4 py-3 dark:border-slate-700"
                 colSpan={toolbarColSpan}
               >
                 <TableToolbar
@@ -155,7 +234,7 @@ function UserTable({
                   columnsConfig={[
                     { key: "profile_image", label: "Ảnh" },
                     { key: "display_name", label: "Tên hiển thị" },
-                    { key: "username", label: "Tên đăng nhập" },
+                    { key: "username", label: "Username" },
                     { key: "email", label: "Email" },
                     { key: "gender", label: "Giới tính" },
                     { key: "phone", label: "Số điện thoại" },
@@ -168,6 +247,7 @@ function UserTable({
                   onResetColumns={handleResetColumns}
                   isTempInitializedRef={isTempInitializedRef}
                   onDeleteSelected={() => {
+                    if (selectedIds.length === 0) return;
                     setDeleteMode("bulk");
                     setDeleteDialogOpen(true);
                   }}
@@ -175,13 +255,13 @@ function UserTable({
               </TableCell>
             </TableRow>
 
-            {/* Label Row */}
             <TableRow className="border-b border-slate-300 dark:border-slate-700">
               <TableCell className="px-4 py-3 font-semibold">
                 <div className="flex items-center justify-center">
                   <Checkbox
                     checked={allSelected}
                     onCheckedChange={(checked) => handleSelectAll(checked)}
+                    disabled={selectableRows.length === 0}
                   />
                 </div>
               </TableCell>
@@ -189,7 +269,6 @@ function UserTable({
               {visibleColumns.profile_image && (
                 <TableCell className="px-4 py-3 font-semibold">Ảnh</TableCell>
               )}
-
               {visibleColumns.display_name && (
                 <TableCell className="px-4 py-3 font-semibold">
                   <SortableHeaderCell
@@ -202,31 +281,29 @@ function UserTable({
                   />
                 </TableCell>
               )}
-
               {visibleColumns.username && (
                 <TableCell className="px-4 py-3 font-semibold">
-                  Tên đăng nhập
+                  Username
                 </TableCell>
               )}
-
               {visibleColumns.email && (
                 <TableCell className="px-4 py-3 font-semibold">Email</TableCell>
               )}
-
               {visibleColumns.gender && (
-                <TableCell className="px-4 py-3 font-semibold">Giới tính</TableCell>
+                <TableCell className="px-4 py-3 font-semibold">
+                  Giới tính
+                </TableCell>
               )}
-
               {visibleColumns.phone && (
-                <TableCell className="px-4 py-3 font-semibold">Số điện thoại</TableCell>
+                <TableCell className="px-4 py-3 font-semibold">
+                  Số điện thoại
+                </TableCell>
               )}
-
               {visibleColumns.role && (
                 <TableCell className="px-4 py-3 font-semibold">
                   Vai trò
                 </TableCell>
               )}
-
               {visibleColumns.createdAt && (
                 <TableCell className="px-4 py-3 font-semibold">
                   <SortableHeaderCell
@@ -240,9 +317,10 @@ function UserTable({
                 </TableCell>
               )}
 
-              <TableCell className="px-4 py-3 font-semibold"></TableCell>
+              <TableCell className="px-4 py-3 font-semibold" />
             </TableRow>
           </TableHeader>
+
           <UserTableBody
             data={data}
             visibleColumns={visibleColumns}
@@ -255,6 +333,9 @@ function UserTable({
             setDeleteMode={setDeleteMode}
             setSelectedUser={setSelectedUser}
             setDeleteDialogOpen={setDeleteDialogOpen}
+            currentUser={currentUser}
+            onResetPassword={handleResetPassword}
+            resettingUserId={resettingUserId}
           />
         </Table>
       </div>
@@ -270,6 +351,12 @@ function UserTable({
         }
         onConfirm={handleConfirmDelete}
         loading={loadingDelete}
+      />
+
+      <ResetPasswordResultDialog
+        open={resetResultOpen}
+        onOpenChange={setResetResultOpen}
+        account={resetResult}
       />
     </div>
   );
