@@ -12,18 +12,20 @@ export async function fetchFlashcards({
   perPage = 10,
 }) {
   try {
-    const response = await axiosInstance.get("/admin/flashcards", {
-      params: {
-        page,
-        sort,
-        order,
-        search,
-        lesson_id: lessonId,
-        course_id: courseId,
-        program_id: programId,
-        per_page: perPage,
-      },
-    });
+    const params = {
+      page,
+      sort,
+      order,
+      search,
+      per_page: perPage,
+    };
+
+    if (lessonId) params.lesson_id = Number(lessonId);
+    if (courseId) params.course_id = Number(courseId);
+    if (programId) params.program_id = Number(programId);
+
+    const response = await axiosInstance.get("/admin/flashcards", { params });
+
     return {
       data: response.data.data,
       meta: response.data.meta,
@@ -34,6 +36,7 @@ export async function fetchFlashcards({
     return { data: [], meta: null, success: false };
   }
 }
+
 
 // Get single flashcard
 export async function fetchFlashcard(id) {

@@ -13,17 +13,17 @@ import FlashcardTable from "./FlashcardTable";
 
 function FlashcardListPage() {
   const [programId, setProgramId] = useState(
-    localStorage.getItem("programId") || "",
+    localStorage.getItem("flashcard_programId") || "",
   );
   const [programOptions, setProgramOptions] = useState([]);
 
   const [courseId, setCourseId] = useState(
-    localStorage.getItem("courseId") || "",
+    localStorage.getItem("flashcard_courseId") || "",
   );
   const [courseOptions, setCourseOptions] = useState([]);
 
   const [lessonId, setLessonId] = useState(
-    localStorage.getItem("lessonId") || "",
+    localStorage.getItem("flashcard_lessonId") || "",
   );
   const [lessonOptions, setLessonOptions] = useState([]);
 
@@ -43,27 +43,55 @@ function FlashcardListPage() {
     loadPrograms();
   }, []);
 
+  // Persist localStorage
+  useEffect(() => {
+    if (programId) localStorage.setItem("flashcard_programId", programId);
+    else localStorage.removeItem("flashcard_programId");
+  }, [programId]);
+
+  useEffect(() => {
+    if (courseId) localStorage.setItem("flashcard_courseId", courseId);
+    else localStorage.removeItem("flashcard_courseId");
+  }, [courseId]);
+
+  useEffect(() => {
+    if (lessonId) localStorage.setItem("flashcard_lessonId", lessonId);
+    else localStorage.removeItem("flashcard_lessonId");
+  }, [lessonId]);
+
   // Load courses khi chọn program
   useEffect(() => {
     const loadCourses = async () => {
       if (!programId) {
         setCourseOptions([]);
         setCourseId("");
+        setLessonOptions([]);
+        setLessonId("");
         return;
       }
-      const res = await fetchCoursesByProgram({ programId });
+
+      const res = await fetchCoursesByProgram({
+        programId,
+        page: 1,
+        per_page: 9999,
+      });
       if (res.success) {
         setCourseOptions(
-          res.data.map((c) => ({
+          (res.data || []).map((c) => ({
             value: String(c.id),
             label: c.title,
           })),
         );
+      } else {
+        setCourseOptions([]);
       }
+
+      // reset child filters khi program đổi
       setCourseId("");
       setLessonOptions([]);
       setLessonId("");
     };
+
     loadCourses();
   }, [programId]);
 
@@ -75,21 +103,33 @@ function FlashcardListPage() {
         setLessonId("");
         return;
       }
-      const res = await fetchLessons({ courseId });
+
+      const res = await fetchLessons({
+        courseId,
+        page: 1,
+        sort: "created_at",
+        order: "desc",
+        search: "",
+      });
+
       if (res.success) {
         setLessonOptions(
-          res.data.map((l) => ({
+          (res.data || []).map((l) => ({
             value: String(l.id),
             label: l.title,
           })),
         );
+      } else {
+        setLessonOptions([]);
       }
+
+      // reset lesson khi course đổi
       setLessonId("");
     };
+
     loadLessons();
   }, [courseId]);
 
-  // Hook flashcards với filter
   const {
     flashcards,
     meta,
@@ -105,16 +145,27 @@ function FlashcardListPage() {
     reloadFlashcards,
   } = useFlashcards({ programId, courseId, lessonId });
 
-  // Filter handlers
+  // Reset page khi đổi filter/search/sort
+  useEffect(() => {
+    setPage(1);
+  }, [programId, courseId, lessonId, search, sort, order, setPage]);
+
   const onResetFilters = () => {
     setProgramId("");
     setCourseId("");
     setLessonId("");
-    localStorage.removeItem("programId");
-    localStorage.removeItem("courseId");
-    localStorage.removeItem("lessonId");
-    reloadFlashcards();
+    setCourseOptions([]);
+    setLessonOptions([]);
+
+    localStorage.removeItem("flashcard_programId");
+    localStorage.removeItem("flashcard_courseId");
+    localStorage.removeItem("flashcard_lessonId");
+
+    setPage(1);
   };
+
+  const showInitialLoading =
+    loading && (!flashcards || flashcards.length === 0);
 
   return (
     <div className="px-4 pt-4 pb-10 space-y-3">
@@ -135,6 +186,7 @@ function FlashcardListPage() {
             Xem, quản lý và cập nhật toàn bộ flashcard trong hệ thống.
           </p>
         </div>
+
         <Button
           asChild
           className="bg-indigo-600 text-white hover:bg-indigo-500 rounded-xl flex items-center gap-2"
@@ -146,7 +198,7 @@ function FlashcardListPage() {
         </Button>
       </div>
 
-      {loading ? (
+      {showInitialLoading ? (
         <div className="flex items-center justify-center gap-2 text-slate-500 dark:text-slate-300">
           <Spinner className="size-8 text-indigo-600 dark:text-indigo-500" />
           <span>Đang tải flashcard...</span>
@@ -164,7 +216,6 @@ function FlashcardListPage() {
           search={search}
           setSearch={setSearch}
           refreshFlashcards={reloadFlashcards}
-          // filter props
           programId={programId}
           setProgramId={setProgramId}
           programOptions={programOptions}
