@@ -77,7 +77,8 @@ function CourseListPage() {
         </div>
         <Button
           asChild
-          className="bg-indigo-600 text-white hover:bg-indigo-500 rounded-xl flex items-center gap-2"
+          className="bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 
+          transition-colors duration-300 min-w-36 cursor-pointer rounded-xl"
         >
           <Link to="/khoa-hoc/tao-moi">
             <Plus className="w-4 h-4" />

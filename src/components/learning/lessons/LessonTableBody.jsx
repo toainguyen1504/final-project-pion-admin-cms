@@ -85,17 +85,17 @@ export default function LessonTableBody({
 
             {/* Title */}
             {visibleColumns.title && (
-              <TableCell className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">
+              <TableCell className="px-4 py-3 font-medium capitalize text-slate-800 dark:text-slate-200">
                 {lesson.title ? (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <span className="block max-w-[180px] truncate cursor-default">
+                      <span className="block max-w-[180px] truncate cursor-default capitalize">
                         {lesson.title}
                       </span>
                     </TooltipTrigger>
                     <TooltipContent
                       side="bottom"
-                      className="max-w-xs break-words"
+                      className="max-w-xs break-words capitalize"
                     >
                       {lesson.title}
                     </TooltipContent>

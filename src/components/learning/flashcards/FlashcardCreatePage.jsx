@@ -294,7 +294,8 @@ function FlashcardCreatePage() {
             <Button
               type="submit"
               disabled={loading}
-              className="bg-indigo-600 text-white hover:bg-indigo-500 rounded-xl w-full"
+              className="w-full bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
+              text-white min-w-40 cursor-pointer select-none transition-all duration-300"
             >
               {loading ? "Đang xử lý..." : "Tạo Flashcard"}
             </Button>
@@ -330,7 +331,8 @@ function FlashcardCreatePage() {
             <Button
               type="submit"
               disabled={loading}
-              className="bg-indigo-600 text-white hover:bg-indigo-500 rounded-xl w-full"
+              className="w-full bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
+              text-white min-w-40 cursor-pointer select-none transition-all duration-300"
             >
               {loading ? "Đang xử lý..." : "Tạo Flashcards"}
             </Button>

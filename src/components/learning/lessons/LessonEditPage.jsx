@@ -11,6 +11,10 @@ import { updateLesson, fetchLesson } from "@/lib/api/learning/lessons";
 import { fetchPrograms } from "@/lib/api/learning/programs";
 import { fetchCoursesByProgram, fetchCourse } from "@/lib/api/learning/courses";
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
+import {
+  normalizeCleanText,
+  normalizeTextareaText,
+} from "@/utils/plainText";
 
 export default function LessonEditPage() {
   const { id } = useParams();
@@ -86,6 +90,10 @@ export default function LessonEditPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const cleanTitle = normalizeCleanText(title);
+    const cleanIntro = normalizeTextareaText(intro);
+    const cleanContent = normalizeTextareaText(content);
+
     // validate order trước
     if (order && !Number.isInteger(Number(order))) {
       toast.error("Thứ tự bài học phải là số nguyên.");
@@ -97,9 +105,9 @@ export default function LessonEditPage() {
     try {
       await updateLesson(id, {
         course_id: courseId,
-        title,
-        intro,
-        content,
+        title: cleanTitle,
+        intro: cleanIntro,
+        content: cleanContent,
         video_url: videoUrl,
         is_preview: isPreview,
         is_quiz: isQuiz,
@@ -138,7 +146,8 @@ export default function LessonEditPage() {
         <Button
           type="submit"
           form="lesson-form"
-          className="bg-indigo-600 text-white rounded-xl min-w-40"
+          className="bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 
+          transition-colors duration-300 min-w-36 cursor-pointer rounded-xl"
           disabled={loading}
         >
           {loading && <Spinner className="w-4 h-4 mr-2 text-white" />}

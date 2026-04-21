@@ -158,7 +158,8 @@ export default function ProgramFormModal({
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white rounded-xl my-3"
+            className="w-full bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 
+          transition-colors duration-300 min-w-36 cursor-pointer rounded-xl my-3"
           >
             {loading ? "Đang xử lý..." : initialData ? "Cập nhật" : "Tạo mới"}
           </Button>

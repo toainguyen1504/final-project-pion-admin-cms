@@ -12,6 +12,10 @@ import { fetchPrograms } from "@/lib/api/learning/programs";
 import { fetchCoursesByProgram } from "@/lib/api/learning/courses";
 import { getCurrentUser } from "@/utils/auth";
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
+import {
+  normalizeCleanText,
+  normalizeTextareaText,
+} from "@/utils/plainText";
 
 export default function LessonCreatePage() {
   const navigate = useNavigate();
@@ -69,11 +73,15 @@ export default function LessonCreatePage() {
     try {
       const currentUser = getCurrentUser();
 
+      const cleanTitle = normalizeCleanText(title);
+      const cleanIntro = normalizeTextareaText(intro);
+      const cleanContent = normalizeTextareaText(content);
+
       await createLesson({
         course_id: courseId,
-        title,
-        intro,
-        content,
+        title: cleanTitle,
+        intro: cleanIntro,
+        content: cleanContent,
         video_url: videoUrl,
         order: order ? Number(order) : undefined,
         is_preview: isPreview,
