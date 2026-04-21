@@ -12,6 +12,7 @@ import SortableHeaderCell from "@/components/shared/table/SortableHeaderCell";
 import DeleteConfirmDialog from "@/components/shared/DeleteConfirmDialog";
 import TableToolbar from "@/components/shared/table/TableToolbar";
 import FlashcardTableBody from "@/components/learning/flashcards/FlashcardTableBody";
+import FlashcardFormModal from "@/components/learning/flashcards/FlashcardFormModal";
 import {
   deleteFlashcard,
   bulkDeleteFlashcards,
@@ -72,6 +73,8 @@ function FlashcardTable({
   const [selectedFlashcard, setSelectedFlashcard] = useState(null);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingFlashcard, setEditingFlashcard] = useState(null);
 
   const isTempInitializedRef = useRef(false);
 
@@ -91,6 +94,7 @@ function FlashcardTable({
     );
   };
 
+  // Delete
   const handleConfirmDelete = async () => {
     setLoadingDelete(true);
     try {
@@ -120,6 +124,12 @@ function FlashcardTable({
       setLoadingDelete(false);
       setDeleteDialogOpen(false);
     }
+  };
+
+  // Edit
+  const handleEditFlashcard = (flashcard) => {
+    setEditingFlashcard(flashcard);
+    setEditModalOpen(true);
   };
 
   const handleApplyColumns = () => {
@@ -314,6 +324,7 @@ function FlashcardTable({
             setDeleteMode={setDeleteMode}
             setSelectedFlashcard={setSelectedFlashcard}
             setDeleteDialogOpen={setDeleteDialogOpen}
+            onEditFlashcard={handleEditFlashcard}
           />
         </Table>
       </div>
@@ -330,6 +341,17 @@ function FlashcardTable({
         }
         onConfirm={handleConfirmDelete}
         loading={loadingDelete}
+      />
+
+      {/* Edit dialog */}
+      <FlashcardFormModal
+        open={editModalOpen}
+        onOpenChange={setEditModalOpen}
+        initialData={editingFlashcard}
+        onSuccess={async () => {
+          setEditingFlashcard(null);
+          await refreshFlashcards?.();
+        }}
       />
     </div>
   );
