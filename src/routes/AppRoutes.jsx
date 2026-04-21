@@ -21,6 +21,7 @@ import ProgramListPage from "@/components/learning/programs/ProgramListPage";
 import CourseListPage from "@/components/learning/courses/CourseListPage";
 import CourseCreatePage from "@/components/learning/courses/CourseCreatePage";
 import CourseEditPage from "@/components/learning/courses/CourseEditPage";
+import CourseDetailPage from "@/components/learning/courses/CourseDetailPage"; // detail courses
 
 import LessonListPage from "@/components/learning/lessons/LessonListPage";
 import LessonCreatePage from "@/components/learning/lessons/LessonCreatePage";
@@ -81,6 +82,7 @@ function AppRoutes() {
           {/* COURSES */}
           <Route path="/khoa-hoc" element={<CourseListPage />} />
           <Route path="/khoa-hoc/tao-moi" element={<CourseCreatePage />} />
+          <Route path="/khoa-hoc/:id" element={<CourseDetailPage />} />
           <Route path="/khoa-hoc/:id/chinh-sua" element={<CourseEditPage />} />
 
           {/* LESSONS */}
