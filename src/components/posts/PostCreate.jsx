@@ -30,7 +30,7 @@ import { PostSidebar } from "./PostSidebar";
 import { slugify } from "@/lib/utils";
 import { createPost } from "@/lib/api/posts";
 import { fetchCategories } from "@/lib/api/categories";
-import MediaLibrary from "./MediaLibrary";
+import MediaLibrary from "@/components/shared/MediaLibrary";
 // import { mockImages } from "@/data";
 import classNames from "classnames/bind";
 import styles from "./Posts.module.scss";

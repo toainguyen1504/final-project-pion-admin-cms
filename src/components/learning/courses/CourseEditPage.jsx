@@ -17,6 +17,7 @@ import { getCurrentUser } from "@/utils/auth";
 
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
 import TextareaTab from "@/components/shared/TextareaTab";
+import CourseThumbnailPicker from "./CourseThumbnailPicker";
 
 import useCourseForm from "@/hooks/learning/useCourseForm";
 import { mapCourseToForm } from "@/utils/courseForm";
@@ -38,6 +39,8 @@ export default function CourseEditPage() {
     benefits,
     language,
     thumbnail,
+    thumbnail_media_id,
+    thumbnail_url,
     price,
     discount_price,
     is_free,
@@ -86,6 +89,8 @@ export default function CourseEditPage() {
       await updateCourse(id, {
         ...form,
         benefits: Array.isArray(benefits) ? benefits.join("\n") : benefits,
+        thumbnail: thumbnail || null,
+        thumbnail_media_id: thumbnail_media_id || null,
         price: Number(price),
         discount_price: Number(discount_price) || null,
         category_id: category_id || null,
@@ -320,16 +325,17 @@ export default function CourseEditPage() {
           </div>
 
           {/* Thumbnail */}
-          <div className="flex items-center gap-6">
-            <div className="flex-1 space-y-2">
-              <Label className="form-label">Ảnh thumbnail</Label>
-              <Input
-                type="text"
-                value={thumbnail}
-                onChange={(e) => updateField("thumbnail", e.target.value)}
-                placeholder="URL ảnh thumbnail"
-              />
-            </div>
+          <div className="space-y-2">
+            <Label className="form-label">Ảnh thumbnail</Label>
+            <CourseThumbnailPicker
+              value={thumbnail_url || thumbnail}
+              thumbnailMediaId={thumbnail_media_id}
+              onChange={(payload) => {
+                Object.entries(payload).forEach(([key, val]) => {
+                  updateField(key, val);
+                });
+              }}
+            />
           </div>
         </div>
       </form>

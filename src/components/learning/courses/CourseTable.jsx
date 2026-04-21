@@ -35,6 +35,7 @@ function CourseTable({
   const [typingValue, setTypingValue] = useState(search);
 
   const defaultColumns = {
+    thumbnail: true,
     title: true,
     slug: false,
     description: true,
@@ -155,6 +156,7 @@ function CourseTable({
                   onTempColumnToggle={handleTempColumnToggle}
                   defaultColumns={defaultColumns}
                   columnsConfig={[
+                    { key: "thumbnail", label: "Thumbnail" },
                     { key: "title", label: "Tiêu đề" },
                     { key: "slug", label: "Slug" },
                     { key: "description", label: "Description" },
@@ -202,6 +204,12 @@ function CourseTable({
                   />
                 </div>
               </TableCell>
+
+              {visibleColumns.thumbnail && (
+                <TableCell className="px-4 py-3 font-semibold">
+                  Thumbnail
+                </TableCell>
+              )}
 
               {visibleColumns.title && (
                 <TableCell className="px-4 py-3 font-semibold">

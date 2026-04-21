@@ -23,7 +23,7 @@ import { Eye, Image, Save, Info } from "lucide-react";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import { SeoManager } from "./components/SeoManager";
 import { PostSidebar } from "./PostSidebar";
-import MediaLibrary from "./MediaLibrary";
+import MediaLibrary from "@/components/shared/MediaLibrary";
 
 import { slugify } from "@/lib/utils";
 import axiosInstance from "@/utils/axiosInstance";

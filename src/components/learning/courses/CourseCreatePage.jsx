@@ -19,6 +19,7 @@ import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
 import TextareaTab from "@/components/shared/TextareaTab";
 
 import useCourseForm from "@/hooks/learning/useCourseForm";
+import CourseThumbnailPicker from "./CourseThumbnailPicker";
 
 export default function CourseCreatePage() {
   const navigate = useNavigate();
@@ -36,6 +37,8 @@ export default function CourseCreatePage() {
     benefits,
     language,
     thumbnail,
+    thumbnail_media_id,
+    thumbnail_url,
     price,
     discount_price,
     is_free,
@@ -70,6 +73,8 @@ export default function CourseCreatePage() {
 
       await createCourse({
         ...form,
+        thumbnail: thumbnail || null,
+        thumbnail_media_id: thumbnail_media_id || null,
         discount_price: discount_price || null,
         category_id: category_id || null,
         user_id: currentUser?.id,
@@ -329,19 +334,17 @@ export default function CourseCreatePage() {
           </div>
 
           {/* Thumbnail -> optimize sẽ dùng library media */}
-          <div className="flex items-center gap-6">
-            <div className="flex-1 space-y-2">
-              <Label htmlFor="thumbnail" className="form-label">
-                Ảnh thumbnail
-              </Label>
-              <Input
-                id="thumbnail"
-                type="text"
-                value={thumbnail}
-                onChange={(e) => updateField("thumbnail", e.target.value)}
-                placeholder="URL ảnh thumbnail"
-              />
-            </div>
+          <div className="space-y-2">
+            <Label className="form-label">Ảnh thumbnail</Label>
+            <CourseThumbnailPicker
+              value={thumbnail_url || thumbnail}
+              thumbnailMediaId={thumbnail_media_id}
+              onChange={(payload) => {
+                Object.entries(payload).forEach(([key, val]) => {
+                  updateField(key, val);
+                });
+              }}
+            />
           </div>
         </div>
       </form>
