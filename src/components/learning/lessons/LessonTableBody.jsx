@@ -89,15 +89,15 @@ export default function LessonTableBody({
                 {lesson.title ? (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Link
-                        to={`/bai-hoc/${lesson.id}`}
-                        className="text-indigo-600 dark:text-indigo-400 transition-colors underline-offset-2 hover:underline"
-                      >
+                      <span className="block max-w-[180px] truncate cursor-default">
                         {lesson.title}
-                      </Link>
+                      </span>
                     </TooltipTrigger>
-                    <TooltipContent>
-                      Nhấn để xem chi tiết bài học
+                    <TooltipContent
+                      side="bottom"
+                      className="max-w-xs break-words"
+                    >
+                      {lesson.title}
                     </TooltipContent>
                   </Tooltip>
                 ) : (
@@ -114,7 +114,23 @@ export default function LessonTableBody({
 
             {visibleColumns.intro && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {lesson.intro || "—"}
+                {lesson.intro ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="block max-w-[240px] truncate cursor-default">
+                        {lesson.intro}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="bottom"
+                      className="max-w-sm break-words whitespace-pre-wrap"
+                    >
+                      {lesson.intro}
+                    </TooltipContent>
+                  </Tooltip>
+                ) : (
+                  "—"
+                )}
               </TableCell>
             )}
 
