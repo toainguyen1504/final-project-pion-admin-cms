@@ -39,6 +39,16 @@ function UserCreate() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const selectedRole = roles.find(
+    (r) => r.id.toString() === formData.role.toString(),
+  );
+
+  const previewRoleName =
+    selectedRole?.name ||
+    (typeof formData.role === "string" && isNaN(Number(formData.role))
+      ? formData.role
+      : "");
+
   // create account
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,7 +94,7 @@ function UserCreate() {
           id: response.data.id,
           username: response.data.username,
           password: response.plain_password,
-          role: response.data.role.name,
+          role: response.data.role_id || prev.role,
         }));
         setErrors({});
       } else {
@@ -362,7 +372,7 @@ function UserCreate() {
                 Vai trò:
               </p>
               <p className="text-base text-slate-800 dark:text-slate-100">
-                {formData.role || "Chưa có"}
+                {previewRoleName || "Chưa có"}
               </p>
             </div>
 

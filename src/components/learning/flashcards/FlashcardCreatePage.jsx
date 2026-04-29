@@ -23,6 +23,7 @@ import { fetchPrograms } from "@/lib/api/learning/programs";
 import { fetchCoursesByProgram } from "@/lib/api/learning/courses";
 import { fetchLessons } from "@/lib/api/learning/lessons";
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
+import TextareaTab from "@/components/shared/TextareaTab";
 
 function FlashcardCreatePage() {
   const navigate = useNavigate();
@@ -293,18 +294,20 @@ function FlashcardCreatePage() {
             <Button
               type="submit"
               disabled={loading}
-              className="bg-indigo-600 text-white hover:bg-indigo-500 rounded-xl w-full"
+              className="w-full bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
+              text-white min-w-40 cursor-pointer select-none transition-all duration-300"
             >
               {loading ? "Đang xử lý..." : "Tạo Flashcard"}
             </Button>
           </form>
         </TabsContent>
+
         {/* Bulk flashcards */}
         <TabsContent value="bulk">
           <form onSubmit={handleBulkCreate} className="space-y-4 mt-4">
             <div className="space-y-2">
               <Label htmlFor="bulkText">Danh sách flashcards</Label>
-              <Textarea
+              <TextareaTab
                 id="bulkText"
                 value={bulkText}
                 onChange={(e) => setBulkText(e.target.value)}
@@ -328,7 +331,8 @@ function FlashcardCreatePage() {
             <Button
               type="submit"
               disabled={loading}
-              className="bg-indigo-600 text-white hover:bg-indigo-500 rounded-xl w-full"
+              className="w-full bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 rounded-xl 
+              text-white min-w-40 cursor-pointer select-none transition-all duration-300"
             >
               {loading ? "Đang xử lý..." : "Tạo Flashcards"}
             </Button>

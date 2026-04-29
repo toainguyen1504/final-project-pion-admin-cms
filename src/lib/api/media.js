@@ -8,7 +8,7 @@ const BASE_URL =
 const TOKEN = import.meta.env.VITE_API_TOKEN;
 
 // ----------- PUBLIC ROUTES (index, show, stats) -----------
-// 🧩 Lấy toàn bộ media (KHÔNG phân trang)
+// Lấy toàn bộ media (KHÔNG phân trang)
 export async function fetchMedia() {
   try {
     const response = await axiosInstance.get("/media");
@@ -19,13 +19,13 @@ export async function fetchMedia() {
     return response.data.data || [];
     // eslint-disable-next-line no-unused-vars
   } catch (error) {
-    // console.error("❌ Error fetching media:", error);
+    // console.error(" Error fetching media:", error);
     return [];
   }
 }
 
 // ----------- ADMIN ROUTES (create, update, delete, bulk) -----------
-// 🧩 Upload media (1 hoặc nhiều file)
+// Upload media (1 hoặc nhiều file)
 export async function uploadMedia(files) {
   try {
     const formData = new FormData();

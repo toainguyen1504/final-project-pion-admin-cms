@@ -12,6 +12,7 @@ import SortableHeaderCell from "@/components/shared/table/SortableHeaderCell";
 import DeleteConfirmDialog from "@/components/shared/DeleteConfirmDialog";
 import TableToolbar from "@/components/shared/table/TableToolbar";
 import FlashcardTableBody from "@/components/learning/flashcards/FlashcardTableBody";
+import FlashcardFormModal from "@/components/learning/flashcards/FlashcardFormModal";
 import {
   deleteFlashcard,
   bulkDeleteFlashcards,
@@ -72,6 +73,8 @@ function FlashcardTable({
   const [selectedFlashcard, setSelectedFlashcard] = useState(null);
   const [loadingDelete, setLoadingDelete] = useState(false);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingFlashcard, setEditingFlashcard] = useState(null);
 
   const isTempInitializedRef = useRef(false);
 
@@ -91,6 +94,7 @@ function FlashcardTable({
     );
   };
 
+  // Delete
   const handleConfirmDelete = async () => {
     setLoadingDelete(true);
     try {
@@ -122,6 +126,12 @@ function FlashcardTable({
     }
   };
 
+  // Edit
+  const handleEditFlashcard = (flashcard) => {
+    setEditingFlashcard(flashcard);
+    setEditModalOpen(true);
+  };
+
   const handleApplyColumns = () => {
     setVisibleColumns({ ...tempColumns });
     setPopoverOpen(false);
@@ -151,6 +161,10 @@ function FlashcardTable({
     }, 600);
     return () => clearTimeout(timeout);
   }, [typingValue]);
+
+  useEffect(() => {
+    setSelectedIds([]);
+  }, [data, search, sort, order, programId, courseId, lessonId]);
 
   return (
     <div className="space-y-4">
@@ -310,6 +324,7 @@ function FlashcardTable({
             setDeleteMode={setDeleteMode}
             setSelectedFlashcard={setSelectedFlashcard}
             setDeleteDialogOpen={setDeleteDialogOpen}
+            onEditFlashcard={handleEditFlashcard}
           />
         </Table>
       </div>
@@ -326,6 +341,17 @@ function FlashcardTable({
         }
         onConfirm={handleConfirmDelete}
         loading={loadingDelete}
+      />
+
+      {/* Edit dialog */}
+      <FlashcardFormModal
+        open={editModalOpen}
+        onOpenChange={setEditModalOpen}
+        initialData={editingFlashcard}
+        onSuccess={async () => {
+          setEditingFlashcard(null);
+          await refreshFlashcards?.();
+        }}
       />
     </div>
   );

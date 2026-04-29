@@ -10,39 +10,81 @@ import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
 import { CalendarDays } from "lucide-react";
 
+function formatTime(date) {
+  const h = date.getHours().toString().padStart(2, "0");
+  const m = date.getMinutes().toString().padStart(2, "0");
+  return `${h}:${m}`;
+}
+
+function getNextValidTime() {
+  const next = new Date();
+  next.setMinutes(next.getMinutes() + 1);
+  next.setSeconds(0);
+  next.setMilliseconds(0);
+  return next;
+}
+
+function isSameDay(dateA, dateB) {
+  return dateA.toDateString() === dateB.toDateString();
+}
+
 function ScheduledPanel({ isVisible, publishDate, setPublishDate }) {
   const contentRef = useRef(null);
   const [height, setHeight] = useState("0px");
   const [open, setOpen] = useState(false);
+  const [time, setTime] = useState(() => formatTime(publishDate));
 
-  // get time
-  const [time, setTime] = useState(() => {
-    const h = publishDate.getHours().toString().padStart(2, "0");
-    const m = publishDate.getMinutes().toString().padStart(2, "0");
-    return `${h}:${m}`;
-  });
+  const now = new Date();
 
-  // Handle select date
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const maxDate = new Date();
+  maxDate.setDate(maxDate.getDate() + 30);
+  maxDate.setHours(23, 59, 59, 999);
+
+  const isSelectedToday = isSameDay(publishDate, now);
+  const minTime = isSelectedToday ? formatTime(getNextValidTime()) : undefined;
+
+  useEffect(() => {
+    setTime(formatTime(publishDate));
+  }, [publishDate]);
+
+  const normalizeDateTime = (date, timeValue) => {
+    const [h, m] = timeValue.split(":").map(Number);
+
+    const result = new Date(date);
+    result.setHours(h);
+    result.setMinutes(m);
+    result.setSeconds(0);
+    result.setMilliseconds(0);
+
+    const currentNow = new Date();
+
+    if (result <= currentNow) {
+      return getNextValidTime();
+    }
+
+    return result;
+  };
+
   const handleSelectDate = (date) => {
     if (!date) return;
-    const [h, m] = time.split(":").map(Number);
-    date.setHours(h);
-    date.setMinutes(m);
-    setPublishDate(date);
+
+    const nextDate = normalizeDateTime(date, time);
+
+    setTime(formatTime(nextDate));
+    setPublishDate(nextDate);
   };
 
-  // Handle change time
   const handleTimeChange = (e) => {
     const newTime = e.target.value;
-    setTime(newTime);
-    const [h, m] = newTime.split(":").map(Number);
-    const newDate = new Date(publishDate);
-    newDate.setHours(h);
-    newDate.setMinutes(m);
-    setPublishDate(newDate);
+    const nextDate = normalizeDateTime(publishDate, newTime);
+
+    setTime(formatTime(nextDate));
+    setPublishDate(nextDate);
   };
 
-  // Animation when open panel
   useEffect(() => {
     if (contentRef.current) {
       setHeight(isVisible ? `${contentRef.current.scrollHeight}px` : "0px");
@@ -59,7 +101,6 @@ function ScheduledPanel({ isVisible, publishDate, setPublishDate }) {
         <div className="pt-4 flex items-center px-1 space-x-1 whitespace-nowrap">
           <CalendarDays className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
 
-          {/* Popover date + time */}
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <span className="inline-block">
@@ -80,15 +121,14 @@ function ScheduledPanel({ isVisible, publishDate, setPublishDate }) {
                 selected={publishDate}
                 onSelect={handleSelectDate}
                 initialFocus
-                disabled={(date) =>
-                  date < new Date() ||
-                  date > new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-                }
+                disabled={(date) => date < today || date > maxDate}
               />
+
               <div className="flex items-center group">
                 <Input
                   type="time"
                   value={time}
+                  min={minTime}
                   onChange={handleTimeChange}
                   className="custom-time-input w-[140px] h-9 text-sm rounded-md border border-input bg-background px-2
                   transition-colors focus-visible:ring-1 focus-visible:ring-indigo-500 focus-visible:ring-offset-1

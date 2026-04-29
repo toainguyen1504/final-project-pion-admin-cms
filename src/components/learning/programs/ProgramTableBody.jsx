@@ -7,7 +7,6 @@ import {
   CheckCircle2,
   XCircle,
 } from "lucide-react";
-import { Link } from "react-router-dom";
 import { TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -41,8 +40,6 @@ export default function ProgramTableBody({
   setDeleteDialogOpen,
   onEditProgram,
 }) {
-  //   const navigate = useNavigate();
-
   const getVisibleColSpan = () => {
     const visibleCount = Object.values(visibleColumns).filter(Boolean).length;
     return visibleCount + 2;
@@ -91,16 +88,15 @@ export default function ProgramTableBody({
                 {program.title ? (
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Link
-                        to={`/chuong-trinh-hoc/${program.id}`}
-                        className="text-indigo-600 dark:text-indigo-400 transition-colors underline-offset-2 hover:underline"
-                      >
+                      <span className="block max-w-[180px] truncate cursor-default">
                         {program.title}
-                      </Link>
+                      </span>
                     </TooltipTrigger>
-                    <TooltipContent>
-                      Nhấn để xem chi tiết chương trình học và danh sách khóa
-                      học
+                    <TooltipContent
+                      side="bottom"
+                      className="max-w-xs break-words"
+                    >
+                      {program.title}
                     </TooltipContent>
                   </Tooltip>
                 ) : (
@@ -117,7 +113,23 @@ export default function ProgramTableBody({
 
             {visibleColumns.description && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {program.description || "—"}
+                {program.description ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="block max-w-[240px] truncate cursor-default">
+                        {program.description}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="bottom"
+                      className="max-w-sm break-words whitespace-pre-wrap"
+                    >
+                      {program.description}
+                    </TooltipContent>
+                  </Tooltip>
+                ) : (
+                  "—"
+                )}
               </TableCell>
             )}
 
@@ -155,7 +167,7 @@ export default function ProgramTableBody({
             <TableCell className="w-auto px-4 py-3 whitespace-nowrap">
               <div className="flex items-center gap-2">
                 <Button
-                  onClick={() => onEditProgram(program)} // gọi callback chỉnh sửa
+                  onClick={() => onEditProgram(program)}
                   variant="ghost"
                   size="sm"
                   className="flex items-center gap-1 !text-indigo-600 dark:!text-indigo-500 hover:!bg-indigo-100 dark:!hover:bg-indigo-100 transition-colors cursor-pointer"

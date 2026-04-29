@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/tooltip";
 
 import TablePagination from "@/components/shared/table/TablePagination";
+import IMAGE_DEFAULT from "@/assets/images/placeholder_img.png";
 
 export default function CourseTableBody({
   data,
@@ -44,6 +45,15 @@ export default function CourseTableBody({
   const getVisibleColSpan = () => {
     const visibleCount = Object.values(visibleColumns).filter(Boolean).length;
     return visibleCount + 2;
+  };
+
+  const getCourseThumbnailSrc = (course) => {
+    return (
+      course?.thumbnail_thumb ||
+      course?.thumbnail_url ||
+      course?.thumbnail ||
+      IMAGE_DEFAULT
+    );
   };
 
   return (
@@ -83,6 +93,20 @@ export default function CourseTableBody({
               </div>
             </TableCell>
 
+            {/* Thumbnail */}
+            {visibleColumns.thumbnail && (
+              <TableCell className="px-4 py-3 text-center">
+                <img
+                  src={getCourseThumbnailSrc(course)}
+                  alt={course.title || "Thumbnail"}
+                  className="w-16 h-12 object-cover rounded-md border border-slate-300 dark:border-slate-600"
+                  onError={(e) => {
+                    e.currentTarget.src = IMAGE_DEFAULT;
+                  }}
+                />
+              </TableCell>
+            )}
+
             {/* Title */}
             {visibleColumns.title && (
               <TableCell className="px-4 py-3 font-medium text-slate-800 dark:text-slate-200">
@@ -91,7 +115,7 @@ export default function CourseTableBody({
                     <TooltipTrigger asChild>
                       <Link
                         to={`/khoa-hoc/${course.id}`}
-                        className="text-indigo-600 dark:text-indigo-400 transition-colors underline-offset-2 hover:underline"
+                        className="text-indigo-600 dark:text-indigo-400 transition-colors block max-w-[200px] truncate underline-offset-2 hover:underline"
                       >
                         {course.title}
                       </Link>
@@ -114,7 +138,23 @@ export default function CourseTableBody({
 
             {visibleColumns.description && (
               <TableCell className="px-4 py-3 text-slate-500 dark:text-slate-400">
-                {course.description || "—"}
+                {course.description ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="block max-w-[240px] truncate cursor-default">
+                        {course.description}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="bottom"
+                      className="max-w-xs break-words"
+                    >
+                      {course.description}
+                    </TooltipContent>
+                  </Tooltip>
+                ) : (
+                  "—"
+                )}
               </TableCell>
             )}
 
@@ -217,7 +257,6 @@ export default function CourseTableBody({
             {/* Actions */}
             <TableCell className="w-auto px-4 py-3 whitespace-nowrap">
               <div className="flex items-center gap-2">
-
                 <Button
                   asChild
                   variant="ghost"

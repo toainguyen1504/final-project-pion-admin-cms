@@ -37,3 +37,27 @@ export const exportConsultations = async () => {
     throw error.response?.data || error;
   }
 };
+
+// hiển thị cho dashboard - thống kê
+export async function fetchConsultationStats(field = "created_at") {
+  try {
+    const response = await axiosInstance.get("/admin/consultations/stats", {
+      params: { field },
+    });
+
+    const data = response?.data?.data || {};
+
+    return {
+      total: data.total || 0,
+      this_month: data.this_month || 0,
+      last_month: data.last_month || 0,
+    };
+  } catch (error) {
+    console.error("Error fetching consultation stats:", error);
+    return {
+      total: 0,
+      this_month: 0,
+      last_month: 0,
+    };
+  }
+}

@@ -12,18 +12,20 @@ export async function fetchFlashcards({
   perPage = 10,
 }) {
   try {
-    const response = await axiosInstance.get("/admin/flashcards", {
-      params: {
-        page,
-        sort,
-        order,
-        search,
-        lesson_id: lessonId,
-        course_id: courseId,
-        program_id: programId,
-        per_page: perPage,
-      },
-    });
+    const params = {
+      page,
+      sort,
+      order,
+      search,
+      per_page: perPage,
+    };
+
+    if (lessonId) params.lesson_id = Number(lessonId);
+    if (courseId) params.course_id = Number(courseId);
+    if (programId) params.program_id = Number(programId);
+
+    const response = await axiosInstance.get("/admin/flashcards", { params });
+
     return {
       data: response.data.data,
       meta: response.data.meta,
@@ -147,5 +149,44 @@ export async function fetchFlashcardsByLesson(
   } catch (error) {
     console.error("Error fetching flashcards by lesson:", error);
     return { data: [], meta: null, success: false };
+  }
+}
+
+//  MỞ RỘNG CHO DETAIL PAGE
+// Lấy flashcards theo course
+export async function fetchFlashcardsByCourse(courseId) {
+  try {
+    const response = await axiosInstance.get("/admin/flashcards", {
+      params: {
+        course_id: courseId,
+        page: 1,
+        sort: "created_at",
+        order: "desc",
+      },
+    });
+
+    return {
+      success: true,
+      data: response.data?.data || [],
+      meta: response.data?.meta || null,
+    };
+  } catch (error) {
+    console.error("Error fetching flashcards by course:", error);
+    return {
+      success: false,
+      data: [],
+      meta: null,
+    };
+  }
+}
+
+// Xóa flashcard nhanh cho detail page
+export async function deleteFlashcardLite(id) {
+  try {
+    const response = await axiosInstance.delete(`/admin/flashcards/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting flashcard:", error);
+    throw error;
   }
 }

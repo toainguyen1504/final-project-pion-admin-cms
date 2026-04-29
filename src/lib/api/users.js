@@ -1,9 +1,7 @@
 import axiosInstance from "@/utils/axiosInstance";
 
-
 // ----------- PUBLIC ROUTES (index, show, stats) -----------
 // get /me để lấy thông tin cơ bản cho profile và update
-
 
 // ----------- ADMIN ROUTES (create, update, delete, bulk) -----------
 
@@ -20,8 +18,8 @@ export async function fetchUsers(
     });
 
     return {
-      data: response.data.data,
-      meta: response.data.meta,
+      data: response?.data?.data || [],
+      meta: response?.data?.meta || null,
     };
   } catch (error) {
     console.error("Error fetching users:", error);
@@ -36,32 +34,33 @@ export async function fetchUsers(
 export async function fetchUser(id) {
   try {
     const response = await axiosInstance.get(`/admin/users/${id}`);
-    return response.data.data;
+    return response?.data?.data || null;
   } catch (error) {
     console.error("Error fetching user:", error);
     return null;
   }
 }
 
-// Get user stats - chưa
-export async function fetchUserStats() {
+// Get user stats
+export async function fetchUserStats(field = "created_at") {
   try {
-    const response = await axiosInstance.get("/users/stats");
-    const { data } = response.data;
+    const response = await axiosInstance.get("/admin/users/stats", {
+      params: { field },
+    });
+
+    const data = response?.data?.data || {};
 
     return {
       total: data.total || 0,
-      active: data.active || 0,
-      inactive: data.inactive || 0,
       this_month: data.this_month || 0,
+      last_month: data.last_month || 0,
     };
-    // eslint-disable-next-line no-unused-vars
   } catch (error) {
+    console.error("Error fetching user stats:", error);
     return {
       total: 0,
-      active: 0,
-      inactive: 0,
       this_month: 0,
+      last_month: 0,
     };
   }
 }

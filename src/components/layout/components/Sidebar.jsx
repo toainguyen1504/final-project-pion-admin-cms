@@ -91,16 +91,16 @@ const menuItems = [
         label: "Tạo mới người dùng",
         path: "/nguoi-dung/tao-moi",
       },
-      {
-        id: "role-user",
-        label: "Vai trò người dùng",
-        path: "/nguoi-dung/quan-li-vai-tro",
-      },
-      {
-        id: "overview-user",
-        label: "Thống kê người dùng",
-        path: "/nguoi-dung/thong-ke",
-      },
+      // {
+      //   id: "role-user",
+      //   label: "Vai trò người dùng",
+      //   path: "/nguoi-dung/quan-li-vai-tro",
+      // },
+      // {
+      //   id: "overview-user",
+      //   label: "Thống kê người dùng",
+      //   path: "/nguoi-dung/thong-ke",
+      // },
     ],
   },
   {

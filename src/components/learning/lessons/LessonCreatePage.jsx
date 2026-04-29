@@ -12,6 +12,10 @@ import { fetchPrograms } from "@/lib/api/learning/programs";
 import { fetchCoursesByProgram } from "@/lib/api/learning/courses";
 import { getCurrentUser } from "@/utils/auth";
 import MultiBreadcrumb from "@/components/shared/MultiBreadcrumb";
+import {
+  normalizeCleanText,
+  normalizeTextareaText,
+} from "@/utils/plainText";
 
 export default function LessonCreatePage() {
   const navigate = useNavigate();
@@ -28,6 +32,7 @@ export default function LessonCreatePage() {
   const [videoUrl, setVideoUrl] = useState("");
   const [isPreview, setIsPreview] = useState(false);
   const [isQuiz, setIsQuiz] = useState(false);
+  const [order, setOrder] = useState("");
 
   const [loading, setLoading] = useState(false);
 
@@ -56,31 +61,44 @@ export default function LessonCreatePage() {
   // Handle submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // validate order trước khi call API
+    if (order && !Number.isInteger(Number(order))) {
+      toast.error("Thứ tự bài học phải là số nguyên.");
+      return;
+    }
+
     setLoading(true);
+
     try {
       const currentUser = getCurrentUser();
+
+      const cleanTitle = normalizeCleanText(title);
+      const cleanIntro = normalizeTextareaText(intro);
+      const cleanContent = normalizeTextareaText(content);
+
       await createLesson({
         course_id: courseId,
-        title,
-        intro,
-        content,
-        // duration,
+        title: cleanTitle,
+        intro: cleanIntro,
+        content: cleanContent,
         video_url: videoUrl,
-        // order,
+        order: order ? Number(order) : undefined,
         is_preview: isPreview,
         is_quiz: isQuiz,
         user_id: currentUser?.id,
       });
+
       toast.success("Bài học đã được tạo thành công!");
       navigate("/bai-hoc");
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Tạo bài học thất bại!");
+      const message = error?.response?.data?.message || "Tạo bài học thất bại!";
+
+      toast.error(message);
     } finally {
       setLoading(false);
     }
   };
-
-  // if (!program || !course) return <div>Đang tải...</div>;
 
   return (
     <div className="px-4 py-6 space-y-6">
@@ -225,18 +243,21 @@ export default function LessonCreatePage() {
             />
           </div>
 
-          {/* <div className="w-60 space-y-2">
+          {/* Order */}
+          <div className="w-60 space-y-2">
             <Label htmlFor="order" className="form-label">
               Thứ tự
             </Label>
             <Input
               id="order"
               type="number"
+              step="1"
+              min="1"
               value={order}
               onChange={(e) => setOrder(e.target.value)}
-              placeholder="VD: 1"
+              placeholder="VD: 1 - Tự động nếu để trống"
             />
-          </div> */}
+          </div>
 
           {/* Preview + Quiz */}
           <div className="flex items-center gap-6">

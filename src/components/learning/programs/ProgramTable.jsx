@@ -33,7 +33,7 @@ function ProgramTable({
   const defaultColumns = {
     title: true,
     slug: false,
-    description: false,
+    description: true,
     status: true,
     user_id: true,
     created_at: true,

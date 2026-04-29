@@ -115,3 +115,42 @@ export async function bulkDeleteLessons(ids) {
     throw error;
   }
 }
+
+//  MỞ RỘNG CHO DETAIL PAGE
+// Lấy lessons theo course
+export async function fetchLessonsByCourse(courseId) {
+  try {
+    const response = await axiosInstance.get("/admin/lessons", {
+      params: {
+        course_id: courseId,
+        page: 1,
+        sort: "order",
+        order: "asc",
+      },
+    });
+
+    return {
+      success: true,
+      data: response.data?.data || [],
+      meta: response.data?.meta || null,
+    };
+  } catch (error) {
+    console.error("Error fetching lessons by course:", error);
+    return {
+      success: false,
+      data: [],
+      meta: null,
+    };
+  }
+}
+
+// Xóa lesson nhanh cho detail page
+export async function deleteLessonLite(id) {
+  try {
+    const response = await axiosInstance.delete(`/admin/lessons/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting lesson:", error);
+    throw error;
+  }
+}
